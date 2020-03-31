@@ -24,21 +24,71 @@ class: white
 background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
-# Мониторинг
+# Метрики и мониторинг
 
-### Дмитрий Смаль
+### Дмитрий Смаль, Елена Граховац
 
 ---
 
 # План занятия
 
 .big-list[
-* Мониторинг Linux-серверов
-* Системные метрики: LA, CPU, MEM, IO
-* Мониторинг Web-серверов
-* Мониторинг Баз-данных
-* Prometheus
+* Observability и Operability
+* Метрики и мониторинг
+* Мониторинг ресурсов: LA, CPU, MEM, IO
+* Мониторинг приложений
+* Мониторинг баз данных
+* Prometheus и DataDog
 ]
+
+---
+
+Пока идет теоретическая часть урока, можно скачать себе образы контейнеров ;)
+<br><br>
+
+## Prometheus
+```
+docker pull prom/prometheus
+docker pull prom/node-exporter
+docker pull grafana/grafana
+```
+
+Документация: https://prometheus.io/docs/prometheus/latest/installation/
+<br><br>
+
+## DataDog
+
+```
+docker pull datadog/agent
+```
+
+Попробовать DataDog: elena@grahovac.me
+
+---
+
+# Observability
+
+Observability (наблюдаемость) - мера того, насколько по выходным данным можно
+восстановить информацию о состоянии системы.
+<br><br>
+Примеры:
+- логирование (zap, logrus -> fluentd -> kibana)
+- мониторинг (zabbix, prometheus,
+- алертинг (chatops, pagerduty, opsgenie)
+- трейсинг (jaeger, zipkin, opentracing, datadog apm)
+- профилирование (pprof)
+- сбор ошибок и аварий (sentry)
+
+---
+
+# Operability
+
+Operability (работоспособность) - мера того, насколько приложение умеет
+сообщать о своем состоянии здоровья, а инфраструктура управлять этим состоянием.
+<br><br>
+Примеры:
+- простейшие хелсчеки
+- liveness и readiness в Kubernetes
 
 ---
 
@@ -46,17 +96,15 @@ background-image: url(img/message.svg)
 
 .big-list[
 * Отладка, решение текущих проблем
-* Рассылка уведомлений
-* Технические A/B эксперименты
+* SRE мир: SLA, SLO, SLI
+* Алертинг
+* Технические и бизнесовые A/B эксперименты
 * Анализ трендов, прогнозирование
 ]
 
-SRE book:<br>
-[https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/](https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/)
-
 ---
 
-# Какой бывает мониторинг ? 
+# Виды мониторинга
 
 .big-list[
 * Количественный / Событийный
@@ -64,36 +112,34 @@ SRE book:<br>
 * Push / Pull
 ]
 
-Ya ?
 
 ---
 
-# Push vs. Pull
+# Push vs Pull
 
-*Push* - агент, работающий на машине (в виртуалке/контейнере/программе) подключается к сервер мониторинга
+*Push* - агент, работающий на окружении (например, сайдкар), подключается к серверу мониторинга
 и отправляет данные.
-Плюсы:
-* мониторинг одноразовых задач
-* может работать за NAT
-* может быть более производительным (за счет UDP)
 
+Особенности:
+* мониторинг специфических/одноразовых задач
+* можно поставить хоть куда :)
+* не нужно открывать никакие URL'ы/порты на стороне пирложения
+* из приложения нужно конфигурировать подключение
 
-Пример: `Graphite`
+Примеры: `graphite`, `statsd`
 <br><br>
 
-*Pull* - сервер мониторинга сам опрашивает агентов, собирая статистику.
+*Pull* - сервис мониторинга сам опрашивает инфраструктуры/сервисы и агрегирует статистику.
 
-Плюсы:
-* проще получать данные по-запросу
-* более отказоустойчивый
-* не требует авторизации / верификации источника
+Фичи:
+* не нужно подключаться к агенту на стороне приложения 
+* нужно открывать URL или порт, который будет доступен сервису мониторинга
 
-<br><br>
-Пример: `Prometheus`
+Примеры: `datadog-agent`, `prometheus`
 
 ---
 
-# Мониторинг Linux машин
+# Мониторинг инфраструктуры
 
 .big-list[
 * LA (Load Average) - длинна очереди процессов в планировщике
@@ -163,31 +209,36 @@ LA - сложная метрика, ее можно интерпретирова
 
 ---
 
-# Детальный мониторинг
+# Траблшутинг
 
-Алгоритм админа =)
-<br><br>
-* идентификация проблемы
+Алгоритм:
+* идентифицировать проблему
 * найти причину (?)
-* решить проблему
+* решить  проблему
+
+Расширенный алгоритм: управление инцидентами.
+Гуглить по фразам "incident management" и "blameless postmortem".
 
 <br><br>
 Инструменты:
 * `top`, `htop` - умеют сортировать процессы по CPU, RES
 * `iotop` - умеет сортировать процессы по использованию диска
-* `iftop` - траффик, по хостам (процессов нет =()
+* `iftop` - трафик, по хостам 
 * `atop` - записывает лог, позволяет исследовать ситуацию *post hoc*
   
 ---
 
-# Мониторинг Web/API серверов
+# Мониторинг приложений
 
 .big-list[
 * RPS (request per second)
-* Response time
+* Response time 
+* Задержка между компонентами приложения (latency)
 * Код ответа (HTTP status 200/500/5xx/4xx)
 * Разделение по методам API
 ]
+<br><br>
+Для детального анализа: трейсинг
 
 ---
 
@@ -197,8 +248,9 @@ LA - сложная метрика, ее можно интерпретирова
 ![img/latency.png](img/latency.png)
 ]
 
-Среднее значение (`avg`) или даже медиана (`mean`) не отображают реальной картины!
-Необходимо измерять *перцентили*, например время в которое укладываются `98%` запросов.
+Среднее значение (`avg`, `mean`) или даже медиана (`median`) не отображают всей картины!
+<br><br>
+Полезно измерять *процентили* (percentile), например время в которое укладываются 95% или 99% запросов.
 
 ---
 
@@ -216,12 +268,12 @@ LA - сложная метрика, ее можно интерпретирова
 
 ---
 
-# 4 основных метрики
+# Основные группы метрик
 
 .big-list[
-* Latency - время ответа
-* Traffic - количество запросов / объем
-* Errors - количество ошибок
+* Latency - время задержки
+* Traffic - количество запросов и объем трафика
+* Errors - количество и характер ошибок
 * Saturation - утилизация ресурсов
 ]
 
@@ -236,10 +288,19 @@ LA - сложная метрика, ее можно интерпретирова
 
 ---
 
+# Prometheus - Infrastructure as Code
+
+Дисклеймер: далее на слайдах будут примеры установки и настройки
+на Linux-машинах. В реальной жизни вряд ли вы будете настраивать это руками :)
+<br><br>
+Куда смотреть для production-readiness: ansible, chef и всякое такое 
+https://prometheus.io/docs/prometheus/latest/installation/
+
+---
 
 # Prometheus - установка сервера
 
-Установка
+Установка на Ubuntu:
 ```
 $ apt get install prometheus
 ```
@@ -272,13 +333,12 @@ scrape_configs:
 $ service prometheus start
 ```
 
-Prometheus будет доступен на порту 9090: [http://84.201.152.233:9090/](http://84.201.152.233:9090/)
+С настройками по умолчанию Prometheus будет доступен на порту 9090: 
+[http://127.0.0.1:9090/](http://127.0.0.1:9090/)
 
 ---
 
-
-
-# Prometheus - мониторинг Linux
+# Prometheus - мониторинг сервера
 
 .main_image[
   ![img/prometheus_linux.png](img/prometheus_linux.png)
@@ -286,8 +346,9 @@ Prometheus будет доступен на порту 9090: [http://84.201.152.
 
 ---
 
-# Prometheus - мониторинг Linux
+# Prometheus - мониторинг сервера
 
+Установка и запуск collectd
 ```
 $ apt-get install collectd
 
@@ -312,7 +373,7 @@ $ ./collectd_exporter --collectd.listen-address="localhost:25826" \
 
 # Prometheus - мониторинг Postgres
 
-Установить postgres-exporter
+Установка postgres-exporter
 ```
 $ go get github.com/wrouesnel/postgres_exporter
 $ cd ${GOPATH-$HOME/go}/src/github.com/wrouesnel/postgres_exporter
@@ -356,9 +417,14 @@ go_gc_duration_seconds_count 282
 .big-list[
 * `Counter` - монотонно возрастающее число, например число запросов
 * `Gauge` - текущее значение, например потребление памяти
-* `Histogram` - распределение значения, по bucket
+* `Histogram` - распределение значений по бакетам (сколько раз значение попало в интервал)
 * `Summary` - похоже на `histogram`, но по квантилям
+* Векторные типы для подсчета данных по меткам
 ]
+
+Документация: https://prometheus.io/docs/concepts/metric_types/
+
+Отличная документация в godoc: https://godoc.org/github.com/prometheus/client_golang/prometheus
 
 ---
 
@@ -411,11 +477,49 @@ func init() {
 
 func myHandler(w http.ResponseWriter, r *http.Request) {
   w.WriteHeader(http.StatusOK)
-  w.Write([]byte("hello world!"))
+  w.Write([]byte("Hello, world!"))
   regCounter.Inc()
 }
 
 ```
+---
+
+# DataDog - типы метрик
+
+.big-list[
+* `Count` (*) - в отличие от Prometheus может и возрастать, и убывать
+* `Gauge` (*) - текущее значение, например потребление памяти
+* `Histogram` - считает агрегированные avg, count, median, 95percentile, max
+* `Distribution`  - больше агрегаций, чем histogram
+* `Set` -  счетчик уникальных значений
+* `Rate` (*) - скорость изменения значения
+]
+
+(*) - основные типы метрик, на их основе хранятся остальные
+
+Документация: https://docs.datadoghq.com/developers/metrics/types/
+
+---
+
+# Домашнее задание
+
+Обеспечить простейший мониторинг проекта с помощью prometheus
+
+Prometheus запустить в docker контейнере рядом с остальными сервисами.
+
+Для API сервиса необходимо измерять:
+* Requests per second
+* Latency
+* Коды ошибок
+* Все это в разделении по методам (использовать отдельный тэг prometheus для каждого метода API)
+
+Для баз данных:
+* Количество записей в таблице events (данные брать из pg_stat_user_tables)
+* Стандартные метрики базы: Transactions per second, количество подключений (использовать готовый exporter)
+
+Для расслыльщика:
+* RPS (кол-во отправленных сообщений в сек)
+
 ---
 
 # Опрос
@@ -423,7 +527,7 @@ func myHandler(w http.ResponseWriter, r *http.Request) {
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/5662/](https://otus.ru/polls/5662/)
+[https://otus.ru/polls/6330/](https://otus.ru/polls/6330/)
 ]
 
 .right-image[
@@ -437,3 +541,14 @@ background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
 # Спасибо за внимание!
+
+---
+
+# Дополнительные материалы
+
+SRE book:<br>
+  [https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/](https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/)
+<br><br>
+Monitoring and Observability:<br>
+  [https://medium.com/@copyconstruct/monitoring-and-observability-8417d1952e1c](https://medium.com/@copyconstruct/monitoring-and-observability-8417d1952e1c)
+  

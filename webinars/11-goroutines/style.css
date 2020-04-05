@@ -54,12 +54,12 @@ h2 {
   font-size: 36px !important;
 }
 
-
-.big-list li {
+/*
+li {
   font-size: 24px !important;
   line-height: 2em;
 }
-
+*/
 li li {
   line-height: 1.5em;
 }
@@ -166,6 +166,21 @@ background-size: 100%
 
 blockquote {
   font-style: italic
+}
+
+
+.center-image img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
+
+.center-image-sq img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
 .left-image img {

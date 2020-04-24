@@ -27,6 +27,7 @@ background-image: url(img/message.svg)
 # Go Memory
 
 ### Дмитрий Смаль
+### Антон Телышев
 
 ---
 
@@ -43,7 +44,7 @@ background-image: url(img/message.svg)
 
 ---
 
-# Память процесса в linux
+# Память процесса в Linux
 
 .main-image[
 ![img/linux_mem.png](img/linux_mem.png)
@@ -118,6 +119,10 @@ func main() {
 	fmt.Println(s)
 }
 ```
+
+- stack size 8 Kb -> 2 Kb
+- continuous stack
+- `runtime.morestack_noctx`
 ]
 
 .left-code[
@@ -148,12 +153,15 @@ func main() {
 	return Fprintln(os.Stdout, a...)
 ```
 ]
+
+
 ---
 
 # Фрейм стека в Go
 .main-image[
 ![img/frame.png](img/frame.png)
 ]
+
 ---
 
 # Цена выделения на стеке
@@ -186,6 +194,10 @@ func main() {
 .main-image[
   ![img/problem.png](img/problem.png)
 ]
+
+- фрагментация
+- умные аллокаторы
+
 ---
 
 # Структура кучи в Go
@@ -193,18 +205,18 @@ func main() {
 .big-list[
 * Память у OS запрашивается большими кусками `Arena` = 64Мб (linux)
 * Внутри `Arena` память разбивается на фиксированные страницы `Page` = 8Кб
-* Подряд идущие страницы объединяются в интервалы `Span`, различной длинны
+* Подряд идущие страницы объединяются в интервалы `Span`, различной длины
 ]
 
 ![img/arenas.png](img/arenas.png)
 
 ---
 
+background-image: url(img/overview.png)
+background-size: 60%
+
 # Общая картина
 
-.main-image[
-  ![img/overview.png](img/overview.png)
-]
 
 ---
 
@@ -222,7 +234,7 @@ type heapArena struct {
   // карта принадлежности страниц конкретным Span-ам
 	spans [pagesPerArena]*mspan
 
-	// карта, показывающая какие Span в состоянии Used
+  // карта, показывающая какие Span в состоянии Used
 	pageInUse [pagesPerArena / 8]uint8
 
   // для GC
@@ -244,17 +256,17 @@ type mspan struct {
   next *mspan           // следующий span в списке
   prev *mspan           // предыдущий
 
-  startAddr uintptr     // начало адресуемой памяти
-  npages    uintptr     // количество 8Кб страниц
-  nelems uintptr        // количество "объектов" в span
+  startAddr   uintptr     // начало адресуемой памяти
+  npages      uintptr     // количество 8Кб страниц
+  nelems      uintptr        // количество "объектов" в span
   allocCount  uint16    // количество "выделенных" объектов
   elemsize    uintptr   // размер "объекта" в span
   limit       uintptr   // конец адресуемой памяти
 
   allocBits  *gcBits    // (*uint8) карта выделенных объектов
-  gcmarkBits *gcBits    // (*uint*) карта отметок для GC
+  gcmarkBits *gcBits    // (*uint8) карта отметок для GC
 
-  spanclass   spanClass // класс span, типовой размер объекта )
+  spanclass   spanClass // класс span, типовой размер объекта
   ...
 }
 ```
@@ -325,7 +337,7 @@ type mcentral struct {
 
 # Локальные кеши
 
-Локальный (для каждого ядра) кеш содержит по одному Span каждого класса.
+Локальный (для каждого ядра) кеш содержит по паре Span каждого класса.
 <br>
 ```
 type mcache struct {
@@ -346,13 +358,6 @@ type mcache struct {
 Это позволяет горутинам (в большинстве случаев) выделять выделять память без обращения 
 к общей куче и без блокировок.
 
----
-
-# Общая картина
-
-.main-image[
-  ![img/overview.png](img/overview.png)
-]
 
 ---
 
@@ -515,6 +520,8 @@ Write barriers активны только на этапе разметки об
  
 * при ручном вызове `runtime.GC()`
 
+* `GOGC` (https://golang.org/pkg/runtime/debug/#SetGCPercent)
+
 ]
 
 ---
@@ -536,7 +543,7 @@ Write barriers активны только на этапе разметки об
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/4561/](https://otus.ru/polls/4561/)
+[https://otus.ru/polls/8459/](https://otus.ru/polls/8459/)
 
 ]
 

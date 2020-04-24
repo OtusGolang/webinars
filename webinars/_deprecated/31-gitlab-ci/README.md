@@ -613,7 +613,7 @@ https://gitlab.com/Antonboom/otus-ci-example
 .left-text[
   Заполните пожалуйста опрос
   <br><br>
-  [https://otus.ru/polls/4922/](https://otus.ru/polls/4922/)
+  [https://otus.ru/polls/6331/](https://otus.ru/polls/6331/)
 ]
 
 .right-image[

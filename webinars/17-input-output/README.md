@@ -9,7 +9,7 @@ background-image: url(img/message.svg)
 
 # Работа с вводом/выводом
 
-### Дмитрий Смаль
+### Антон Телышев
 
 ---
 
@@ -29,21 +29,6 @@ background-size: 130%
   ### !проверить запись!
 ]
 
----
-
-# Небольшой тест
-
-.left-text[
-Пожалуйста, пройдите небольшой тест. 
-<br><br>
-Возможно вы уже многое знаете про ввод/вывод в Go =)
-<br><br>
-[https://forms.gle/1GzKZB1fhPmNdVDQ7](https://forms.gle/1GzKZB1fhPmNdVDQ7)
-]
-
-.right-image[
-![](img/gopher9.png)
-]
 
 ---
 
@@ -79,7 +64,7 @@ background-size: 130%
 
 ```
 var file *os.File  // файловый дескриптор в Go
-file, err := os.OpenFile(path, O_RDWR, 0644)
+file, err := os.OpenFile(path, os.O_RDWR, 0644)
 if err != nil {
   if os.IsNotExist(err) {
     // файл не найден
@@ -234,7 +219,7 @@ err := ioutil.WriteFile(path, b, 0644)
 * сетевое соединение
 * pipe
   
-Как следствие есть два набора интерфейсов
+Как следствие есть два набора интерфейсов:
 * `io.Reader`, `io.Writer` - для последовательного доступа
 * `io.ReaderAt`, `io.WriterAt`, `io.Seeker` - для произвольного доступа
   
@@ -253,7 +238,7 @@ type Seeker interface {
 * `io.SeekCurrent` - относительно текущего положения в файле.
 * `io.SeekEnd` - относительно конца файла
 
-Тип `os.File` реализует интерфейс `io.Seeker`, а вот типа `net.TCPConn` - нет.
+Тип `os.File` реализует интерфейс `io.Seeker`, а вот тип `net.TCPConn` - нет.
 
 ---
 
@@ -277,7 +262,7 @@ type WriterAt interface {
 
 # Копирование данных
 
-Используя методы `Read`, `Write` и промежуточный буфер не сложно сделать копирование между двумя файловыми (и не только).
+Используя методы `Read`, `Write` и промежуточный буфер не сложно сделать копирование между двумя файловыми (и не только) дескрипторами.
 
 <br><br>
 А можно использовать и готовые реализации:
@@ -310,13 +295,14 @@ writter, err := io.CopyBuffer(dst, src, buf)
 type ReaderFrom interface {
   ReadFrom(r Reader) (n int64, err error)
 }
+
 type WriterTo interface {
   WriteTo(w Writer) (n int64, err error)
 }
 ```
 
 <br><br>
-NOTE: В linux есть специальный системный вызов `sendfile` который позволяет эту оптимизацию.
+NOTE: В Linux есть специальный системный вызов `sendfile` который позволяет эту оптимизацию.
 
 ---
 
@@ -377,6 +363,9 @@ func MultiWriter(writers ...Writer) Writer
 ```
 func LimitReader(r Reader, n int64) Reader
 ```
+```
+body, err := ioutil.ReadAll(io.LimitReader(response.Body, limit))  
+```
 
 ---
 
@@ -409,6 +398,7 @@ b, err := br.ReadByte()
 br.UnreadByte()  // иногда полезно при анализе строки
 ```
 
+
 ---
 
 
@@ -417,10 +407,11 @@ br.UnreadByte()  // иногда полезно при анализе строк
 Интерфейсы `io.Reader` и `io.Writer` могут быть реализованы различными структурами в памяти.
 
 ```
-strings.Reader  //  реализует io.Reader
-strings.Builder //  реализует io.Writer
-bytes.Reader // реализует io.Reader
-bytes.Buffer  // реализует io.Reader, io.Writer, io.ByteReader, io.ByteWriter, io.ByteScanner
+strings.Reader  // реализует io.Reader
+strings.Builder // реализует io.Writer
+bytes.Reader    // реализует io.Reader
+bytes.Buffer    // реализует io.ReadWriter, io.ByteScanner, io.ByteWriter,
+                //         io.ByteReader  
 ```
 
 Например можно 
@@ -458,6 +449,10 @@ fmt.Printf("%s %x %#v", "string", 42, m)
 
 В отличие от языка C в Go можно определить тип аргументов с помощью `reflect` поэтому 
 строка формата используется только для указания правил форматирования.
+
+<br><br>
+https://golang.org/pkg/fmt/
+
 
 ---
 
@@ -508,7 +503,7 @@ pointer to above:   &{}, &[], &map[]
 Go представление: `%#v`
 
 <br><br>
-Попробуйте: [https://play.golang.org/p/Q2nl9ZnaF96](https://play.golang.org/p/Q2nl9ZnaF96)
+Попробуйте: https://goplay.space/#mePCmWg8Wox
 
 ---
 
@@ -592,39 +587,15 @@ func main() {
 }
 ```
 
----
-
-
-# Небольшой тест
-
-.left-text[
-Проверим что мы узнали за этот урок
-<br><br>
-[https://forms.gle/1GzKZB1fhPmNdVDQ7](https://forms.gle/1GzKZB1fhPmNdVDQ7)
-]
-
-.right-image[
-![](img/gopher9.png)
-]
 
 ---
 
 # Домашнее задание
 
-Реализовать утилиту копирования файлов (см man dd).
-Выводить в консоль прогресс копирования.
-Программа должна корректно обрабатывать ситуацию, когда offset или offset+limit за пределами 
-source файла.
+Утилита для копирования файлов
 
-Пример использования:
+https://github.com/OtusGolang/home_work/tree/master/hw07_file_copying
 
-```
-# копирует 2К из source в dest, пропуская 1K данных
-$  gocopy -from /path/to/source -to /path/to/dest -offset 1024 -limit 2048 
-```
-
-Настроить и запустить линтеры, создать Makefile для автоматизации тестирования и сборки.
-Должна быть возможность скачать протестировать и установить программу с помощью go get/test/install
 
 ---
 
@@ -633,7 +604,7 @@ $  gocopy -from /path/to/source -to /path/to/dest -offset 1024 -limit 2048
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/3865/](https://otus.ru/polls/3865/)
+[hhttps://otus.ru/polls/8463/](https://otus.ru/polls/8463/)
 ]
 
 .right-image[

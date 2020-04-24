@@ -27,6 +27,7 @@ background-image: url(img/message.svg)
 # Clean Architecture
 
 ### Дмитрий Смаль
+### Антон Телышев
 
 ---
 
@@ -35,6 +36,16 @@ background-image: url(img/message.svg)
 .main-image[
 ![img/djangoarch.jpg](img/djangoarch.jpg)
 ]
+
+---
+
+# MVC: проблемы
+
+- завязанность на фреймворк
+- сложно расширять
+- проблемы на большой кодовой базе
+- сложность в тестировании
+
 
 ---
 
@@ -48,13 +59,59 @@ background-image: url(img/message.svg)
 
 # Clean Architecture
 
-### Ключевое правило: внутренние слои НЕ зависят от внешних
+Архитектура должна:
+* быть тестируемой;
+* не зависеть от UI;
+* не зависеть от БД, внешних фреймворков и библиотек.
+
+https://habr.com/ru/company/mobileup/blog/335382/
+
+
+---
+
+# Clean Architecture
+
+### Ключевое правило - Dependency Rule:
+внутренние слои НЕ зависят от внешних
+
+.main-image[
+![img/cleanarch.jpeg](img/archsteps.png)
+]
+
+
+---
+
+# Clean Architecture
+
+.main-image[
+![img/cleanarch.jpeg](img/parts1.png)
+]
+
+
+---
+
+# Clean Architecture
+
+.main-image[
+![img/cleanarch.jpeg](img/parts2.png)
+]
+
+
+---
+
+# Clean Architecture
+
+.main-image[
+![img/cleanarch.jpeg](img/schema.png)
+]
+
 
 ---
 
 # Демо - проект
 
-[https://github.com/OtusTeam/Go/tree/master/cleancalendar](https://github.com/OtusTeam/Go/tree/master/cleancalendar)
+https://github.com/OtusGolang/webinars_practical_part/tree/master/19-clean-architecture
+
 
 ---
 
@@ -106,35 +163,6 @@ background-image: url(img/message.svg)
 * `internal/domain/services/*.go`
 * `internal/domain/interfaces/*.go`
   
----
-
-# Go Standard Layout
-
-[https://github.com/golang-standards/project-layout](https://github.com/golang-standards/project-layout)
-
-```
-.
-├── Makefile
-├── api
-├── assets
-├── build
-├── cmd
-├── configs
-├── deployments
-├── docs
-├── examples
-├── githooks
-├── init
-├── internal
-├── pkg
-├── scripts
-├── test
-├── third_party
-├── tools
-├── vendor
-├── web
-└── website
-```
 
 ---
 
@@ -142,7 +170,7 @@ background-image: url(img/message.svg)
 
 .big-list[
 * Обращение к `domain` слою через интерфейсы
-* Dependcy Injection [https://habr.com/ru/company/funcorp/blog/372199/](https://habr.com/ru/company/funcorp/blog/372199/)
+* Dependency Injection [https://habr.com/ru/company/funcorp/blog/372199/](https://habr.com/ru/company/funcorp/blog/372199/)
 ]
 
 ---
@@ -163,15 +191,22 @@ background-image: url(img/message.svg)
 
 ### Микросервисы ?
 
+
 ---
 
-# TODO
+# Clean Architecture
 
-.big-list[
-* Реализация бизнес-логики (валидация)
-* Тестирование бизнес-логики
-* Альтернативный интерфейс (REST/http)
-]
+<br>
+And remember, we are all pirates by nature; and the rules I'm talking about here are really more like guidelines… (c) Uncle Bob
+
+
+---
+
+# Дополнительные ключевые слова
+
+- Package Oriented Design
+- Domain Driven Development
+
 
 ---
 
@@ -180,7 +215,7 @@ background-image: url(img/message.svg)
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/5138/](https://otus.ru/polls/5138/)
+[https://otus.ru/polls/6324/](https://otus.ru/polls/6324/)
 ]
 
 .right-image[

@@ -7,9 +7,9 @@ class: white
 background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
-# Кодогенерация Go
+# Кодогенерация в Go
 
-### Александр Давыдов
+### Антон Телышев
 
 ---
 
@@ -35,9 +35,9 @@ background-size: 130%
 # План занятия
 
 .big-list[
-* Посмотрим, где нам может помочь генерация кода
+* Поговорим о кодогенерации
+* Посмотрим, где она может нам помочь
 * Посмотрим на Protocol Buffers
-* Совсем немного поговорим о тестировании
 ]
 
 ---
@@ -62,6 +62,8 @@ func main() {
 > go generate
 Hello, world!
 ```
+
+https://github.com/golang/go/blob/master/src/cmd/go/internal/generate/generate.go
 
 ---
 
@@ -89,16 +91,15 @@ go generate -n
 ```
 
 
-
 ---
 
 # Зачем?
 
  - генерировать структуры на основе JSON
- - генерировать заглушки для интерфейсов (mocks для тестов)
- - protobufs: генерировать кода из описания протокола (.proto)
+ - генерировать заглушки для интерфейсов (моки для тестов)
+ - protobuf: генерировать код из описания протокола (.proto)
  - bindata: вставка бинарных данных JPEGs в код на Go в виде byte array
-
+ - и пр. и пр.
 
 
 ---
@@ -121,18 +122,17 @@ go generate -n
 # Принципы go generate
 
 
-- go generate запускаеися разработчиком программы/пакета, а не пользователем
-- инструментария для go generate находится у создателя пакета
-- генерация кода не должна происходить автоматически во время go build, go get, но вызываться эксплицитно
+- go generate запускается разработчиком программы/пакета, а не пользователем
+- инструментарий для go generate находится у создателя пакета
+- генерация кода не должна происходить автоматически во время go build, go get
 - инструменты генерации кода "невидимы" для пользователя, и могут быть недоступны для него
-- go generate работает только с .go-файлами, как часть тулкита go 
-
+- go generate работает только с .go-файлами, как часть тулкита go
 
 - не забывайте добавлять disclaimer
 
 ```
 /*
-* CODE GENERATED AUTOMATICALLY WITH github.com/ernesto-jimenez/gogen/unmarshalmap
+* CODE GENERATED AUTOMATICALLY WITH tool name
 * THIS FILE SHOULD NOT BE EDITED BY HAND
 */
 ```
@@ -162,6 +162,12 @@ go-bindata -o myfile.go data/
 		log.Fatalf("unable to get template: %v", err)
 	}
 ```
+
+Примеры:
+- статика (изображения, иконки и пр.)
+- транзакции
+- скрипты
+- ...
 
 ---
 
@@ -193,48 +199,6 @@ type Person struct {
 }
 ```
 
-
----
-
-# impl: моки интерфейсов
-
-```
-go get -u github.com/josharian/impl
-```
-
-```
-$ impl 'f *File' io.ReadWriteCloser
-func (f *File) Read(p []byte) (n int, err error) {
-	panic("not implemented")
-}
-
-func (f *File) Write(p []byte) (n int, err error) {
-	panic("not implemented")
-}
-
-func (f *File) Close() error {
-	panic("not implemented")
-}
-```
-
----
-
-# impl: моки интерфейсов
-
-```
-impl 's *Shortener' github.com/nyddle/shortener/service.Shortener
-```
-
-```
-func (s *Shortener) Shorten(url string) string {
-	panic("not implemented")
-}
-
-func (s *Shortener) Resolve(url string) string {
-	panic("not implemented")
-}
-
-```
 
 ---
 
@@ -292,6 +256,48 @@ const (
 )
 ```
 
+
+---
+
+# impl: реализация интерфейсов
+
+```
+go get -u github.com/josharian/impl
+```
+
+```
+$ impl 'f *File' io.ReadWriteCloser
+func (f *File) Read(p []byte) (n int, err error) {
+    panic("not implemented")
+}
+
+func (f *File) Write(p []byte) (n int, err error) {
+    panic("not implemented")
+}
+
+func (f *File) Close() error {
+    panic("not implemented")
+}
+```
+
+
+---
+
+# gomock: моки интерфейсов
+
+```
+GO111MODULE=on go get github.com/golang/mock/mockgen@latest
+```
+
+```
+//go:generate mockgen -source=$GOFILE 
+//-destination ./mocks/mock_getter.go -package mocks Getter
+type Getter interface {
+    Get(url string) (resp *http.Response, err error)
+}
+```
+
+
 ---
 
 # easyjson
@@ -310,10 +316,15 @@ easyjson -all <file>.go
 <br>
 кратно быстрее за счет отсутствия рефлексии
 
+<br><br>
+
+
+***
+P.S. https://github.com/json-iterator/go
 
 ---
 
-# иногда достаточно ldflags
+# Иногда достаточно ldflags
 
 ```
 package main
@@ -333,12 +344,12 @@ func main() {
 go run -ldflags '-X main.VersionString=1.0' main.go
 ```
 
----
-
-# Задачка 
-
-написать программу, которая вывордит фразу из шаблона в template.txt
-используя кодогенерацию
+***
+```
+go help build
+        -ldflags '[pattern=]arg list'
+                arguments to pass on each go tool link invocation.
+```
 
 ---
 
@@ -356,6 +367,7 @@ slow compilers and bloated binaries, or slow execution times?
 
 - copy & paste (см. пакеты strings and bytes)
 - интерфейсы
+
 ```
 type Interface interface {
     Len() int
@@ -363,6 +375,7 @@ type Interface interface {
     Swap(i, j int)
 }
 ```
+
 - type assertions
 - рефлексия
 - go generate
@@ -376,7 +389,8 @@ go get github.com/cheekybits/genny
 ```
 
 ```
-//go:generate genny -in=$GOFILE -out=gen-$GOFILE gen "KeyType=string,int ValueType=string,int"
+//go:generate genny -in=$GOFILE -out=gen-$GOFILE
+gen "KeyType=string,int ValueType=string,int"
 ```
 
 объявляем заглушки по типам:
@@ -405,6 +419,7 @@ func SetValueTypeForKeyType(key KeyType, value ValueType) { /* ... */ }
 - generics при помощи кодогенерации
 
 больше примеров для вдохновения:
+
 https://github.com/avelino/awesome-go#generation-and-generics
 
 ---
@@ -479,7 +494,6 @@ globbing не поддерживается:
 ```
 	//go:generate protoc -go_out=. file1.proto file2.proto
 ```
-
 
 
 ---
@@ -562,92 +576,11 @@ map<string, Project> projects = 3;
 
 ---
 
-# Protocol buffers: задание
-
-<br><br><br>
-Сгенерировать схему/код для работы с событиями календаря:
-название, начало, конец, тип события (enum: встреча, напоминание, другое)
-
-
----
-
-# Тестирование: табличные тесты
-
-```
-func TestIndex(t *testing.T) {
-    var tests = []struct {
-        s   string
-        sep string
-        out int
-    }{
-        {"", "", 0},
-        {"", "a", -1},
-        {"fo", "foo", -1},
-        {"foo", "foo", 0},
-        {"oofofoofooo", "f", 2},
-        // etc
-    }
-    for _, test := range tests {
-        actual := strings.Index(test.s, test.sep)
-        if actual != test.out {
-            t.Errorf("Index(%q,%q) = %v; want %v", test.s, test.sep, actual, test.out)
-        }
-    }
-}
-```
-
----
-
-# Тестирование: data access layer
-
-```
-type DataAccessLayer interface {
-  FindAuthor(int) Author
-  FindPostsForAuthor(Author) []Post
-  FindCommentsForPost(Post) []Comment
-}
-```
-
-```
-type TestDAL {
-  Author   Author
-  Posts    []Post
-  Comments []Comment
-}
-
-func (t *TestDAL) FindAuthor(int) Author {
-  return t.Author
-}
-
-func (t *TestDAL) FindPostsForAuthor(Author) []Post {
-  return t.Posts
-}
-
-func (t *TestDAL) FindCommentsForPost(Post) []Comment {
-  return t.Comments
-}
-```
-
-```
-func TestDALCollaborator(t *testing.T) {
-  dal := TestDAL{Author: Author{}}
-  collaborator := Collaborator{DAL: dal}
-
-  result := collaborator.FunctionNeedingAnAuthor()
-
-  // Some verification
-}
-```
-
----
-
 # Домашнее задание
 
-<br><br>
+Генератор валидаторов
+https://github.com/OtusGolang/home_work/tree/master/hw09_generator_of_validators
 
-Сделать "заготовку" для микросервиса-календаря. 
-Определить структуру определяющую событие, написать методы для добавления/изменения/удаления событий. 
-Хранить события в памяти, без персистентности.
 
 ---
 
@@ -656,7 +589,7 @@ func TestDALCollaborator(t *testing.T) {
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/4402/](https://otus.ru/polls/4402/)
+[https://otus.ru/polls/????/](https://otus.ru/polls/????/)
 ]
 
 .right-image[

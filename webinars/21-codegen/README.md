@@ -3,16 +3,6 @@
 ---
 
 
-class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
-
-# Кодогенерация в Go
-
-### Антон Телышев
-
----
-
 class: top white
 background-image: url(img/sound.svg)
 background-size: 130%
@@ -28,6 +18,18 @@ background-size: 130%
   ### **-** если есть проблемы cо звуком или с видео
   ### !проверить запись!
 ]
+
+
+---
+
+class: white
+background-image: url(img/message.svg)
+.top.icon[![otus main](img/logo.png)]
+
+# Кодогенерация в Go
+
+### Антон Телышев
+
 
 ---
 
@@ -85,7 +87,7 @@ go generate -x
 
 ```
 
-список команд к выполнения:
+список команд к выполнению:
 ```
 go generate -n
 ```
@@ -589,7 +591,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw09_generator_of_validators
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/????/](https://otus.ru/polls/????/)
+https://otus.ru/polls/8467/
 ]
 
 .right-image[

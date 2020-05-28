@@ -26,7 +26,7 @@ background-image: url(img/message.svg)
 
 # Работа с SQL
 
-### Дмитрий Смаль, Елена Граховац
+### Елена Граховац, Антон Телышев
 
 ---
 
@@ -212,6 +212,9 @@ if err != nil {
 // работаем с db
 ```
 
+http://go-database-sql.org/importing.html <br>
+http://go-database-sql.org/accessing.html
+
 ---
 
 # DataSourceName
@@ -256,12 +259,17 @@ db.SetMaxIdleConns(n int)
 // Макс. время жизни одного подключения
 db.SetConnMaxLifetime(d time.Duration)
 ```
+
+http://go-database-sql.org/connection-pool.html
+
+
 ---
 
 # Пул соединений
 .main-image[
  ![img/no_pool.png](img/no_pool.png)
 ]
+
 
 ---
 
@@ -271,13 +279,6 @@ db.SetConnMaxLifetime(d time.Duration)
  ![img/with_pool.png](img/with_pool.png)
 ]
 
----
-
-# Подключение к PostgreSQL из Go, пример из реального мира
-
-https://github.com/rumyantseva/pgconf
-
-В реальном мире покажите ваш конфиг вашим DBA!
 
 ---
 
@@ -300,6 +301,8 @@ eventId, err := result.LastInsertId()      // int64
 // Количество измененных строк
 rowsAffected, err := result.RowsAffected() // int64
 ```
+
+http://go-database-sql.org/retrieving.html
 
 ---
 
@@ -402,6 +405,8 @@ for _, id := range ids {
 }
 ```
 
+http://go-database-sql.org/prepared.html
+
 ---
 
 # Работа с соединением
@@ -448,6 +453,10 @@ if err != nil {
 
 // далее объект tx не пригоден для использования
 ```
+
+http://go-database-sql.org/modifying.html
+
+
 ---
 
 # Основные методы
@@ -669,21 +678,10 @@ for rows.Next() {
 
 # Домашнее задание
 
-Изменить код сервиса-календаря так, чтобы события хранились в базе данных.
+Заготовка микросервиса «Календарь»
+<br>
+[задание](https://github.com/OtusGolang/home_work/blob/master/hw12_13_14_15_calendar/docs/12_README.md)
 
----
-
-# Куда задавать вопросы?
-
-* Вопросы по домашнему заданию можно задавать в чат с преподавателем на сайте
-* Вопросы по материалам урока можно задавать в Слаке (#go-2019-08)
-* Чтобы получить материалы в закрытых репозиториях, пришлите ваш github-ник: elena@grahovac.me
-
----
-
-# Следующее занятие
-
-NoSQL Базы Данных.
 
 ---
 
@@ -692,7 +690,7 @@ NoSQL Базы Данных.
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/4912/](https://otus.ru/polls/4912/)
+[https://otus.ru/polls/8471/](https://otus.ru/polls/8471/)
 ]
 
 .right-image[

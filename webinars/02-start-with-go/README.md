@@ -33,14 +33,34 @@ background-image: url(img/message.svg)
 # План занятия
 
 .big-list[
-* Подробнее про GOPATH и GOROOT
-* Сборка модулей и установка программ: go get, go build, go install
-* Кросс-компиляция
-* Модули и зависимости: go mod
+* Установка Go: GOROOT
+* Сборка и запуск программ: go build, go run
+* Кросс-компиляция: GOOS, GOARCH
+* Модули и зависимости: go mod, go get
+* Мир до модулей: GOPATH, go install
 * Форматирование кода: go fmt, goimports
 * Линтеры: go vet, golint, gometalinter, golangci-lint
 * Как сдавать домашние задания?
 ]
+
+
+---
+
+# Первые шаги
+
+https://tour.golang.org/
+
+<br><br>
+
+[Список литературы](https://github.com/OtusGolang/webinars_practical_part/blob/master/LITERATURE.md#%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BB%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D1%8B-%D0%B4%D0%BB%D1%8F-%D0%BA%D1%83%D1%80%D1%81%D0%B0-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA-golang)
+
+
+---
+
+# Плюсы и минусы Golang
+
+Презентация будет в материалах занятия.
+
 
 ---
 
@@ -69,7 +89,16 @@ sudo ln -s /usr/local/go/bin/go /usr/bin/go
 ```
 
 Готово!
+
 ---
+
+# Несколько версий Golang
+
+https://golang.org/doc/install#extra_versions
+
+
+---
+
 
 # GOROOT
 
@@ -98,6 +127,7 @@ vim /usr/local/go/src/runtime/slice.go
 ![img/path.png](img/path.png)
 ]
 
+
 ---
 
 # GOPATH
@@ -115,111 +145,47 @@ export GOPATH=/path/your/go/projects
 
 ---
 
-# Загрузка пакетов
-
-Давайте выполним команду:
-```
-go get -d github.com/OtusGolang/webinars_practical_part/1.1_first_go_program
-```
+# Программа на Go
 
 ```
-$ tree -L 5 $GOPATH
-/Users/anthony/go/
-├── bin
-├── pkg
-└── src
-    └──github.com/OtusGolang
-        └── webinars_practical_part
-            └── 1.1_first_go_program
-                ├── README.md
-                ├── feeds.go
-                ├── go.mod
-                ├── main.go
-                └── searcher
-                    ├── rss.go
-                    └── search.go
-3 directories, 6 files
-```
+package main // Имя текущего пакета
 
----
+// Импорты других пакетов
+import "fmt"
 
-# Установка пакетов
-
-Теперь выполним команду
-```
-go install github.com/OtusGolang/webinars_practical_part/1.1_first_go_program
+// Функция main как точка входа
+func main() {
+	fmt.Println("Hello!")
+}
 ```
 
 ```
-$ ls $GOPATH/bin
-1.1_first_go_program
+$ go build -o prog prog.go
+$ file prog
+prog: Mach-O 64-bit executable x86_64
+$ ./prog
+Hello!
 ```
 
-Можем запустить!
 ```
-$ 1.1_first_go_program
-...
+$ go run -o prog prog.go
+Hello!
 ```
----
-
-# Базовые команды
-
-`go get -d` - скачивает пакеты из Git репозиториев в `$GOPATH/src`.
-<br><br>
-`go install` собирает и устанавливает в указанные пакеты в `$GOPATH/pkg` и `$GOPATH/bin`.
-<br><br>
-`go get` (без флажка `-d`) - так же вызовет `install`.
-<br><br>
-`go run prog.go` - сборка и запуск программы.
-<br><br><br>
-### Многоточия
-
-`go get github.com/golang/protobuf/...` - многоточие тут означает
-"и все дочерние пакеты".
-<br>
-Это необходимо если в пакет сложный, и содержит подпакеты.
-<br>
-Для простых достаточно `go get github.com/beevik/ntp`
-
----
-
-# Точечная сборка
-
-`go build` - команда более низкого уровня, заново компилирующая выбранный пакет.
-<br><br>
-
-Например:
-```
-$ go build -o /tmp/thelib.a github.com/beevik/ntp
-
-$ file /tmp/thelib.a
-thelib.a: current ar archive
-```
-
-Или:
-```
-$ go build -o /tmp/prog github.com/golang/protobuf/protoc-gen-go
-
-$ file /tmp/prog 
-prog: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, not stripped
-```
-
-Результат сборки зависит от пакета (`main` - executable, любой другой - библиотека)
 
 ---
 
 # Кросс-компиляция
 
-Go позволяет легко собирать программы для других архитектур и операционных систем.<br>
+Go позволяет легко собирать программы для других архитектур и операционных систем.<br><br>
 Для этого при сборке нужно переопределить переменные `GOARCH` и `GOOS`:
 
 ```
-$ GOOS=windows go build -o /tmp/prog github.com/golang/protobuf/protoc-gen-go
+$ GOOS=windows go build -o /tmp/prog prog prog.go
 
 $ file /tmp/prog
 prog: PE32+ executable (console) x86-64 (stripped to external PDB), for MS Windows
 
-$ GOARCH=386 GOOS=darwin go build -o /tmp/prog github.com/golang/protobuf/protoc-gen-go
+$ GOARCH=386 GOOS=darwin go build -o /tmp/prog prog.go
 
 $ file /tmp/prog
 prog: Mach-O i386 executable
@@ -228,24 +194,7 @@ prog: Mach-O i386 executable
 Возможные значения `GOOS` и `GOARCH`
 [https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63)
 
----
 
-# Единое дерево кода
-
-Для работы в парадигме `GOPATH` нужно:
-* Создать *публичный* проект `github.com/username/projectname`
-* Скачать проект в `GOPATH` с помощью `go get github.com/username/projectname/...`
-* Изменять, компилировать, и комитить проект из `$GOPATH/src/github.com/username/projectname`
-
-Плюсы:
-* Простота. Плоская структура
-* Отсутствие версий (?) (master должен быть стабилен).
-
-Минусы:
-* Отсутствие версий (!)
-* Иногда в проекте не только Go-код.
-* Неудобно для корпоративных и других непубличных проектов.
-  
 ---
 
 # Go Modules
@@ -280,34 +229,11 @@ go mod init github.com/user/otus-go/hw-1
 
 # Добавление зависимостей
 
-Внутри модуля, вы так можете добавить пакет точно так же
+Внутри модуля, вы можете добавить зависимость от пакета с помощью
 ```
 $ go get github.com/beevik/ntp
 go: finding golang.org/x/net latest
 ```
-
-Но при этом пакет попадет не в `$GOPATH/src`, а в `$GOPATH/pkg/mod`
-```
-$ tree -L 4 ~/go/pkg
-/home/mialinx/go/pkg
-└── mod
-    ├── cache
-    │   └── download
-    │       ├── github.com
-    │       └── golang.org
-    ├── github.com
-    │   └── beevik
-    │       └── ntp@v0.2.0
-    └── golang.org
-        └── x
-            ├── net@v0.0.0-20190827160401-ba9fcec4b297
-            └── sys@v0.0.0-20190215142949-d0b11bdaac8a
-```
----
-
-# Версии зависимостей
-
-Внутри Go модуля обязательно находится файл `go.mod`, содержащий информацию о версии и зависимостях
 
 ```
 $ cat go.mod
@@ -321,17 +247,15 @@ require (
 )
 ```
 
-А так же `go.sum`, содержащий чек-суммы зависимостей.
-
 <br><br>
 
-Внимание (!) версии зависимостей - фиксируются в момент добавления.
+Внимание: в момент добавления зависимостей их версии фиксируются в `go.sum`.
 
 ---
 
 # Авто-добавление
 
-Есть еще более простой способ управлять зависимостями: просто редактируйте код
+Есть еще более простой способ управлять зависимостями: просто редактируйте код.
 ```
 package main
 
@@ -348,7 +272,169 @@ func main() {
 ```
 $ go mod tidy 
 ```
-Это добавит новые и удалит неиспользуемые зависимости
+Это добавит новые и удалит неиспользуемые зависимости.
+
+
+---
+
+# Вернемся к GOPATH
+
+```
+$ tree -d -L 3 $GOPATH
+/Users/anthony/golang_workspace
+├── bin
+├── pkg
+│   ├── darwin_amd64
+│   ├── mod
+│   │   ├── bou.ke
+│   │   ├── cache
+│   │   ├── github.com
+│   │   └── syreclabs.com
+│   └── sumdb
+│       └── sum.golang.org
+└── src
+	├── cloud.google.com
+	│   └── go
+	├── github.com
+	│   ├── AndreyAndreevich
+	│   └── unixpickle
+	├── gitlab.com
+	│   └── snarksliveshere
+	└── go.uber.org
+		└── zap
+```
+
+---
+
+# Загрузка пакетов в «безмодульном» режиме
+
+```
+go get -d github.com/OtusGolang/webinars_practical_part/1.1_first_go_program
+```
+
+```
+$ tree -L 5 $GOPATH
+/Users/anthony/go/
+├── bin
+├── pkg
+└── src
+    └──github.com/OtusGolang
+        └── webinars_practical_part
+            └── 1.1_first_go_program
+                ├── README.md
+                ├── feeds.go
+                ├── go.mod
+                ├── main.go
+                └── searcher
+                    ├── rss.go
+                    └── search.go
+3 directories, 6 files
+```
+
+---
+
+
+# Установка пакетов в «безмодульном» режиме
+
+```
+go install github.com/OtusGolang/webinars_practical_part/1.1_first_go_program
+```
+
+```
+$ ls $GOPATH/bin
+1.1_first_go_program
+```
+
+Можем запустить!
+```
+$ 1.1_first_go_program
+...
+```
+
+https://golang.org/cmd/go/#hdr-Compile_and_install_packages_and_dependencies
+
+---
+
+# Базовые команды
+
+`go get -d` - скачивает пакеты из Git репозиториев в `$GOPATH/src`.
+<br><br>
+`go install` собирает и устанавливает в указанные пакеты в `$GOPATH/pkg` и `$GOBIN` (по умолчанию `$GOPATH/bin`).
+<br><br>
+`go get` (без флажка `-d`) - так же вызовет `install`.
+<br><br>
+`go run prog.go` - сборка и запуск программы.
+<br><br><br>
+### Многоточия
+
+`go get github.com/golang/protobuf/...` - многоточие тут означает
+"и все дочерние пакеты".
+<br>
+Это необходимо если в пакет сложный, и содержит подпакеты.
+<br>
+Для простых достаточно `go get github.com/beevik/ntp`
+
+---
+
+# Точечная сборка пакетов из $GOPATH/src
+
+```
+$ go build -o /tmp/thelib.a github.com/beevik/ntp
+
+$ file /tmp/thelib.a
+thelib.a: current ar archive
+```
+
+или
+
+```
+$ go build -o /tmp/prog github.com/golang/protobuf/protoc-gen-go
+
+$ file /tmp/prog 
+prog: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, not stripped
+```
+
+Результат сборки зависит от пакета (`main` - executable, любой другой - библиотека).
+
+
+---
+
+# Единое дерево кода с GOPATH
+
+Для работы в парадигме `GOPATH` нужно:
+* Создать *публичный* проект `github.com/username/projectname`
+* Скачать проект в `GOPATH` с помощью `go get github.com/username/projectname/...`
+* Изменять, компилировать, и комитить проект из `$GOPATH/src/github.com/username/projectname`
+
+Плюсы:
+* Простота. Плоская структура
+* Отсутствие версий (?) (master должен быть стабилен).
+
+Минусы:
+* Отсутствие версий (!)
+* Иногда в проекте не только Go-код.
+* Неудобно для корпоративных и других непубличных проектов.
+
+
+## Заключение: пользуйтесь модулями!
+
+
+---
+
+# Как понять, я в режиме модуля или GOPATH?
+
+[Читаем вики по модулям](https://github.com/golang/go/wiki/Modules#when-do-i-get-old-behavior-vs-new-module-based-behavior)
+<br><br><br>
+
+- Внутри GOPATH - модули игнорируются (старое поведение)
+
+- Вне GOPATH - если рядом лежит go.mod, то модули «включаются»
+
+- Переменная окружения `GO111MODULE`:
+	- auto / unser - применяются правила выше
+	- on - форсируем использование модулей внезависимости от директории
+	- off - форсируем игнорирование модулей внезависимости от директории и go.mod
+
 ---
 
 # Утилиты
@@ -356,6 +442,8 @@ $ go mod tidy
 .main-image[
   ![img/tools.jpeg](img/tools.jpeg)
 ]
+
+
 ---
 
 # One-shot запуск
@@ -455,11 +543,11 @@ func main() {
 ]
 ---
 
-# Обновление импортов c помощью `goimports`
+# Обновление и сортировка импортов
 
 ```
 $ go get golang.org/x/tools/cmd/goimports
-$ ~/go/bin/goimports -w path/to/code.go
+$ ~/go/bin/goimports -l my/module/name -w path/to/code.go
 ```
 
 ```
@@ -544,7 +632,7 @@ $ echo $?
 
 # Как сдавать домашние задания?
 
-https://github.com/OtusGolang/home_work/blob/master/HOWTO.md
+https://github.com/OtusGolang/home_work/wiki
 
 ---
 
@@ -553,7 +641,7 @@ https://github.com/OtusGolang/home_work/blob/master/HOWTO.md
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/8448/](https://otus.ru/polls/8448/)
+[https://otus.ru/polls/11412/](https://otus.ru/polls/11412/)
 ]
 
 .right-image[

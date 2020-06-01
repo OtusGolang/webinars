@@ -23,7 +23,7 @@ class: white
 background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
-# Тестирование
+# Тестирование. Часть 1
 
 ### Алексей Бакин
 
@@ -42,6 +42,23 @@ background-image: url(img/message.svg)
 ### 1. Зачем нужны тесты?
 ### 2. testing и testify.
 ### 3. Приемы тестирования.
+
+---
+
+# Настройка на занятие
+
+.left-text[
+Пожалуйста, пройдите небольшой тест.
+<br><br>
+Он поможет понять, что вы уже знаете,
+а&nbsp;что предстоит узнать во время занятия.
+<br><br>
+Ссылка в чате
+]
+
+.right-image[
+![](img/gopher_science.png)
+]
 
 ---
 
@@ -86,7 +103,7 @@ background-image: url(img/message.svg)
 * Как не должно работать? (Неправильные параметры, неправильный порядок вызовов) Негативные тест-кейзы.
 
 
-* Граничные условия. (Самое маленькое/большое число, граница, на которой меняется состояние).
+* Что там на краю обрыва? (Самое маленькое/большое число, граница, на которой меняется состояние). Граничные условия.
 
 
 * А что если? Странные сценарии использования.
@@ -109,7 +126,7 @@ func TestIndex(t *testing.T) { // <-- Test...(t *testing.T)
 }
 ```
 
-https://play.golang.org/p/0G3efzky6L0
+https://goplay.space/#0G3efzky6L0
 
 ---
 
@@ -128,7 +145,7 @@ func TestAtoi(t *testing.T) {
 }
 ```
 
-https://play.golang.org/p/vjAsrBrQrxu
+https://goplay.space/#vjAsrBrQrxu
 
 
 ---
@@ -156,7 +173,7 @@ https://play.golang.org/p/vjAsrBrQrxu
 * ### Придумать один новый тест.
 * ### Не закрывайте playground - еще пригодится :)
 
-https://play.golang.org/p/PQCd4_FqLeZ
+https://goplay.space/#PQCd4_FqLeZ
 
 ---
 
@@ -173,7 +190,7 @@ func TestAtoi(t *testing.T) {
 }
 ```
 
-https://play.golang.org/p/5cpT652lEyy
+https://goplay.space/#5cpT652lEyy
 
 ---
 
@@ -256,7 +273,7 @@ func TestParseIntErrors(t *testing.T) {
 	}
 }
 ```
-https://play.golang.org/p/YAgI798H8kj
+https://goplay.space/#YAgI798H8kj
 
 ---
 
@@ -283,7 +300,7 @@ func TestParseInt(t *testing.T) {
 }
 ```
 
-https://play.golang.org/p/Rr-i2UFYAXH
+https://goplay.space/#Rr-i2UFYAXH
 
 ---
 
@@ -356,234 +373,17 @@ https://blog.golang.org/cover
 
 ---
 
-# Моки: DI
+# Повторение
 
-```
-type PersonRepo struct {
-	db DB
-}
+.left-text[
+Давайте проверим, что вы узнали за этот урок, а над чем стоит еще поработать.
+<br><br>
+Ссылка в чате
+]
 
-func (r *PersonRepo) ProcessAndStore(person Person) {
-	// ...
-}
-```
-
-```
-func main() {
-	repo := PersonRepo {
-		db: NewDB(connstr),
-	}
-}
-```
-
-```
-func TestProcessAndStore() {
-	repo := PersonRepo {
-		db: NewMockDB(),
-	}
-	repo.ProcessAndStore(testPerson)
-
-}
-```
-
----
-
-# Моки
-
-* ### https://pkg.go.dev/github.com/stretchr/testify/mock?tab=doc
-* ### https://github.com/golang/mock
-
----
-
-# Моки: отличие от стабов
-
-* ### Стаб - это заглушка, "пустая" реализация интерфейса.
-* ### Мок проверяет правильность вызовов интерфейса.
-
----
-
-# testify: suite
-
-https://pkg.go.dev/github.com/stretchr/testify/suite?tab=doc
-
-```
-type UsersTestSuite struct {
-    suite.Suite
-	db UsersDB
-}
-
-func (s *UsersTestSuite) SetupTest() {
-	s.db = NewUsersDB(connstr)
-}
-
-func (s *UsersTestSuite) TestAddUser() {
-	user1 := fakeUser()
-	s.db.AddUser(user1)
-	u, err := s.db.FindUser(user1.id)
-    s.Require().NoError(err)
-    s.Require().Equal(user1, u)
-}
-
-func UsersTestSuite(t *testing.T) {
-    suite.Run(t, new(UsersTestSuite))
-}
-```
-
----
-
-# faker
-
-https://github.com/bxcodec/faker
-
-```
-type Person struct {
-	Name   string `faker:"username"`
-	Phone  string `faker:"phone_number"`
-	Answer int64  `faker:"answer"`
-}
-
-func CustomGenerator() {
-	faker.AddProvider("answer", func(v reflect.Value) (interface{}, error) {
-		return int64(42), nil
-	})
-}
-
-func main() {
-	CustomGenerator()
-
-	var p Person
-	faker.FakeData(&p)
-	fmt.Printf("%+v\n", p)
-}
-```
-
-https://play.golang.org/p/BqOcrrUCZAn
-
----
-
-# Golden files
-
-https://medium.com/soon-london/testing-with-golden-files-in-go-7fccc71c43d3
-
-```
-var update = flag.Bool(“update”, false, “update golden files”)
-
-func TestSomething(t *testing.T) {
-	actual := doSomething()
-	golden := filepath.Join(“test-fixtures”, ”expected.golden”)
-	if *update {
-		ioutil.WriteFile(golden, actual, 0644)
-	}
-    expected, _ := ioutil.ReadFile(golden)
-    require.Equal(t, expected, actual)
-}
-```
----
-
-# Тестирование мутированием
-
-https://github.com/zimmski/go-mutesting
-
----
-
-# assert vs require
-
-## В чем проблема?
-
-```
-resp, err := client.Do(req)
-assert.NoError(t, err)
-assert.Equal(t, len(expectedBody), resp.ContentLength)
-```
-
----
-
-# assert vs require
-
-## Простое правило - всегда используйте require.
-
-```
-resp, err := client.Do(req)
-require.NoError(t, err)
-require.Equal(t, len(expectedBody), resp.ContentLength)
-```
-
----
-
-# assert vs require
-
-## В чем проблема?
-
-```
-for _, c := range cases {
-	resp, err := client.Do(c.req)
-	require.NoError(t, err)
-	require.Equal(t, len(c.expectedBody), resp.ContentLength)
-}
-```
-
----
-
-# assert vs require
-
-```
-for _, c := range cases {
-	resp, err := client.Do(c.req)
-	if assert.NoError(t, err) {
-		assert.Equal(t, len(c.expectedBody), resp.ContentLength)
-	}
-}
-```
-
-```
---- FAIL: TestFoo (0.00s)
-
-	Error Trace:	foo_test.go:37
-	Error:      	Expected nil, but got: &errors.errorString{s:"test"}
-
-	Error Trace:	foo_test.go:38
-	Error:      	Not equal:
-	            	expected: 2
-	            	actual: 0
-
-	Error Trace:	foo_test.go:38
-	Error:      	Not equal:
-	            	expected: 3
-	            	actual: 0
-```
-
----
-
-# assert vs require
-
-```
-for _, c := range cases {
-	t.Run(c.name, func(t *testing.T) {
-		resp, err := client.Do(c.req)
-		require.NoError(t, err)
-		require.Equal(t, len(c.expectedBody), resp.ContentLength)
-	}
-}
-```
-
-```
---- FAIL: TestFoo (0.00s)
-    --- FAIL: TestFoo/check_empty (0.00s)
-	Error Trace:	foo_test.go:38
-	Error:      	Expected nil, but got: &errors.errorString{s:"test"}
-
-    --- FAIL: TestFoo/check_v1 (0.00s)
-	Error Trace:	foo_test.go:39
-	Error:      	Not equal:
-	            	expected: 2
-	            	actual: 0
-
-    --- FAIL: TestFoo/check_V1 (0.00s)
-	Error Trace:	foo_test.go:39
-	Error:      	Not equal:
-	            	expected: 3
-	            	actual: 0
-```
+.right-image[
+![](img/gopher_science.png)
+]
 
 ---
 

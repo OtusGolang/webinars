@@ -156,7 +156,7 @@ s[2:4]    // получение подслайса
 s = append(s, 1)       // добавляет 1 в конец слайса
 
 s = append(s, 1, 2, 3) // добавляет 1, 2, 3 в конец слайса
-	
+
 s = append(s, s2...)   // добавляет содержимое слайса s2 в конец s
 
 var s []int            // s == nil
@@ -206,7 +206,7 @@ func main() {
 	}
 }
 ```
-https://play.golang.org/p/UjQR5fiudyO
+https://goplay.space/#UjQR5fiudyO
 
 ---
 
@@ -232,11 +232,16 @@ s2 := s[:5]  // []int{0, 1, 2, 3, 4}
 
 # Получение под-слайса (нарезка)
 
+
+https://goplay.space/#3KUy0x_lBEk
+
 ```
 s := []byte{1,2,3,4,5}
 
 s2 := s[2:5]
 ```
+
+<br>
 
 .left-image[
 ![](img/slice.png)
@@ -263,7 +268,7 @@ arr2[0] = 1
 fmt.Println(arr[0]) // ?
 ```
 
-https://play.golang.org/p/ZsoCClB0-gT
+https://goplay.space/#ZsoCClB0-gT
 
 ---
 
@@ -295,6 +300,10 @@ s2 := make([]int, len(s))
 copy(s2, s)
 ```
 
+### SliceTricks
+
+https://github.com/golang/go/wiki/SliceTricks
+
 ---
 
 # Сортировка
@@ -308,7 +317,7 @@ copy(s2, s)
   s := []string{"hello", "cruel", "world"}
   sort.Strings(s)
 ```
-https://play.golang.org/p/hTEHP-bdemH
+https://goplay.space/#hTEHP-bdemH
 
 ---
 
@@ -332,7 +341,7 @@ func main() {
 }
 ```
 
-https://play.golang.org/p/1K0s37F0z4I
+https://goplay.space/#1K0s37F0z4I
 
 ---
 
@@ -353,7 +362,7 @@ for i, v := range s {
 `{ {1, 2, 3}, {4, 5}, {6, 7} }  => {1, 2, 3, 4, 5, 6, 7}`
 <br><br>
 
-https://play.golang.org/p/PdgvhKJGn3Z
+https://goplay.space/#PdgvhKJGn3Z
 ]
 
 .right-image[
@@ -486,7 +495,7 @@ var cache map[string]string  // nil
 l := len(seq)       // 0
 c := cap(seq)       // 0
 l := len(cache)     // 0
-v, ok := cache[key] // "", false 
+v, ok := cache[key] // "", false
 ```
 
 Для слайсов будет так же работать `append`

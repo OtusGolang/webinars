@@ -9,7 +9,7 @@ background-image: url(tmp/title.svg)
 
 # gRPC
 
-### Alexander Davydov
+### Юрий Юрочко
 
 
 ---
@@ -38,9 +38,9 @@ background-size: 130%
 ]
 
 # 
-- Научиться писать обратно совместимые схемы в Protobuf
+- Узнать, что такое gRPC
+- Научиться писать Protobuf схемы
 - Научиться писать gRPC сервисы 
-- Получить представление о Clean Architecture
 
 ---
 
@@ -53,7 +53,6 @@ background-size: 130%
 * Описание API с помощью Protobuf
 * Генерация кода для GRPC клиента и сервера
 * Реализация API
-* Представление о Clean Architecture
 ]
 
 ---
@@ -184,8 +183,8 @@ background-image: url(img/grpcvsrest.png)
 
 # HTTP/2 vs HTTP
 
-https://imagekit.io/demo/http2-vs-http1
-https://developers.google.com/web/fundamentals/performance/http2/
+- https://imagekit.io/demo/http2-vs-http1
+- https://developers.google.com/web/fundamentals/performance/http2/
 
 ---
 
@@ -285,7 +284,7 @@ background-image: url(img/wiretype.png)
 
 # Protocol buffers: repeated fields
 
-массив реализуется через repeated:
+Массив реализуется через repeated:
 
 ```
 message SearchResponse {
@@ -455,13 +454,6 @@ message Person {
 }
 ```
 
----
-
-# Protocol buffers: упражнение
-
-
-Написать person.proto: имя, фамилия, адрес, рост, вес, возраст
-
 
 ---
 
@@ -542,34 +534,6 @@ message MyMessage {
     google.protobuf.Timestamp last_online = 1;
     google.protobuf.Duration session_length = 2;
 }
-```
-
-
-
-
----
-
-# Protocol buffers: запись на диск, JSON
-
-```
-	course := &myotus.Course{
-		Title:   "Golang",
-		Teacher: []*myotus.Teacher{{Name: "Dmitry Smal", Id: 1}, {Name: "Alexander Davydov", Id: 2}},
-	}
-	out, err := proto.Marshal(course)
-```
-
-```
-	import "github.com/gogo/protobuf/jsonpb"
-
-	marshaler := jsonpb.Marshaler{}
-	res, err := marshaler.MarshalToString(course)
-	print(res)
-```
-
-```
-{"title":"Golang","teacher":[{"name":"Dmitry Smal","id":1},
-							 {"name":"Alexander Davydov","id":2}]}
 ```
 
 ---
@@ -707,271 +671,250 @@ background-image: url(img/grpcapitypes.png)
 
 ---
 
-# Unary boilerplate
-
+# Пример 1. Unary. Схема
 ```
 syntax = "proto3";
 
-package homework;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
-option go_package = "homeworkpb";
+option go_package="main";
 
-
-service HomeworkChecker {
-    rpc CheckHomework (CheckHomeworkRequest) returns (CheckHomeworkResponse) {};
+message Vote {
+  string passport = 1;
+  uint32 candidate_id = 2;
+  string note = 3;
+  google.protobuf.Timestamp time = 4;
 }
 
-message CheckHomeworkRequest {
-    int32 hw = 1;
-    string code = 2;
+service Elections {
+  rpc SubmitVote(Vote) returns (google.protobuf.Empty) {}
 }
-
-message CheckHomeworkResponse {
-    int32 grade = 1;
-}
-
-```
-
-```
-go get -u github.com/golang/protobuf/protoc-gen-go
-protoc proto/homework.proto --go_out=plugins=grpc:.
-protoc  --java_out=java --python_out=python *.proto
 ```
 
 ---
-
-# Boilerplate unary server (импорты убрал для краткости)
-
+# Пример 1. Unary. Server
 ```
-package main
+type Service struct{}
 
-import (
-	"otus-examples/otusrpc/homeworkpb"
+func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
+        log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
+                req.Passport, req.CandidateId, ptypes.TimestampString(req.Time))
 
-	"google.golang.org/grpc"
-)
+        if req.Passport == "" || req.CandidateId == 0 { 
+                log.Printf("invalid arguments, skip vote")
+                return nil, status.Error(codes.InvalidArgument, "passport or candidate_id wrong")
+        }
 
-type otusServer struct {
+        log.Printf("vote accepted")
+        return &empty.Empty{}, nil
 }
+```
 
-func (s *otusServer) CheckHomework(ctx context.Context, req *homeworkpb.CheckHomeworkRequest) (*homeworkpb.CheckHomeworkResponse, error) {
-	return nil, nil
-}
-
+---
+# Пример 1. Unary. Client
+```
 func main() {
-	lis, err := net.Listen("tcp", "0.0.0.0:50051")
-	if err != nil {
-		log.Fatalf("failed to listen %v", err)
-	}
+        addr := "localhost:50051"
+        conn, err := grpc.Dial(addr, grpc.WithInsecure())
+        if err != nil {
+                log.Fatal(err)
+        }
 
-	grpcServer := grpc.NewServer()
+        client := NewElectionsClient(conn)
 
-	homeworkpb.RegisterHomeworkCheckerServer(grpcServer, &otusServer{})
-	grpcServer.Serve(lis)
+        reader := bufio.NewReader(os.Stdin)
+        for {
+                req, err := getRequest(reader)
+                if err != nil {
+                        log.Printf("error: %v", err)
+                        continue
+                }
+
+                if _, err := client.SubmitVote(context.Background(), req); err != nil {
+                        log.Fatal(err)
+                }
+
+                log.Printf("vote submitted")
+        }
+}
+
+```
+
+---
+# Пример 2. Server streaming. Схема
+```
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package="main";
+
+message Vote {
+  string passport = 1;
+  uint32 candidate_id = 2;
+  string note = 3;
+  google.protobuf.Timestamp time = 4;
+}
+
+message Stats {
+  map<uint32, uint32> records = 1;
+  google.protobuf.Timestamp time = 2;
+}
+
+service Elections {
+  rpc SubmitVote(Vote) returns (google.protobuf.Empty) {}
+  rpc GetStats(google.protobuf.Empty) returns (stream Stats) {}
 }
 ```
 
+
 ---
-
-# Boilerplate unary client (импорты убрал для краткости)
-
+# Пример 2. Server streaming. Server
 ```
-package main
+...
+stop := false
+for !stop {
+        select {
+        case <-time.After(defaultInterval):
+                s.lock.RLock()                  
+                stats := make(map[uint32]uint32)
+                for k, v := range s.stats {     
+                        stats[k] = v                    
+                }
+                s.lock.RUnlock()                
+                msg := &Stats{                  
+                        Records: stats,                 
+                        Time:    ptypes.TimestampNow(), 
+                }
+                if err := srv.Send(msg); err != nil {
+                        log.Printf("unable to send message to stats listener: %v", err)
+                        stop = true                     
+                }
 
-import (
-	"context"
-	"log"
-	"otus-examples/otusrpc/homeworkpb"
+        case <-srv.Context().Done():    
+                log.Printf("stats listener disconnected")
+                stop = true                     
+        }
+}
+...
+```
 
-	"google.golang.org/grpc"
-)
+---
+# Пример 3. Схема
+```
+...
+message Vote {
+  string passport = 1;
+  uint32 candidate_id = 2;
+  string note = 3;
+  google.protobuf.Timestamp time = 4;
+}
 
-func main() {
+message Stats {
+  map<uint32, uint32> records = 1;
+  google.protobuf.Timestamp time = 2;
+}
 
-	cc, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("could not connect: %v", err)
-	}
-	defer cc.Close()
+message StatsVote {
+  oneof body {
+    Stats stats = 1;
+    Vote vote = 2;
+  }
+}
 
-	c := homeworkpb.NewHomeworkCheckerClient(cc)
-	grade, err := c.CheckHomework(context.Background(), &homeworkpb.CheckHomeworkRequest{Hw: 10, Code: "{some code}"})
-	if err != nil {
-		log.Fatalf("err getting grade: %v", err)
-	}
-	println(grade.Grade)
+service Elections {
+  rpc SubmitVote(Vote) returns (google.protobuf.Empty) {}
+  rpc Internal(stream Vote) returns (stream StatsVote) {}
 }
 ```
 
----
-
-# Boilerplate server streaming (server)
-
-```
-func (s *otusServer) CheckAllHomeworks(req *homeworkpb.CheckAllHomeworksRequest, stream homeworkpb.HomeworkChecker_CheckAllHomeworksServer) error {
-	for _, hw := range req.Hw {
-		res := &homeworkpb.CheckHomeworkResponse{Hw: hw, Grade: 67}
-		stream.Send(res)
-		time.Sleep(time.Second)
-	}
-
-	return nil
-}
-```
 
 ---
-
-# Boilerplate server streaming (client)
-
+# Пример 3. Server (reading goroutine)
 ```
-	stream, err := c.CheckAllHomeworks(context.Background(), &homeworkpb.CheckAllHomeworksRequest{Hw: []int32{1, 2, 3, 4, 5}})
-	if err != nil {
-		log.Fatalf("CheckAllHomeworks err %v", err)
-	}
-	for {
-		msg, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatalf("error reading stream: %v", err)
-		}
-		print(msg.Grade)
-	}
+inChan := make(chan *Vote)      
+go func() {
+        defer close(inChan)             
+
+        for {
+                req, err := srv.Recv()          
+                if err != nil {                 
+                        log.Printf("unable to read message from internal listener: %v", err)
+                        return                          
+                }
+                inChan <- req                   
+        }
+}()
 ```
+
 
 ---
-
-# Boilerplate client streaming (server)
-
+# Пример 3. Server (for loop part1)
 ```
-func (s *otusServer) SubmitAllHomeworks(stream homeworkpb.HomeworkChecker_SubmitAllHomeworksServer) error {
-	for {
-		req, err := stream.Recv()
-		if err == io.EOF {
-			return stream.SendAndClose(&homeworkpb.SubmitAllHomeworksResponse{Accepted: true})
-		}
-		if err != nil {
-			return err
-		}
-		_ = req
-	}
-}
+stop := false
+for !stop {
+        select {
+        case req, ok := <-inChan:       
+                if !ok {                        
+                        log.Printf("read loop for internal listener stopped, disconnect it")
+                        stop = true                     
+                        break                           
+                }
+                if _, err := s.SubmitVote(srv.Context(), req); err != nil {
+                        log.Printf("unable to submit vote, skip it, error: %v", err)
+                        continue                        
+                }
+                msg := &StatsVote{              
+                        Body: &StatsVote_Vote{          
+                                Vote: req,                      
+                        },                              
+                }
+                if err := srv.Send(msg); err != nil {
+                        log.Printf("unable to send vote to internal listener, disconnect it, error: %v", err)
+                        stop = true                     
+                }
 ```
+
 
 ---
-
-# Boilerplate client streaming (client)
-
+# Пример 3. Server (for loop part2)
 ```
-	requests := []*homeworkpb.SubmitAllHomeworksRequest{
-		&homeworkpb.SubmitAllHomeworksRequest{Hw: 1, Code: "first"},
-		&homeworkpb.SubmitAllHomeworksRequest{Hw: 2, Code: "second"},
-	}
-	cstream, err := c.SubmitAllHomeworks(context.Background())
-	if err != nil {
-		log.Fatalf("err streaming: %v", err)
-	}
-	for _, req := range requests {
-		cstream.Send(req)
-	}
+                case <-time.After(defaultInterval):
+                        msg := &StatsVote{              
+                                Body: &StatsVote_Stats{         
+                                        Stats: s.getStats(),            
+                                },                              
+                        }
+                        if err := srv.Send(msg); err != nil {
+                                log.Printf("unable to send stats to internal listener, disconnect it, error: %v", err)
+                                stop = true                     
+                        }
 
-	res, err := cstream.CloseAndRecv()
-	if err != nil {
-		log.Fatalf("err getting resp: %v", err)
-	}
-	println(res.GetAccepted())
+                case <-srv.Context().Done():    
+                        log.Printf("stats listener disconnected")
+                        stop = true                     
+                }
+        }
 ```
 
---- 
-
-# Boilerplate bi-directional streaming server
-
-```
-func (s *otusServer) RealtimeFeedback(stream homeworkpb.HomeworkChecker_RealtimeFeedbackServer) error {
-	for {
-		req, err := stream.Recv()
-		if err == io.EOF {
-			return nil
-		}
-		if err != nil {
-			log.Fatalf("error reading client stream: %v", err)
-			return err
-		}
-		_ = req
-		sendErr := stream.Send(&homeworkpb.CheckHomeworkResponse{Hw: 1, Grade: 5})
-		if sendErr != nil {
-			return err
-		}
-	}
-}
-```
-
---- 
-
-# Boilerplate bi-directional streaming client
-
-```
-	bstream, err := c.RealtimeFeedback(context.Background())
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-
-	brequests := []*homeworkpb.CheckHomeworkRequest{
-		&homeworkpb.CheckHomeworkRequest{
-			Hw:   12,
-			Code: "some code",
-		},
-		&homeworkpb.CheckHomeworkRequest{
-			Hw:   13,
-			Code: "other code",
-		},
-	}
-
-	waitc := make(chan struct{})
-	// we send a bunch of messages to the client (go routine)
-	go func() {
-		// function to send a bunch of messages
-		for _, req := range brequests {
-			fmt.Printf("Sending message: %v\n", req)
-			bstream.Send(req)
-			time.Sleep(1000 * time.Millisecond)
-		}
-		stream.CloseSend()
-	}()
-	// we receive a bunch of messages from the client (go routine)
-	go func() {
-		// function to receive a bunch of messages
-		for {
-			res, err := bstream.Recv()
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				log.Fatalf("Error while receiving: %v", err)
-				break
-			}
-			fmt.Printf("Received: %v\n", res.GetGrade())
-		}
-		close(waitc)
-	}()
-
-	// block until everything is done
-	<-waitc
-```
 
 ---
-
 # gRPC: Errors
 
-https://grpc.io/docs/guides/error/
-https://godoc.org/google.golang.org/grpc/codes
-https://godoc.org/google.golang.org/grpc/status
-https://jbrandhorst.com/post/grpc-errors/
-http://avi.im/grpc-errors/
+- https://grpc.io/docs/guides/error/
+- https://godoc.org/google.golang.org/grpc/codes
+- https://godoc.org/google.golang.org/grpc/status
+- https://jbrandhorst.com/post/grpc-errors/
+- http://avi.im/grpc-errors/
 
 ```
-func (*server) SquareRoot(ctx context.Context, req *calculatorpb.SquareRootRequest) (*calculatorpb.SquareRootResponse, error) {
+// Server
+func (*server) SquareRoot(ctx context.Context,
+        req *calculatorpb.SquareRootRequest)
+        (*calculatorpb.SquareRootResponse, error) {
+
 	fmt.Println("Received SquareRoot RPC")
 	number := req.GetNumber()
 	if number < 0 {
@@ -987,34 +930,37 @@ func (*server) SquareRoot(ctx context.Context, req *calculatorpb.SquareRootReque
 ```
 
 ---
-
 # gRPC: Errors
 
 ```
-	res, err := c.SquareRoot(context.Background(), &calculatorpb.SquareRootRequest{Number: n})
-	if err != nil {
-		respErr, ok := status.FromError(err)
-		if ok {
-			// actual error from gRPC (user error)
-			fmt.Printf("Error message from server: %v\n", respErr.Message())
-			fmt.Println(respErr.Code())
-			if respErr.Code() == codes.InvalidArgument {
-				fmt.Println("We probably sent a negative number!")
-				return
-			}
-		} else {
-			return
-		}
-	}
+// Client
+res, err := c.SquareRoot(
+    context.Background()
+    &calculatorpb.SquareRootRequest{Number: n},
+)
+if err != nil {
+    respErr, ok := status.FromError(err)
+    if ok {
+        // actual error from gRPC (user error)
+        fmt.Printf("Error message from server: %v\n", respErr.Message())
+        fmt.Println(respErr.Code())
+        if respErr.Code() == codes.InvalidArgument {
+            fmt.Println("We probably sent a negative number!")
+            return
+        }
+    } else {
+        return
+    }
+}
 ```
 
 
 ---
-
 # gRPC: Deadlines
 
 ```
-clientDeadline := time.Now().Add(time.Duration(*deadlineMs) * time.Millisecond)
+duration := time.Duration(*deadlineMs) * time.Millisecond
+clientDeadline := time.Now().Add(duration)
 ctx, cancel := context.WithDeadline(ctx, clientDeadline)
 ```
 
@@ -1025,112 +971,28 @@ if ctx.Err() == context.Canceled {
 ```
 
 ---
-
-# gRPC: Reflection + Evans CLI
-
-
-```
-import "google.golang.org/grpc/reflection"
-
-s := grpc.NewServer()
-pb.RegisterYourOwnServer(s, &server{})
-
-// Register reflection service on gRPC server.
-reflection.Register(s)
-
-s.Serve(lis)
-```
-
-https://github.com/ktr0731/evans
-
----
-
 # gRPC: Security (SSL/TLS)
 
-https://bbengfort.github.io/programmer/2017/03/03/secure-grpc.html
-https://medium.com/@gustavoh/building-microservices-in-go-and-python-using-grpc-and-tls-ssl-authentication-cfcee7c2b052
+- https://bbengfort.github.io/programmer/2017/03/03/secure-grpc.html
+- https://medium.com/@gustavoh/building-microservices-in-go-and-python-using-grpc-and-tls-ssl-authentication-cfcee7c2b052
 
 ---
+# gRPC: tools
 
-# gRPC + REST: clay
-
-https://github.com/utrack/clay
-
-
----
-
-class: black
-background-size: 75%
-background-image: url(img/cleanarch.jpg)
-# Clean Architecture
+- https://github.com/ktr0731/evans
+- https://github.com/fullstorydev/grpcurl
 
 ---
-
-# Clean Architecture
-
-<br><br>
-
-https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
-
-<br><br><br>
-
-- независимость от фреймворка
-- тестируемость
-- независимоcть от UI
-- независимоcть от базы данных
-- независимость от какого-либо внешнего сервиса
-
-<b>Правило Зависимостей. Зависимости в исходном коде могут указывать только во внутрь. Ничто из внутреннего круга не может знать что-либо о внешнем круге, ничто из внутреннего круга не может указывать на внешний круг.
-
----
-
-# Clean Architecture
-
-- Entities (models, модели)
-- Use Cases (controllers, сценарии)
-- Interface Adapters
-- Frameworks and Drivers (инфраструктура)
-
----
-
-background-image: url(https://raw.githubusercontent.com/bxcodec/go-clean-arch/master/clean-arch.png)
-# Clean Architecture
-
----
-
-# Clean Architecture
-
-
-https://github.com/bxcodec/go-clean-arch
-
----
-
--
-# Тест
-
-https://forms.gle/SiDmYTPUU5La3rA88
-
----
-
-
 # На занятии
 
-- Научились писать gRPC сервисы
+- Узнали, что такое gRPC
 - Научились писать Protobuf схемы
-- Изучили принципы Clean Architecture
+- Научились писать gRPC сервисы
 
 ---
-
 ## Вопросы?
 
 ---
-
-# Опрос
-
-Не заполните заполнить опрос. Ссылка на опрос будет в слаке.
-
----
-
 class: white
 background-image: url(tmp/title.svg)
 .top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]

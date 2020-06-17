@@ -510,7 +510,7 @@ seq = append(seq, "hello")   // []string{"hello"}
 
 Вместо
 ```
-hostUsers := map[string][]string{}
+hostUsers := make(map[string][]string)
 for _, user := range users {
   if _, ok := hostUsers[user.Host]; !ok {
     hostUsers[user.Host] = make([]string)
@@ -521,7 +521,7 @@ for _, user := range users {
 
 Можно
 ```
-hostUsers := map[string][]string{}
+hostUsers := make(map[string][]string)
 for _, user := range users {
   hostUsers[user.Host] = append(hostUsers[user.Host], user.Name)
 }

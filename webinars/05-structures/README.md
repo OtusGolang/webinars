@@ -61,21 +61,22 @@ type User struct { // Структура с именованными полям�
   friends []int64  // Приватный элемент
 }
 ```
+https://golang.org/ref/spec#Struct_types
 
 ---
 
 # Литералы структур
 
 ```
-var u0 User    // Zero Value для типа User
+var u0 User                      // Zero Value для типа User
 
-u1 := User{}  // Zero Value для типа User
+u1 := User{}                     // Zero Value для типа User
 
-u2 := &User{}  // То же, но указатель
+u2 := &User{}                    // То же, но указатель
 
-u3 := User{1, "Vasya", 23}  // По номерам полей
+u3 := User{1, "Vasya", 23, nil}  // По номерам полей
 
-u4 := User{
+u4 := User{                      // По именам полей
   Id:       1,
   Name:     "Vasya",
   friends:  []int64{1, 2, 3},
@@ -149,7 +150,8 @@ unsafe.Sizeof(x) // 24!
 ![img/aling.png](img/align.png)
 
 https://github.com/tyranron/golang-sizeof.tips <br>
-https://github.com/dominikh/go-tools/tree/master/cmd/structlayout
+https://github.com/dominikh/go-tools/tree/master/cmd/structlayout <br>
+https://en.wikipedia.org/wiki/Data_structure_alignment
 
 ---
 
@@ -188,6 +190,8 @@ c3Ptr := &x.c[2]
 dict := map[string]string{"a": "b"}
 valPtr := &dict["a"]  // Не скомпилируется
 ```
+https://github.com/golang/go/issues/11865
+<br><br>
 
 Также нельзя (и не нужно) получать указатель на функцию.
 
@@ -305,6 +309,10 @@ https://goplay.space/#XP7fc8wxQ3P
 
 Метод типа можно вызывать у значения и у указателя. <br>
 Метод указателя можно вызывать у указателя и у значения, если оно адресуемо.
+
+<br>
+https://github.com/golang/go/wiki/CodeReviewComments#receiver-type
+
 ---
 
 # Экспортируемые и приватные элементы
@@ -352,7 +360,7 @@ func NewYourTypeWithOption(option int) (*YourType) {
 }
 ```
 
-https://goplay.space/#1OMxwtAhXJD
+https://goplay.space/#5lfGpAcfTyU
 
 ---
 
@@ -381,7 +389,7 @@ func (r *RateLimiter) Allow() bool {
 У него должны быть методы `Push(i int)` и `Pop() int`.
 
 <br><br>
-https://goplay.space/#S4qmBUzxI_i
+https://goplay.space/#xhAGg8vtX8N
 ]
 
 .right-image[
@@ -422,10 +430,6 @@ storage.Mutex.Lock()
 storage.Lock()
 ```
 
-Как следствие: если тип `A` реализует некоторый интерфейс `I` и тип `B` встраивает `A`,
-то он автоматически реализует интерфейс `I`. <br><br>
-
-Например `LinkStorage` теперь реализует интрефейс `sync.Locker`.
 
 ---
 
@@ -566,7 +570,7 @@ ch <- struct{}{}
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/8451/](https://otus.ru/polls/8451/)
+[https://otus.ru/polls/11415/](https://otus.ru/polls/11415/)
 ]
 
 .right-image[
@@ -580,6 +584,3 @@ background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
 # Спасибо за внимание!
-
-
----

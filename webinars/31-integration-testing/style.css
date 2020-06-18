@@ -254,3 +254,8 @@ table img {
 #semantic-versioning~table th {
   text-align: left;
 }
+
+.big-list li {
+  font-size: 24px !important;
+  line-height: 2em;
+}

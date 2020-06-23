@@ -65,6 +65,8 @@ var s Stringer
 s = time.Time{}
 ```
 
+https://golang.org/doc/effective_go.html#interfaces_and_types
+
 ---
 
 # Интерфейсы реализуются неявно
@@ -119,6 +121,9 @@ type Stringer interface {
 ```
 
 https://goplay.space/#ppTH6Ya-fX5
+
+https://golang.org/src/fmt/print.go#611
+
 
 ---
 
@@ -312,22 +317,28 @@ https://goplay.space/#1w7ksGW0uXh
 
 ```
 type iface struct {
-    tab  *itab
-    data unsafe.Pointer
+    tab  *itab // Информация об интерфейсе
+    data unsafe.Pointer // Хранимые данные
 }
 ```
 
 ```
-type itab struct { // 40 bytes on a 64bit arch
-    inter *interfacetype
-    _type *_type
-    hash  uint32 // copy of _type.hash. Used for type switches.
+// itab содержит тип интерфейса и информацию о хранимом типе.
+type itab struct {
+    inter *interfacetype // Метаданные интерфейса
+    _type *_type // Go-шный тип хранимого интерфейсом значения
+    hash  uint32 
     _     [4]byte
-    fun   [1]uintptr // variable sized. fun[0]==0 means _type does not implement inter.
+    fun   [1]uintptr // Список методов типа, удовлетворяющих интерфейсу
 }
 ```
 
 https://github.com/teh-cmc/go-internals/blob/master/chapter2_interfaces/README.md#anatomy-of-an-interface
+<br><br>
+
+Структура устарела, но алгоритм такой же:<br>
+https://www.tapirgames.com/blog/golang-interface-implementation
+
 
 ---
 
@@ -351,7 +362,7 @@ func (h Human) SayHello() {
 
 var s Speaker
 h := Human{Greeting: "Hello"}
-s := Speaker(h)
+s = Speaker(h)
 s.SayHello()
 
 ```
@@ -363,8 +374,55 @@ https://goplay.space/#rjboVEC3V6w
 background-size: 80%
 background-image: url(img/internalinterfaces.png)
 
+---
+
+# Интерфейсы изнутри
+
+На этапе компиляции:
+- генерируются метаданные для каждого статического типа, включая его список методов
+- генерируются метаданные для каждого интерфейса, включая его
+список методов
+
+
+И при компиляции и в рантайме в зависимости от выражения:
+- сравниваются methodset'ы типа и интерфейса
+- создается и кэшируется `itab`
+
+
+```
+var s Speaker = string("test") // compile-time error
+var s Speaker = io.Reader // compile time error
+var h string = Human{} // compile time error
+
+// runtime error
+var s interface{};
+h = s.(Human)
+```
+
 
 ---
+
+# Интерфейсы изнутри
+
+Что здесь происходит?
+```
+// Создание интерфейса:
+// - аллокация места для хранения адреса ресивера
+// - получение itab:
+//      - проверка кэша
+//      - нахождение реализаций методов
+// - создание iface: runtime.convT2I
+s := Speaker(Human{Greeting: "Hello"})
+
+// Динамический диспатчинг
+// - для рантайма это вызов n-го метода s.Method_0()
+// - превращается в вызов вида s.itab.fun[0](s.data)
+s.SayHello()
+```
+
+
+---
+
 
 background-size: 60%
 background-image: url(img/emptyinterface.png)
@@ -430,22 +488,27 @@ func BenchmarkInterface(b *testing.B) {
 # Интерфейсы изнутри: benchmark
 
 ```
-$ go tool compile -m addifier.go
+$ GOOS=linux GOARCH=amd64 go tool compile -m addifier.go
 
 Addifier(adder) escapes to heap
 ```
 
 ```
-$ go test -bench=.              
-goos: darwin
-goarch: amd64
-pkg: strexpand/interfaces/addifier
-BenchmarkDirect-8       2000000000               0.60 ns/op
-BenchmarkInterface-8    100000000               13.4 ns/op
-PASS
-ok      strexpand/interfaces/addifier   2.635s
+$ GOOS=linux GOARCH=amd64 go test -bench=.              
+BenchmarkDirect-8       2000000000    1.60 ns/op    0 B/op   0 allocs/op
+BenchmarkInterface-8    100000000     15.0 ns/op    4 B/op   1 allocs/op
 ```
 
+
+---
+
+# Интерфейсы: еще раз о ресиверах
+
+https://goplay.space/#jm1bKNLABnB
+<br><br>
+https://stackoverflow.com/a/45653986
+<br><br>
+https://stackoverflow.com/a/48874650
 
 ---
 
@@ -479,7 +542,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw04_lru_cache
 
 # Опрос
 
-https://otus.ru/polls/8455/
+https://otus.ru/polls/11418/
 
 
 ---

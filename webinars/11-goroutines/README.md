@@ -76,6 +76,34 @@ background-image: url(img/message.svg)
 
 ---
 
+# Параллелизм vs конкурентность
+
+.center-image[
+![](img/conc1.jpg)
+]
+
+<br>
+
+Картинки из выступления Роба Пайка: https://blog.golang.org/waza-talk
+
+---
+
+# Параллелизм vs конкурентность
+
+.center-image[
+![](img/conc2.jpg)
+]
+
+---
+
+# Параллелизм vs конкурентность
+
+.center-image[
+![](img/conc3.jpg)
+]
+
+---
+
 # Запуск горутины
 
 ```
@@ -121,7 +149,7 @@ func main() {
 }
 ```
 
-https://play.golang.org/p/8is1y5tu-m3
+https://goplay.space/#8is1y5tu-m3
 
 ---
 
@@ -133,7 +161,7 @@ func main() {
 }
 ```
 
-https://play.golang.org/p/SBO2dnLQPue
+https://goplay.space/#SBO2dnLQPue
 
 ---
 
@@ -196,71 +224,99 @@ ch := make(chan int, ?)
 
 # Что будет, если читать из пустого канала?
 
+.center-image[
+![](img/ch/read_empty_1.png)
+]
+
 ---
 
 # Что будет, если читать из пустого канала?
 
 
 .center-image[
-![](img/ch/read_empty.png)
+![](img/ch/read_empty_2.png)
 ]
 
 ---
 
 # Что будет, если писать в заполненный канал?
 
+.center-image[
+![](img/ch/write_full_1.png)
+]
 
 ---
 
 # Что будет, если писать в заполненный канал?
 
 .center-image[
-![](img/ch/write_full.png)
+![](img/ch/write_full_2.png)
 ]
 
 ---
 
 # Что будет, если писать в закрытый канал?
 
+.center-image[
+![](img/ch/write_closed_1.png)
+]
+
 ---
 
 # Что будет, если писать в закрытый канал?
 
 .center-image[
-![](img/ch/write_closed.png)
+![](img/ch/write_closed_2.png)
 ]
 
 ---
 
 # Что будет, если читать из закрытого канала?
 
+.center-image[
+![](img/ch/read_closed_1.png)
+]
+
 ---
 
 # Что будет, если читать из закрытого канала?
 
 .center-image[
-![](img/ch/read_closed.png)
+![](img/ch/read_closed_2.png)
 ]
 
 ---
 
 # Что будет, если читать из пустого закрытого канала?
 
+.center-image[
+![](img/ch/read_closed_empty_1.png)
+]
+
 ---
 
 # Что будет, если читать из пустого закрытого канала?
 
 
 .center-image[
-![](img/ch/read_closed_empty.png)
+![](img/ch/read_closed_empty_2.png)
 ]
 
 ---
 
 # Проверьте себя
 
-https://play.golang.org/p/K4bxk92rF3q
+https://goplay.space/#K4bxk92rF3q
 
+---
+
+# Синхронизация горутин каналами
+
+```
+func main() {
+	go fmt.Printf("Hello")
+}
+```
 ---
 
 # Синхронизация горутин каналами
@@ -278,7 +334,7 @@ func main() {
 }
 ```
 
-https://play.golang.org/p/TeLXxeAP0D6
+https://goplay.space/#TeLXxeAP0D6
 
 ---
 
@@ -297,7 +353,7 @@ func main() {
 }
 ```
 
-https://play.golang.org/p/TeLXxeAP0D6
+https://goplay.space/#TeLXxeAP0D6
 
 ---
 
@@ -336,6 +392,12 @@ for x := range ch {
 
 # Правила закрытия канала
 
+- ## Кто закрывает канал?
+
+---
+
+# Правила закрытия канала
+
 - ### Канал закрывает тот, кто в него пишет.
 - ### Если несколько писателей, то тот, кто создал писателей и канал.
 
@@ -360,7 +422,7 @@ func main() {
 }
 ```
 
-https://play.golang.org/p/t6bVfgg6BTu
+https://goplay.space/#t6bVfgg6BTu
 
 ---
 
@@ -391,6 +453,8 @@ case <-timer.C:
 }
 ```
 
+https://goplay.space/#40A5bnJQiAk
+
 ---
 
 
@@ -405,6 +469,8 @@ for {
 	}
 }
 ```
+
+https://goplay.space/#OSLQuy37n0Q
 
 ---
 # Каналы: как сигналы
@@ -455,7 +521,7 @@ for i := 0; i < 5; i++ {
 time.Sleep(2 * time.Second)
 ```
 
-https://play.golang.org/p/rSKy5YetcJS
+https://goplay.space/#rSKy5YetcJS
 
 ---
 

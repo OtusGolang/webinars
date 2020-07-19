@@ -26,7 +26,7 @@ background-image: url(img/message.svg)
 
 # Метрики и мониторинг
 
-### Дмитрий Смаль, Елена Граховац
+### Дмитрий Смаль, Антон Телышев
 
 ---
 
@@ -38,31 +38,8 @@ background-image: url(img/message.svg)
 * Мониторинг ресурсов: LA, CPU, MEM, IO
 * Мониторинг приложений
 * Мониторинг баз данных
-* Prometheus и DataDog
+* Prometheus
 ]
-
----
-
-Пока идет теоретическая часть урока, можно скачать себе образы контейнеров ;)
-<br><br>
-
-## Prometheus
-```
-docker pull prom/prometheus
-docker pull prom/node-exporter
-docker pull grafana/grafana
-```
-
-Документация: https://prometheus.io/docs/prometheus/latest/installation/
-<br><br>
-
-## DataDog
-
-```
-docker pull datadog/agent
-```
-
-Попробовать DataDog: elena@grahovac.me
 
 ---
 
@@ -73,7 +50,7 @@ Observability (наблюдаемость) - мера того, наскольк
 <br><br>
 Примеры:
 - логирование (zap, logrus -> fluentd -> kibana)
-- мониторинг (zabbix, prometheus,
+- мониторинг (zabbix, prometheus)
 - алертинг (chatops, pagerduty, opsgenie)
 - трейсинг (jaeger, zipkin, opentracing, datadog apm)
 - профилирование (pprof)
@@ -97,17 +74,21 @@ Operability (работоспособность) - мера того, наско
 .big-list[
 * Отладка, решение текущих проблем
 * SRE мир: SLA, SLO, SLI
-* Алертинг
+* Отправка уведомлений
 * Технические и бизнесовые A/B эксперименты
 * Анализ трендов, прогнозирование
 ]
+
+SRE (Site Reliability Engineering) book:
+<br>
+https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/
 
 ---
 
 # Виды мониторинга
 
 .big-list[
-* Количественный / Событийный
+* Количественный / Событийный (y/n)
 * Whitebox / Blackbox
 * Push / Pull
 ]
@@ -120,9 +101,10 @@ Operability (работоспособность) - мера того, наско
 *Push* - агент, работающий на окружении (например, сайдкар), подключается к серверу мониторинга
 и отправляет данные.
 
+<br>
 Особенности:
 * мониторинг специфических/одноразовых задач
-* можно поставить хоть куда :)
+* может работать за NAT
 * не нужно открывать никакие URL'ы/порты на стороне пирложения
 * из приложения нужно конфигурировать подключение
 
@@ -131,9 +113,12 @@ Operability (работоспособность) - мера того, наско
 
 *Pull* - сервис мониторинга сам опрашивает инфраструктуры/сервисы и агрегирует статистику.
 
-Фичи:
+<br>
+Особенности:
 * не нужно подключаться к агенту на стороне приложения 
 * нужно открывать URL или порт, который будет доступен сервису мониторинга
+* более отказоустойчивый
+* не требует авторизации /верификации источника
 
 Примеры: `datadog-agent`, `prometheus`
 
@@ -142,7 +127,7 @@ Operability (работоспособность) - мера того, наско
 # Мониторинг инфраструктуры
 
 .big-list[
-* LA (Load Average) - длинна очереди процессов в планировщике
+* LA (Load Average) - длина очереди процессов в планировщике
 * CPU (User/System/Wait) - время проводимое процессором в различных режимах
 * Memory (RSS/Shared/Cached/Free) - распределение памяти в системе
 * IO stats
@@ -154,7 +139,7 @@ Operability (работоспособность) - мера того, наско
 # Load Average
 
 LA - сложная метрика, ее можно интерпретировать как количество процессов(потоков) в ОС, 
-находящихся в ожидании какого-либо ресурса (чаща всего CPU или диск). 
+находящихся в ожидании какого-либо ресурса (чаще всего CPU или диск). 
 <br><br>
 *Нормальной* считается загрузка когда LA ~ числу ядер процессора.
 <br><br>
@@ -163,31 +148,62 @@ LA - сложная метрика, ее можно интерпретирова
 * top
 * iostat, dstat
   
+```
+$ top
+Processes: 420 total, 3 running, 417 sleeping, 1860 threads                                                                                                                                            08:10:08
+Load Avg: 2.47, 2.53, 2.38
+```
+
 ---
 
 # CPU
 
 * User (`usr`, `us`) - процессор выполняет код программ. Высокое значение может быть признаком неоптимальных алгоритмов.
-* System (`sys`, `sy`) - процессор выполняет код ядра. Высокое значение может означать большое кол-во операций ввода/вывода или сетевых пакетов.
-* Wait (`wai`, `wa`) - процессор находится в ожидании ввода/вывода. Высокое значение означает недостаточную мощность дисковой системы.
-* Idle (`id`)- процессор бездействует.
-
 <br><br>
-Как посмотреть:
-* top, htop
+
+* System (`sys`, `sy`) - процессор выполняет код ядра. Высокое значение может означать большое кол-во операций ввода/вывода или сетевых пакетов.
+<br><br>
+
+* Wait (`wai`, `wa`) - процессор находится в ожидании ввода/вывода. Высокое значение означает недостаточную мощность дисковой системы.
+<br><br>
+
+* Idle (`id`)- процессор бездействует.
+<br><br>
+
+Как посмотреть: top, htop
+
+```
+$ top
+Processes: 419 total, 2 running, 417 sleeping, 1868 threads                                                                                                                                            08:14:32
+CPU usage: 5.11% user, 4.39% sys, 90.48% idle
+```
 
 ---
 
 # Memory
 
-* Resident (`Res`) - память, занятая данными программ (как правило кучи). Высокое значение может говорить об утечках памяти в программах.
+* Resident (`Res`/`RSS`) - память, занятая данными программ (как правило кучи). Высокое значение может говорить об утечках памяти в программах.
+<br><br>
+
 * Shared (`Shr`) - память, разделяемая между разными процессами (как правило сегменты кода).
+<br><br>
+
 * Cached - дисковый кеш операционный системы, в нагруженных системах (СУБД) состоянии занимает все свободное место.
-* Free - не занятая память.
-  
+<br><br>
+
+* Free - незанятая память.
+<br><br>
+
 Как посмотреть:
 * top
 * free
+
+```
+$ top                                                                                                                                        08:28:11
+SharedLibs: 249M resident, 42M data, 35M linkedit.
+MemRegions: 164838 total, 2815M resident, 134M private, 1737M shared.
+PhysMem: 12G used (2571M wired), 4457M unused.
+```
   
 ---
 
@@ -197,7 +213,7 @@ LA - сложная метрика, ее можно интерпретирова
 * `r/s`, `w/s` - число запросов на чтение/запись в секунду.
 * `rKb/s`, `wKb/s` - объем данных прочитанных/записанных в секунду.
 * `await`, `r_await`, `w_await` - среднее время в мс. ожидания+выполнения запроса ввода/вывода. latency диска.
-* `avgqu-sz` - средняя длинна очереди запросов к диску.
+* `avgqu-sz` - средняя длина очереди запросов к диску.
 
 Как посмотреть:
 * iostat -x 1
@@ -207,9 +223,16 @@ LA - сложная метрика, ее можно интерпретирова
 * `%util` ~ 100% - вам не хватает мощности диска
 * `%util` сильно отличается у разных дисков в RAID - неисправен диск?
 
+```
+$ iostat
+Device:   r/s     w/s    rsec/s   wsec/s  avgqu-sz   await  %util
+sda      0.26    0.81    14.00    21.68   0.05       36.55   2.28
+sda2     1.89    0.26    0.81     14.00   0.07       45.85   1.12
+```
+
 ---
 
-# Траблшутинг
+# Troubleshooting
 
 Алгоритм:
 * идентифицировать проблему
@@ -228,7 +251,7 @@ LA - сложная метрика, ее можно интерпретирова
   
 ---
 
-# Мониторинг приложений
+# Мониторинг Web/API серверов
 
 .big-list[
 * RPS (request per second)
@@ -238,7 +261,8 @@ LA - сложная метрика, ее можно интерпретирова
 * Разделение по методам API
 ]
 <br><br>
-Для детального анализа: трейсинг
+Для детального анализа: трейсинг, например,<br>
+https://opentracing.io/
 
 ---
 
@@ -250,7 +274,7 @@ LA - сложная метрика, ее можно интерпретирова
 
 Среднее значение (`avg`, `mean`) или даже медиана (`median`) не отображают всей картины!
 <br><br>
-Полезно измерять *процентили* (percentile), например время в которое укладываются 95% или 99% запросов.
+Полезно измерять *процентили* (percentile): время в которое укладываются 95% или, например, 99% запросов.
 
 ---
 
@@ -288,33 +312,19 @@ LA - сложная метрика, ее можно интерпретирова
 
 ---
 
-# Prometheus - Infrastructure as Code
+# Prometheus - установка и запуск сервера
 
-Дисклеймер: далее на слайдах будут примеры установки и настройки
-на Linux-машинах. В реальной жизни вряд ли вы будете настраивать это руками :)
-<br><br>
-Куда смотреть для production-readiness: ansible, chef и всякое такое 
-https://prometheus.io/docs/prometheus/latest/installation/
-
----
-
-# Prometheus - установка сервера
-
-Установка на Ubuntu:
 ```
-$ apt get install prometheus
+docker run \
+    -p 9090:9090 \
+    -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
+    prom/prometheus
 ```
 
-Настройка `/etc/prometheus/prometheus.yml`
+Настройка `/tmp/prometheus.yml`
 ```
 global:
   scrape_interval:  15s  # как часто опрашивать exporter-ы
-
-storage:
-  tsdb:
-    path: /var/lib/prometheus # где хранить данные
-    retention:
-      time:  15d              # как долго хранить данные
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -324,67 +334,32 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9100', 'localhost:9102', 'localhost:9103', 'localhost:9187'] 
 ```
+
+https://prometheus.io/docs/prometheus/latest/installation/
+
 ---
 
 # Prometheus - запуск
-
-Запуск
-```
-$ service prometheus start
-```
 
 С настройками по умолчанию Prometheus будет доступен на порту 9090: 
 [http://127.0.0.1:9090/](http://127.0.0.1:9090/)
 
 ---
 
-# Prometheus - мониторинг сервера
+# Prometheus - мониторинг
 
-.main_image[
-  ![img/prometheus_linux.png](img/prometheus_linux.png)
-]
+- мониторинг сервера: <br>
+https://github.com/prometheus/collectd_exporter (collectd + collectd-exporter) <br>
+https://github.com/prometheus/node_exporter
+<br><br>
 
----
+- мониторинг базы: postgres-exporter <br>
+https://github.com/wrouesnel/postgres_exporter
+<br><br>
 
-# Prometheus - мониторинг сервера
+- визуализация <br>
+https://grafana.com/docs/grafana/latest/installation/docker/
 
-Установка и запуск collectd
-```
-$ apt-get install collectd
-
-# В /etc/collectd/collectd.conf
-LoadPlugin network
-<Plugin network>
-  Server "127.0.0.1" "25826"
-</Plugin>
-
-# запускаем collected
-$ service start collectd
-
-# скачиваем collected-exporter
-$ wget https://github.com/prometheus/collectd_exporter/releases/download/v0.4.0/collectd_exporter-0.4.0.linux-amd64.tar.gz
-$ tar -zxf collectd_exporter-0.4.0.linux-amd64.tar.gz
-
-# запускаем exporter
-$ ./collectd_exporter --collectd.listen-address="localhost:25826" \
-                      --web.listen-address="localhost:9103"    
-```
----
-
-# Prometheus - мониторинг Postgres
-
-Установка postgres-exporter
-```
-$ go get github.com/wrouesnel/postgres_exporter
-$ cd ${GOPATH-$HOME/go}/src/github.com/wrouesnel/postgres_exporter
-$ go run mage.go binary
-```
-
-Запустить с указанием connection string
-```
-$ export DATA_SOURCE_NAME="postgresql://login:password@hostname:port/dbname"
-$ ./postgres_exporter
-```
 ---
 
 # Prometheus - протокол
@@ -415,14 +390,15 @@ go_gc_duration_seconds_count 282
 # Prometheus - типы метрик
 
 .big-list[
-* `Counter` - монотонно возрастающее число, например число запросов
-* `Gauge` - текущее значение, например потребление памяти
+* `Counter` - монотонно возрастающее число, например, число запросов
+* `Gauge` - текущее значение, например, потребление памяти
 * `Histogram` - распределение значений по бакетам (сколько раз значение попало в интервал)
 * `Summary` - похоже на `histogram`, но по квантилям
 * Векторные типы для подсчета данных по меткам
 ]
 
 Документация: https://prometheus.io/docs/concepts/metric_types/
+<br><br>
 
 Отличная документация в godoc: https://godoc.org/github.com/prometheus/client_golang/prometheus
 
@@ -482,52 +458,27 @@ func myHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 ```
----
-
-# DataDog - типы метрик
-
-.big-list[
-* `Count` (*) - в отличие от Prometheus может и возрастать, и убывать
-* `Gauge` (*) - текущее значение, например потребление памяти
-* `Histogram` - считает агрегированные avg, count, median, 95percentile, max
-* `Distribution`  - больше агрегаций, чем histogram
-* `Set` -  счетчик уникальных значений
-* `Rate` (*) - скорость изменения значения
-]
-
-(*) - основные типы метрик, на их основе хранятся остальные
-
-Документация: https://docs.datadoghq.com/developers/metrics/types/
 
 ---
 
-# Домашнее задание
+# Дополнительные материалы
 
-Обеспечить простейший мониторинг проекта с помощью prometheus
+SRE book:<br>
+https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/
+<br><br>
 
-Prometheus запустить в docker контейнере рядом с остальными сервисами.
-
-Для API сервиса необходимо измерять:
-* Requests per second
-* Latency
-* Коды ошибок
-* Все это в разделении по методам (использовать отдельный тэг prometheus для каждого метода API)
-
-Для баз данных:
-* Количество записей в таблице events (данные брать из pg_stat_user_tables)
-* Стандартные метрики базы: Transactions per second, количество подключений (использовать готовый exporter)
-
-Для расслыльщика:
-* RPS (кол-во отправленных сообщений в сек)
+Monitoring and Observability:<br>
+https://medium.com/@copyconstruct/monitoring-and-observability-8417d1952e1c
 
 ---
+
 
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/6330/](https://otus.ru/polls/6330/)
+https://otus.ru/polls/8478/
 ]
 
 .right-image[
@@ -541,14 +492,3 @@ background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
 # Спасибо за внимание!
-
----
-
-# Дополнительные материалы
-
-SRE book:<br>
-  [https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/](https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/)
-<br><br>
-Monitoring and Observability:<br>
-  [https://medium.com/@copyconstruct/monitoring-and-observability-8417d1952e1c](https://medium.com/@copyconstruct/monitoring-and-observability-8417d1952e1c)
-  

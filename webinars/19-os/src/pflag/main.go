@@ -10,7 +10,7 @@ func main() {
 	var msg string
 
 	verbose := pflag.BoolP("verbose", "v", false, "verbose output")
-	pflag.StringVar(&msg, "msg", "hello", "message to print")
+	pflag.StringVarP(&msg, "msg", "m", "hello", "message to print")
 	// pflag.Lookup("msg").NoOptDefVal = "bye"
 
 	pflag.Parse()

@@ -139,7 +139,7 @@ https://github.com/spf13/cobra/
 ```
 $ cobra init git --pkg-name github.com/otus/git
 $ cd git
-$ gomod init github.com/otus/git
+$ go mod init github.com/otus/git
 $ cobra add commit
 ```
 

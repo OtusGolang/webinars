@@ -584,6 +584,44 @@ fmt.Scanf("%s %d", &s, &d)
 
 ---
 
+# Домашнее задание: использование flag
+
+```
+import "flag"
+
+var (
+	from, to      string
+	limit, offset int64
+)
+
+func init() {
+	flag.StringVar(&from, "from", "", "file to read from")
+	flag.StringVar(&to, "to", "", "file to write to")
+	flag.Int64Var(&limit, "limit", 0, "limit of bytes to copy")
+	flag.Int64Var(&offset, "offset", 0, "offset in input file")
+}
+
+func main() {
+  flag.Parse() // проанализировать аргументы командной строки
+  // теперь в from, to, limit и offset есть значения
+}
+```
+
+Пример вызова:
+```
+./copy -from data.txt -to partial.txt -offset 10 -limit 1000
+```
+---
+
+# Домашнее задание
+
+Утилита для копирования файлов
+
+https://github.com/OtusGolang/home_work/tree/master/hw07_file_copying
+
+---
+
+
 # Опрос
 
 .left-text[
@@ -594,14 +632,6 @@ fmt.Scanf("%s %d", &s, &d)
 .right-image[
 ![](img/gopher7.png)
 ]
-
----
-
-# Домашнее задание
-
-Утилита для копирования файлов
-
-https://github.com/OtusGolang/home_work/tree/master/hw07_file_copying
 
 ---
 

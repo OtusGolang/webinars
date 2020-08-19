@@ -2,17 +2,6 @@
 
 ---
 
-
-class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
-
-# Конфигурация и логирование
-
-### Александр Давыдов
-
----
-
 class: top white
 background-image: url(img/sound.svg)
 background-size: 130%
@@ -26,11 +15,19 @@ background-size: 130%
   ## > Напишите в чат
   ### **+** если все хорошо
   ### **-** если есть проблемы cо звуком или с видео
-  ### !проверить запись!
 ]
 
 ---
 
+class: white
+background-image: url(img/message.svg)
+.top.icon[![otus main](img/logo.png)]
+
+# Конфигурация и логирование
+
+### Александр Давыдов
+
+---
 
 # План занятия
 
@@ -90,7 +87,7 @@ WORKERS=10
 ```
 domain: abs.com
 blacklist:
-  - evil.com 
+  - evil.com
   - bad.com
 ```
 
@@ -196,8 +193,8 @@ type Config struct {
 ]
 
 
-
 https://go.libhunt.com/categories/463-configuration
+<br>
 https://github.com/avelino/awesome-go#configuration
 
 ---
@@ -553,8 +550,8 @@ Production:
 # Sugar logger
 
 ```
-logger.Info("This is an INFO message with fields", 
-            zap.String("region", "us-west"), 
+logger.Info("This is an INFO message with fields",
+            zap.String("region", "us-west"),
             zap.Int("id", 2))
 ```
 
@@ -589,7 +586,7 @@ logger, _ = zap.Config{
     Encoding:    "json",
     Level:       zap.NewAtomicLevelAt(zapcore.DebugLevel),
     OutputPaths: []string{"stdout"},
-    EncoderConfig: zapcore.EncoderConfig{  
+    EncoderConfig: zapcore.EncoderConfig{
         MessageKey: "message",  // <--
     },
 }.Build()

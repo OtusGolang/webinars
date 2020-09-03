@@ -12,11 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-  ### !проверить запись!
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
@@ -26,7 +24,15 @@ background-image: url(img/message.svg)
 
 # Инструментарий и начало <br> работы с Go
 
-### Антон Телышев
+### Алексей Бакин
+
+---
+
+# Как проходит занятие
+
+* ### Активно участвуем - задаем вопросы.
+* ### Чат вижу - могу ответить не сразу.
+* ### После занятия - оффтопик, ответы на любые вопросы.
 
 ---
 
@@ -53,14 +59,6 @@ https://tour.golang.org/
 <br><br>
 
 [Список литературы](https://github.com/OtusGolang/webinars_practical_part/blob/master/LITERATURE.md#%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BB%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D1%8B-%D0%B4%D0%BB%D1%8F-%D0%BA%D1%83%D1%80%D1%81%D0%B0-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA-golang)
-
-
----
-
-# Плюсы и минусы Golang
-
-Презентация будет в материалах занятия.
-
 
 ---
 
@@ -121,21 +119,12 @@ vim /usr/local/go/src/runtime/slice.go
 
 ---
 
-# TL;DR
-
-.main-image[
-![img/path.png](img/path.png)
-]
-
-
----
-
 # GOPATH
 
 `GOPATH` - переменная окружения, показывает где лежит ваше дерево исходников.
 
 <br><br>
-Крайне желательно задать эту переменную явно, добавив в `.bashrc` например
+Можно задать эту переменную явно, добавив в `.bashrc` например
 ```
 export GOPATH=/path/your/go/projects
 ```
@@ -270,7 +259,7 @@ func main() {
 ```
 А потом запустите
 ```
-$ go mod tidy 
+$ go mod tidy
 ```
 Это добавит новые и удалит неиспользуемые зависимости.
 
@@ -390,7 +379,7 @@ thelib.a: current ar archive
 ```
 $ go build -o /tmp/prog github.com/golang/protobuf/protoc-gen-go
 
-$ file /tmp/prog 
+$ file /tmp/prog
 prog: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, not stripped
 ```
 
@@ -547,7 +536,7 @@ func main() {
 
 ```
 $ go get golang.org/x/tools/cmd/goimports
-$ ~/go/bin/goimports -l my/module/name -w path/to/code.go
+$ ~/go/bin/goimports -local my/module/name -w path/to/code.go
 ```
 
 ```
@@ -636,12 +625,24 @@ https://github.com/OtusGolang/home_work/wiki
 
 ---
 
+# Следующее занятие
+
+## Тестирование в Go. Часть 1
+
+<br>
+<br>
+<br>
+
+## 3 сентября, четверг
+
+---
+
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/11412/](https://otus.ru/polls/11412/)
+Ссылка в чате
 ]
 
 .right-image[

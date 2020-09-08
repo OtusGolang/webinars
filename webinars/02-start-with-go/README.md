@@ -169,7 +169,7 @@ Go позволяет легко собирать программы для др
 Для этого при сборке нужно переопределить переменные `GOARCH` и `GOOS`:
 
 ```
-$ GOOS=windows go build -o /tmp/prog prog prog.go
+$ GOOS=windows go build -o /tmp/prog prog.go
 
 $ file /tmp/prog
 prog: PE32+ executable (console) x86-64 (stripped to external PDB), for MS Windows
@@ -348,7 +348,7 @@ https://golang.org/cmd/go/#hdr-Compile_and_install_packages_and_dependencies
 
 `go get -d` - скачивает пакеты из Git репозиториев в `$GOPATH/src`.
 <br><br>
-`go install` собирает и устанавливает в указанные пакеты в `$GOPATH/pkg` и `$GOBIN` (по умолчанию `$GOPATH/bin`).
+`go install` собирает и устанавливает указанные пакеты в `$GOPATH/pkg` и `$GOBIN` (по умолчанию `$GOPATH/bin`).
 <br><br>
 `go get` (без флажка `-d`) - так же вызовет `install`.
 <br><br>
@@ -359,7 +359,7 @@ https://golang.org/cmd/go/#hdr-Compile_and_install_packages_and_dependencies
 `go get github.com/golang/protobuf/...` - многоточие тут означает
 "и все дочерние пакеты".
 <br>
-Это необходимо если в пакет сложный, и содержит подпакеты.
+Это необходимо если пакет сложный, и содержит подпакеты.
 <br>
 Для простых достаточно `go get github.com/beevik/ntp`
 

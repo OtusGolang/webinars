@@ -12,10 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-]
+    ## > Напишите в чат
+    + если все хорошо
+    - если есть проблемы cо звуком или с видео]
 
 ---
 
@@ -42,13 +41,14 @@ background-image: url(img/message.svg)
 .left-text[
 Пожалуйста, пройдите небольшой тест.
 <br><br>
-Возможно, вы уже многое знаете про возможности сериализации в Go.
+Он поможет понять, что вы уже знаете,
+а&nbsp;что предстоит узнать во время занятия.
 <br><br>
 Ссылка в чате
 ]
 
 .right-image[
-![](img/gopher9.png)
+![](img/gopher_science.png)
 ]
 
 ---
@@ -93,7 +93,7 @@ var s []int  // не-инициализированный слайс, nil
 
 s := []int{} // с помощью литерала слайса
 
-s := make([]int, 3)     // с помощью функции make, s == {0,0,0}
+s := make([]int, 3) // с помощью функции make, s == {0,0,0}
 ```
 
 ---
@@ -125,13 +125,13 @@ s := make([]int, 3, 10) // s == {?}
 # Массивы: операции
 
 ```
-v := arr[1] // чтение
+v := a[1] // чтение
 
-arr[3] = 1  // запись
+a[3] = 1  // запись
 
-len(arr)    // длина массива
+len(a)    // длина массива
 
-arr[2:4]    // получение слайса
+a[2:4]    // получение слайса
 ```
 
 ---
@@ -158,9 +158,9 @@ s = append(s, 1)       // добавляет 1 в конец слайса
 s = append(s, 1, 2, 3) // добавляет 1, 2, 3 в конец слайса
 
 s = append(s, s2...)   // добавляет содержимое слайса s2 в конец s
-
+```
+```
 var s []int            // s == nil
-
 s = append(s, 1)       // s == {1} append умеет работать с nil-слайсами
 ```
 
@@ -347,8 +347,22 @@ https://goplay.space/#1K0s37F0z4I
 
 # Слайсы: итерирование
 
+
 ```
+// Индекс и значение
 for i, v := range s {
+  ...
+}
+```
+```
+// Только индекс
+for i := range s {
+  ...
+}
+```
+```
+// Только значение
+for _, v := range s {
   ...
 }
 ```
@@ -377,7 +391,7 @@ https://goplay.space/#PdgvhKJGn3Z
 
 - Реализованы как хэш-таблицы.
 
-- Аналогичные типы в других языках: в Python - `dict`, в JavaScript - `Object`, в Java - `HashMap`.
+- Аналогичные типы в других языках: в Python - `dict`, в JavaScript - `Object`, в Java - `HashMap`, в C++ - `unordered_map`.
 
 
 ---
@@ -419,20 +433,31 @@ delete(cache, key)      // удалить ключ из словаря, рабо
 
 Подробное описание: https://blog.golang.org/go-maps-in-action
 
+<br>
+
+Про устройство мапы:
+- https://www.ardanlabs.com/blog/2013/12/macro-view-of-map-internals-in-go.html
+- https://dave.cheney.net/2018/05/29/how-the-go-runtime-implements-maps-efficiently-without-generics
+
 ---
 
 # Словари: итерирование
 
 ```
+// Ключ и значение
 for key, val := range cache {
   ...
 }
-
-for key := range cache { // если значение не нужно
+```
+```
+// Только ключ
+for key := range cache {
   ...
 }
-
-for _, val := range cache { // если ключ не нужен
+```
+```
+// Только значение
+for _, val := range cache {
   ...
 }
 ```
@@ -480,6 +505,17 @@ var cache map[User][]Permission
 ```
 
 Подробнее https://golang.org/ref/spec#Comparison_operators
+
+---
+
+# Словари: порядок ключей
+
+* ### Какой порядок итерирования по словарю?
+* ### Что будет, если удалить ключ во время итерирования?
+* ### Что будет, если добавить ключ во время итерирования?
+
+https://goplay.space/#SmisQCUpCGb
+
 ---
 
 # Использование Zero Values
@@ -500,7 +536,7 @@ v, ok := cache[key] // "", false
 
 Для слайсов будет так же работать `append`
 ```
-var seq []strings            // nil
+var seq []string             // nil
 seq = append(seq, "hello")   // []string{"hello"}
 ```
 
@@ -538,8 +574,20 @@ for _, user := range users {
 ]
 
 .right-image[
-![](img/gopher9.png)
+![](img/gopher_science.png)
 ]
+
+---
+
+# Следующее занятие
+
+## Структуры
+
+<br>
+<br>
+<br>
+
+## 15 сентября, вторник
 
 ---
 

@@ -103,6 +103,9 @@ go generate -n
  - bindata: вставка бинарных данных JPEGs в код на Go в виде byte array
  - и пр. и пр.
 
+<br><br>
+В стандартной библиотеке, например:<br>
+https://golang.org/src/unicode/tables.go
 
 ---
 
@@ -170,6 +173,10 @@ go-bindata -o myfile.go data/
 - транзакции
 - скрипты
 - ...
+
+Черновик дизайна `//go:embed`
+https://go.googlesource.com/proposal/+/master/design/draft-embed.md
+
 
 ---
 
@@ -481,20 +488,42 @@ message Address {
 
 ---
 
+# Protocol buffers: как установить
+
+1) Скачиваем нужный релиз proto-компилятора, кладём в PATH
+https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.4
+```
+$ protoc --version
+libprotoc 3.12.4
+```
+
+<br>
+2) Ставим генератор Go-кода
+```
+$ go install google.golang.org/cmd/protoc-gen-go
+$ protoc-gen-go --version
+protoc-gen-go v1.25.0
+```
+(не путать с https://github.com/golang/protobuf)
+
+
+<br>
+https://developers.google.com/protocol-buffers/docs/reference/go-generated
+
+
+---
+
 # Protocol buffers: кодогенерация
 
-```
-go get -u github.com/golang/protobuf/protoc-gen-go
-```
 
 ```
-	//go:generate protoc -go_out=. file.proto
+//go:generate protoc -go_out=. file.proto
 ```
 
 globbing не поддерживается:
 
 ```
-	//go:generate protoc -go_out=. file1.proto file2.proto
+//go:generate protoc -go_out=. file1.proto file2.proto
 ```
 
 
@@ -591,7 +620,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw09_generator_of_validators
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/8467/
+https://otus.ru/polls/11432/
 ]
 
 .right-image[

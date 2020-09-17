@@ -75,6 +75,7 @@ go test -bench=BenchmarkFillSlice -benchmem -benchtime 10s
 ```
 benchcmp old new
 ```
+https://golang.org/x/tools/cmd/benchcmp
 
 ---
 
@@ -94,6 +95,7 @@ benchstat ret
 ```
 benchstat old new
 ```
+https://golang.org/x/perf/cmd/benchstat
 
 ---
 
@@ -165,13 +167,30 @@ go tool pprof -http=":8080" http://127.0.0.1:7070/debug/pprof/profile?seconds=5
 
 ---
 
+# Рефлексия
+
+.left-code[
+<br><br>
+### Что нового я узнал?
+<br><br>
+### Что изучу подробнее?
+<br><br>
+### Что начну применять уже завтра?
+]
+
+.right-image[
+![](img/gopher_meditation.png)
+]
+
+---
+
 # Тест по третьему модулю
 
-.left-text[
+.left-code[
 Пожалуйста, пройдите тест.
 <br><br>
 Он поможет понять, как усвоился материал,
-что стоит повторить.
+а что стоит повторить.
 <br><br>
 Ссылка в чате
 ]

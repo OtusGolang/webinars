@@ -8,15 +8,13 @@ background-size: 130%
 .top.icon[![otus main](img/logo.png)]
 
 .sound-top[
-  # Как меня слышно и видно?
+	# Как меня слышно и видно?
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-  ### !проверить запись!
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
@@ -26,32 +24,38 @@ background-image: url(img/message.svg)
 
 # Протокол HTTP
 
-### Дмитрий Смаль, Елена Граховац
+### Алексей Бакин
+---
+
+# Как проходит занятие
+
+* ### Активно участвуем - задаем вопросы.
+* ### Чат вижу - могу ответить не сразу.
+* ### После занятия - оффтопик, ответы на любые вопросы.
 
 ---
 
-# План занятия
+# На занятии
 
-.big-list[
-* Протокол HTTP
-* Использование HTTP клиента
-* Создание простого HTTP сервера
-* Декораторы и middleware
-* HTTP/1.1 и HTTP/2.0
-* REST, GraphQL, RPC
-* Swagger
-]
+* ### HTTP клиент и сервер на Go
+* ### Middleware
+* ### Построение API сервиса
 
 ---
 
-# HTTP
+# Что такое HTTP?
+
+---
+
+# Что такое HTTP?
 
 .main-image[
 ![img/netflow.png](img/netflow.png)
 ]
 
-HTTP - текстовый протокол передачи документов между клиентом и сервером.
-Изначально разработан для передачи web страниц, сейчас используется так же как протокол для API.<br>
+---
+
+# Задачи HTTP
 
 ---
 
@@ -84,7 +88,7 @@ HTTP - текстовый протокол передачи документов
 # HTTP запрос
 
 ```
-GET /search?query=go+syntax&limit=5 HTTP/1.1        
+GET /search?query=go+syntax&limit=5 HTTP/1.1
 Accept: text/html,application/xhtml+xml
 Accept-Encoding: gzip, deflate
 Cache-Control: max-age=0
@@ -95,7 +99,7 @@ User-Agent: Mozilla/5.0 Gecko/20100101 Firefox/39.0
 ```
 
 ```
-POST /add_item HTTP/1.1        
+POST /add_item HTTP/1.1
 Accept: application/json
 Accept-Encoding: gzip, deflate
 Cache-Control: max-age=0
@@ -139,29 +143,59 @@ Connection: close
 # HTTP клиент - GET
 
 ```go
-import (
-    "net/http"
-    "net/url"
-)
+func main() {
+	resp, err := http.Get("http://127.0.0.1:7070/")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close() // <-- Зачем?
 
-// создаем HTTP клиент
-client := &http.Client{}
-
-// строим нужный URL
-reqArgs := url.Values{}
-reqArgs.Add("query", "go syntax")
-reqArgs.Add("limit", "5")
-reqUrl, _ := url.Parse("https://site.ru")
-reqUrl.Path = "/search"
-reqUrl.RawQuery = reqArgs.Encode()
-
-// создаем GET-запрос
-req, err := http.NewRequest("GET", reqUrl.String(), nil)
-
-// выполняем запрос
-req.Header.Add("User-Agent", `Mozilla/5.0 Gecko/20100101 Firefox/39.0`)
-resp, err := client.Do(req)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	...
+}
 ```
+
+---
+
+# HTTP клиент - GET
+```
+http://site.ru/search?query=...&limit=...
+```
+
+```go
+	reqArgs := url.Values{}
+	reqArgs.Add("query", "go syntax")
+	reqArgs.Add("limit", "5")
+
+	reqUrl, _ := url.Parse("http://site.ru/search")
+	reqUrl.RawQuery = reqArgs.Encode()
+
+	req, _ := http.NewRequest("GET", reqUrl.String(), nil)
+	req.Header.Add("User-Agent", `Mozilla/5.0 Gecko/20100101 Firefox/39.0`)
+
+	resp, err := http.DefaultClient.Do(req)
+```
+
+https://goplay.space/#QHza-h5jNm2
+
+---
+
+# HTTP клиент
+
+```
+	client := http.Client{
+		Transport: &http.Transport{
+			MaxIdleConns:    100,
+			IdleConnTimeout: 90 * time.Second,
+		},
+	}
+```
+
+https://golang.org/pkg/net/http/#Client
+
 
 ---
 
@@ -169,129 +203,124 @@ resp, err := client.Do(req)
 
 ```go
 type AddRequest struct {
-  Id    int `json:"id"`
-  Title string `json:"title"`
-  Text  string `json:"text"`
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+	Text  string `json:"text"`
 }
 
-// создаем HTTP клиент
-client := &http.Client{}
+...
 
-// Запрос в виде Go структуры
-addReq := &AddRequest{
-  Id: 123,
-  Title: "for loop",
-  Text: "...",
-}
+	addReq := &AddRequest{
+		Id:    123,
+		Title: "for loop",
+		Text:  "...",
+	}
 
-// Создаем буфер (io.Reader) из которого клиент возьмет тело запроса
-var body bytes.Buffer
-json.NewEncoder(body).Encode(addReq)
+	jsonBody, _ := json.Marshal(&addReq)
 
-// создаем POST-запрос
-req, err := http.NewRequest("POST", "https://site.ru/add_item", body)
+	req, err := http.NewRequest("POST", "https://site.ru/add_item",
+		bytes.NewBuffer(jsonBody))
 
-// выполняем запрос
-resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 ```
 
 ---
-
 
 # HTTP клиент - работа с ответом
 
 ```go
-// выполняем запрос
-resp, err := client.Do(req)
-if err != nil {
-  // или другая уместная обработка
-  return errors.Errorf(err)
-}
+	resp, err := client.Do(req)
+	if err != nil {
+		return errors.Errorf(err)
+	}
+	defer resp.Body.Close()
 
-// если ошибки не было - нам необходимо "закрыть" тело ответа
-// иначе при повторном запросе будет открыто новое сетевое соединение
-defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return errors.Errorf("unexpected http status: %s", resp.Status)
+	}
 
-// проверяем HTTP status ответа
-if resp.StatusCode != 200 {
-  // обработка HTTP статусов зависит от приложения
-  return errors.Errorf("unexpected http status: %s", resp.Status)
-}
+	ct := resp.Header.Get("Content-Type")
+	if ct != "application/json" {
+		return errors.Errorf("unexpected content-type: %s", ct)
+	}
 
-// возможно проверяем какие-то заголовки
-ct := resp.Header.Get("Content-Type")
-if ct != "application/json" {
-  return errors.Errorf("unexpected content-type: %s", ct)
-}
-
-// считываем тело ответа (он может быть большим)
-body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 ```
 
 ---
 
 # HTTP клиент - context
 
-Контекст в Go - это объект ограничивающий время выполнения запрос (кода) и/или предоставляющий контекстную информацию (например trace id) запроса.
-<br><br>
-Если у вас уже есть некоторый контекст 
-
 ```go
-func (h *MyHandler) DoSomething(ctx context.Context) error {
+	req, _ := http.NewRequest(http.MethodGet, "https://site.ru/some_api", nil)
 
-  // создаем запрос
-  req, _ := http.NewRequest(http.MethodGet, "https://site.ru/some_api", nil)
-  
-  // теперь запрос будет выполняться в рамках сtx
-  req = req.WithContext(ctx)
+	req = req.WithContext(ctx)
 
-  // выполняем запрос
-  resp, err := h.client.Do(req)
+	resp, err := h.client.Do(req)
 
-  // ...
-}
+	// ...
 ```
 
 ---
 
 # HTTP клиент - context
 
-Есть просто необходимо ограничить время выполнения запроса
+```go
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	req = req.WithContext(ctx)
+
+	resp, err := client.Do(req)
+```
+---
+
+# HTTP клиент - middleware
 
 ```go
-// создаем новый контекст
-ctx := context.Background()
-ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
-defer cancel()
+	tr := http.DefaultTransport
+	tr = NewTraceRoundTripper(tr, tracer)
+	tr = NewRetryRoundTripper(tr, []time.Duration{...})
+	tr = NewBackupRoundTripper(tr, hostnames)
 
-// теперь запрос будет выполняться в рамках сtx
-req = req.WithContext(ctx)
-
-// выполняем запрос
-resp, err := client.Do(req) 
+	client := http.Client{
+		Transport: tr,
+	}
 ```
 
 ---
 
-# HTTP клиент - настройка
-
-Внутри `http.Client` поддерживается пул соединений, т.е:
-<br><br>
-* одно HTTP соединение будет использовано повторно
-* при необходимости будет открыто новое HTTP соединение
-* `http.Client` безопасен для конкурентного доступа
-
-<br><br>
-
-Настроить пул соединений и другие параметры можно с помощью `http.Transport`
+# HTTP клиент - middleware
 
 ```go
-tr := &http.Transport{
-	MaxIdleConns:       10,
-	IdleConnTimeout:    30 * time.Second,
-	DisableCompression: true,
+func NewBackupRoundTripper(rt http.RoundTripper, upstreams []string) *BackupRoundTripper {
+	return &RetryRoundTripper{
+		rt:        rt,
+		upstreams: upstreams,
+	}
 }
-client := &http.Client{Transport: tr}
+
+func (t *BackupRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+  var resp *http.Response
+  var err error
+  prepareRequest(req) // <-- подготавливает req.Body к переиспользованию
+
+  for n, upstreamURL := range t.upstreams {
+    reqcpy := t.makeReq(req, upstreamURL) // <-- делает копию запроса
+    if n != 0 {                           //     с нужным хостом
+      resetRequest(&reqcpy)
+    }
+    closeResponse(resp)
+
+    resp, err = t.rt.RoundTrip(&reqcpy)
+    if !needUpstreamSwitch(resp, err) {
+      break
+    }
+  }
+
+  return resp, err
+}
 ```
 
 ---
@@ -300,29 +329,25 @@ client := &http.Client{Transport: tr}
 
 ```go
 type MyHandler struct {
-  // все нужные вам объекты: конфиг, логер, соединение с базой и т.п.
+	// все нужные объекты: конфиг, логер, соединение с базой и т.п.
 }
 
 // реализуем интерфейс `http.Handler`
-func (h *MyHandler) ServeHTTP(resp ResponseWriter, req *Request) {
-  // эта функция будет обрабатывать входящие запросы
+func (h *MyHandler) ServeHTTP(w ResponseWriter, r *Request) {
+	// эта функция будет обрабатывать входящие запросы
 }
 
 func main() {
-  // создаем обработчик
-  handler := &MyHandler{}
+	handler := &MyHandler{}
 
-  // создаем HTTP сервер
-  server := &http.Server{
-    Addr:           ":8080",
-    Handler:        handler,
-    ReadTimeout:    10 * time.Second,
-    WriteTimeout:   10 * time.Second,
-    MaxHeaderBytes: 1 << 20,
-  }
+	server := &http.Server{
+		Addr:           ":8080",
+		Handler:        handler,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+	}
 
-  // запускаем сервер, это заблокирует текущую горутину
-  server.ListenAndServe()
+	server.ListenAndServe()
 }
 
 ```
@@ -332,31 +357,27 @@ func main() {
 # HTTP сервер - обработчик
 
 ```go
-func (h *MyHandler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
-  if req.URL.Path == "/search" {
-    // разбираем аргументы
-    args := req.URL.Query()
-    query := args.Get("query")
-    limit, err := strconv.Atoi(args.Get("limit"))
-    if err != nil {
-      resp.WriteHeader(400)
-      return
-    }
-    
-    // выполняем бизнес-логику
-    results, err := DoBusinessLogicRequest(query, limit)
-    if err != nil {
-      resp.WriteHeader(404)
-      return
-    }
+func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/search" {
+		args := r.URL.Query()
+		query := args.Get("query")
+		limit, err := strconv.Atoi(args.Get("limit"))
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
-    // устанавливаем заголовки ответа
-    resp.Header().Set("Content-Type", "application/json; charset=utf-8")
-    resp.WriteHeader(200)
+		results, err := h.doSomeBusinessLogic(query, limit)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
-    // сериализуем и записываем тело ответа
-    json.NewEncoder(resp).Encode(results)
-  }
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+
+		json.NewEncoder(w).Encode(results)
+	}
 }
 ```
 
@@ -364,25 +385,29 @@ func (h *MyHandler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 # HTTP сервер - функция как обработчик
 
-С помощью типа `http.HandlerFunc` вы можете использовать обычную функцию в качестве HTTP обработчика
-
 ```go
-// функция с произвольным именем
-func SomeHttpHandler(resp http.ResponseWriter, req *http.Request) {
-  // ...
+type MyHandler struct {
 }
 
-func main() {
-  // ...
-  // создаем HTTP сервер
-  server := &http.Server{
-    Addr:           ":8080",
-    Handler:        http.HandlerFunc(SomeHttpHandler),
-    ReadTimeout:    10 * time.Second,
-    WriteTimeout:   10 * time.Second,
-    MaxHeaderBytes: 1 << 20,
-  }
-  // ...
+func (h *MyHandler) ServeHTTP(w ResponseWriter, r *Request) {
+}
+
+...
+
+	server := &http.Server{
+		Handler: handler, // <--
+	}
+```
+
+```go
+func SomeHttpHandler(w http.ResponseWriter, r *http.Request) {
+}
+
+...
+
+	server := &http.Server{
+		Handler: http.HandlerFunc(SomeHttpHandler), // <--
+	}
 }
 ```
 
@@ -393,57 +418,89 @@ func main() {
 ```go
 type MyHandler struct {}
 
-func (h *MyHandler) Search(resp ResponseWriter, req *Request) {
-  // ...
-}
-
-func (h *MyHandler) AddItem(resp ResponseWriter, req *Request) {
-  // ...
-}
-
-func main() {
-  handler := &MyHandler{}
-
-  // создаем маршрутизатор запросов
-  mux := http.NewServeMux()
-  mux.HandleFunc("/search", handler.Search)
-  mux.HandleFunc("/add_item", handler.AddItem)
-
-  // создаем и запускаем HTTP сервер
-  server := &http.Server{
-    Addr:    ":8080",
-    Handler: mux,
+func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+  switch r.URL.Path {
+    case "/search":
+      h.Search(w, r)
+    case "/add"
+      h.AddItem(w, r)
+    default:
+      http.NotFound(w, r)
   }
-  log.Fatal(server.ListenAndServe())
+}
+
+func (h *MyHandler) Search(w ResponseWriter, r *Request) {
+	// ...
+}
+
+func (h *MyHandler) AddItem(w ResponseWriter, r *Request) {
+	// ...
 }
 
 ```
 ---
 
-# HTTP сервер - middleware
+# HTTP сервер - routing
 
 ```go
-// это функция - middleware, она преобразует один обработчик в другой
-func (s *server) adminOnly(h http.HandlerFunc) http.HandlerFunc {
-  return func(resp http.ResponseWriter, req *http.Request) {
-    if !currentUser(req).IsAdmin {
-        http.NotFound(resp, req)
-        return
-    }
-    h(resp, req)
-  }
+type MyHandler struct {}
+
+func (h *MyHandler) Search(w ResponseWriter, r *Request) {
+	// ...
+}
+
+func (h *MyHandler) AddItem(w ResponseWriter, r *Request) {
+	// ...
 }
 
 func main() {
-  handler := &MyHandler{}
+	handler := &MyHandler{}
 
-  // создаем маршрутизатор запросов
-  mux := http.NewServeMux()
-  mux.HandleFunc("/search", handler.Search)
-  // !!! мы обернули один из обработчиков в middleware
-  mux.HandleFunc("/add_item", adminOnly(handler.AddItem))  
+	mux := http.NewServeMux()
+	mux.HandleFunc("/search", handler.Search)
+	mux.HandleFunc("/add", handler.AddItem)
+
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+	log.Fatal(server.ListenAndServe())
+}
+
+```
+---
+
+# Шутка про роутеры :)
+
+[dayssincelastgohttprouter.com](http://dayssincelastgohttprouter.com)
+
+---
+
+# HTTP сервер - middleware
+
+```go
+func (s *server) adminOnly(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !currentUser(r).IsAdmin {
+				http.NotFound(w, r)
+				return
+		}
+		h(w, r)
+	}
+}
+
+func main() {
+	handler := &MyHandler{}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/search", handler.Search)
+	mux.HandleFunc("/add", adminOnly(handler.AddItem)) // <--
 }
 ```
+
+---
+
+# Типовые задачи для Middleware
 
 ---
 
@@ -462,27 +519,24 @@ func main() {
 # Пример Middleware - ограничение времени запроса
 
 ```go
+func (h *MyHandler) Search(w ResponseWriter, r *Request) {
+	ctx := r.Context()
 
-func (h *MyHandler) Search(resp ResponseWriter, req *Request) {
-  ctx := req.Context()
-  // ...
-  // мы должны передавать контекст вниз по всем вызовам
-  results, err := DoBusinessLogicRequest(ctx, query, limit)
-  // ...
+	results, err := DoBusinessLogicRequest(ctx, query, limit)
 }
 
 func withTimeout(h http.HandlerFunc, timeout time.Duration) http.HandlerFunc {
-  return func(resp http.ResponseWriter, req *http.Request) {
-    // берем контекст запроса и ограничиваем его таймаутом
-    ctx := context.WithTimeout(req.Context(), timeout)
-    // обновляем контекст запроса
-    req = req.WithContext(ctx)
-    h(resp, req)
-  }
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithTimeout(r.Context(), timeout)
+		r = r.WithContext(ctx)
+		h(w, r)
+	}
 }
 
-mux := http.NewServeMux()
-mux.HandleFunc("/search", withTimeout(handler.Search, 5*time.Second))
+...
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/search", withTimeout(handler.Search, 5*time.Second))
 ```
 
 ---
@@ -491,37 +545,30 @@ mux.HandleFunc("/search", withTimeout(handler.Search, 5*time.Second))
 
 ```go
 
-func (h *MyHandler) AddItem(resp ResponseWriter, req *Request) {
-  ctx := req.Context()
-  user := ctx.Value("currentUser").(*MyUser)
-  // ...
+func (h *MyHandler) AddItem(w ResponseWriter, r *Request) {
+	ctx := r.Context()
+	user := ctx.Value("currentUser").(*MyUser)
+	// ...
 }
 
 func authorize(h http.HandlerFunc, timeout time.Duration) http.HandlerFunc {
-  return func(resp http.ResponseWriter, req *http.Request) {
-    // выполняем авторизацию пользователя
-    user, err := DoAuthorizeUser(req)
-    if err != nil {
-      // если не удалось - возвращаем соответствующий HTTP статус
-      resp.WriteHeader(403)
-      return
-    }
-    // сохраняем пользователя в контекст
-    ctx := context.WithValue(req.Context(), "currentUser", user)
-    req = req.WithContext(ctx)
-    h(resp, req)
-  }
+	return func(w http.ResponseWriter, r *http.Request) {
+		user, err := DoAuthorizeUser(r)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+			return
+		}
+		ctx := context.WithValue(r.Context(), "currentUser", user)
+		r = r.WithContext(ctx)
+		h(w, r)
+	}
 }
 
-mux := http.NewServeMux()
-mux.HandleFunc("/add_item", authorize(handler.AddItem))
+...
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/add", authorize(handler.AddItem))
 ```
-
----
-
-# Шутка про роутеры :)
-
-[dayssincelastgohttprouter.com](http://dayssincelastgohttprouter.com)
 
 ---
 
@@ -534,39 +581,59 @@ mux.HandleFunc("/add_item", authorize(handler.AddItem))
 
 ---
 
-# Тестирование
+# Тестирование - пакет net/http/httptest
 
-Очень полезный пакет `net/http/httptest`
+Тестирование отдельного хэндлера
 
-Пример:
 ```go
-package main
-
-import (
-	"fmt"
-	"io"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
-)
-
-func main() {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "<html><body>Hello World!</body></html>")
 	}
 
-	req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+	r := httptest.NewRequest("GET", "http://example.com/foo", nil)
 	w := httptest.NewRecorder()
-	handler(w, req)
+	handler(w, r)
 
 	resp := w.Result()
-	body, _ := ioutil.ReadAll(resp.Body)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
 
-	fmt.Println(resp.StatusCode)
-	fmt.Println(resp.Header.Get("Content-Type"))
-	fmt.Println(string(body))
+	body, err := ioutil.ReadAll(resp.Body)
+	...
+```
 
-}
+---
+
+# Тестирование - пакет net/http/httptest
+
+Тестирование целого сервера
+
+```go
+	myRouter := NewMyRouter(
+		...
+	)
+
+	ts := httptest.NewServer(myRouter.RootHandler())
+	defer ts.Close()
+
+	res, err := http.Get(ts.URL)
+	...
+```
+---
+
+# Тестирование - пакет net/http/httptest
+
+Тестирование http вызовов на другой сервиса
+
+```go
+	serviceHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		...
+	})
+
+	ts := httptest.NewServer(serviceHandler)
+	defer ts.Close()
+
+	doSomeBusinessLogic(serviceHandler)
+	...
 ```
 
 ---
@@ -580,7 +647,7 @@ func main() {
 * `REST` плохо подходит, если в вашем сервисе много различных действий и выборок над одними и теми же сущностями.
 
 <br><br>
-`RPC` - это удаленный вызов процедур. Существует множество различных протоколов `RPC`: `DCOM`, `SOAP`, `JSON-RPC`, `JSON-RPC`, `gRPC`.
+`RPC` - это удаленный вызов процедур. Существует множество различных протоколов `RPC`: `DCOM`, `SOAP`, `JSON-RPC`, `gRPC`.
 <br><br>
 * `RPC` довольно универсальный подход
 ---
@@ -600,10 +667,10 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 100500
 
 {
-  "status": "ok",
-  "items": [
-    ...
-  ]
+	"status": "ok",
+	"items": [
+		...
+	]
 }
 ```
 ---
@@ -632,8 +699,8 @@ Content-Length: 100500
 
 # Swagger
 
-OpenAPI, изначально известное как Swagger это DSL (Domain Specific Language, специализированный язык) для описания REST API. 
-Спецификации Open API могут быть описанны в виде JSON или YAML документов. 
+OpenAPI, изначально известное как Swagger это DSL (Domain Specific Language, специализированный язык) для описания REST API.
+Спецификации Open API могут быть описанны в виде JSON или YAML документов.
 
 <br><br>
 Редактировать Swagger спецификацию: [https://editor.swagger.io](https://editor.swagger.io)
@@ -647,16 +714,28 @@ OpenAPI, изначально известное как Swagger это DSL (Doma
 * [en] [Классный урок про использование контекста](https://github.com/campoy/justforfunc/tree/master/09-context)
 * [ru] [Доклад про использование GraphQL в Go](https://youtu.be/tv8muwgj-Y4)
 * [en] [Про дизайн клиента и middleware](https://youtu.be/SlhG7bCRA6Q)
+* [en] [Про вредность роутеров](https://blog.merovius.de/2017/06/18/how-not-to-use-an-http-router.html)
+
+---
+
+# Следующее занятие
+
+## Работа с gRPC
+
+<br>
+<br>
+<br>
+
+## 3 сентября, четверг
 
 ---
 
 # Опрос
 
-.left-text[
-Заполните пожалуйста опрос
+.left-code[
+Заполните пожалуйста опрос.
 <br><br>
-[https://otus.ru/polls/4910/](https://otus.ru/polls/4636/)
-
+Ссылка в чате.
 ]
 
 .right-image[

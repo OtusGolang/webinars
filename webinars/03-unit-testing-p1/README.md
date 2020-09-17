@@ -12,10 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
@@ -118,15 +117,15 @@ strings_test.go // <-- ..._test.go
 
 ```
 func TestIndex(t *testing.T) { // <-- Test...(t *testing.T)
-    const s, sep, want = "chicken", "ken", 4
-    got := strings.Index(s, sep)
+    const s, sub, want = "chicken", "ken", 4
+    got := strings.Index(s, sub)
     if got != want {
-        t.Errorf("Index(%q,%q) = %v; want %v", s, sep, got, want)
+        t.Errorf("Index(%q,%q) = %v; want %v", s, sub, got, want)
     }
 }
 ```
 
-https://goplay.space/#0G3efzky6L0
+https://goplay.space/#yybc8Np1JjK
 
 ---
 
@@ -155,7 +154,7 @@ https://goplay.space/#vjAsrBrQrxu
 ## TitleCase
 * Делает слова в строке с большой буквы.
 * Кроме слов из второй строки.
-* Первое слово всегда с первой буквы.
+* Первое слово всегда с большой буквы.
 
 Пример:
 
@@ -291,6 +290,7 @@ func TestParseInt(t *testing.T) {
 	}
 
 	for _, tc := range tests {
+		tc := tc
 		t.Run(tc.str, func(t *testing.T) {
 			got, err := strconv.ParseInt(tc.str, 10, 8)
 			require.NoError(t, err)
@@ -300,7 +300,7 @@ func TestParseInt(t *testing.T) {
 }
 ```
 
-https://goplay.space/#Rr-i2UFYAXH
+https://goplay.space/#ssdm9GN6SiO
 
 ---
 
@@ -384,6 +384,18 @@ https://blog.golang.org/cover
 .right-image[
 ![](img/gopher_science.png)
 ]
+
+---
+
+# Следующее занятие
+
+## Элементарные типы данных в Go
+
+<br>
+<br>
+<br>
+
+## 8 сентября, вторник
 
 ---
 

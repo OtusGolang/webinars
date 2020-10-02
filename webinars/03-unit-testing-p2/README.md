@@ -12,10 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
@@ -39,9 +38,9 @@ background-image: url(img/message.svg)
 
 # О чем будем говорить
 
-* ### Моки (интерфейсы, time, фс)
-* ### Faker
-* ### Тестирование мутирвоанием
+* ### Дубли (моки для интерфейсов, time, фс)
+* ### Faker (сгенерированные данные)
+* ### Тестирование мутированием
 * ### Golden files
 
 ---
@@ -75,23 +74,26 @@ func TestProcessAndStore() {
 
 ---
 
-# Моки
+# Моки: отличие от стабов
 
-* ### https://pkg.go.dev/github.com/stretchr/testify/mock?tab=doc
-* ### https://github.com/golang/mock
+* ### Стаб - это заглушка, "простая" реализация интерфейса (обычно хранит состояние).
+* ### Мок фиксирует вызовы интерфейса. Позволяет проверить правильность его использования.
+
+
+https://martinfowler.com/articles/mocksArentStubs.html
 
 ---
 
-# Моки: отличие от стабов
+# Моки: пакеты
 
-* ### Стаб - это заглушка, "пустая" реализация интерфейса.
-* ### Мок фиксирует вызовы интерфейса. Позволяет проверить правильность его использования.
+* ### https://pkg.go.dev/github.com/stretchr/testify/mock
+* ### https://github.com/golang/mock
 
 ---
 
 # testify: suite
 
-https://pkg.go.dev/github.com/stretchr/testify/suite?tab=doc
+https://pkg.go.dev/github.com/stretchr/testify/suite
 
 ```
 type UsersTestSuite struct {
@@ -148,13 +150,53 @@ https://goplay.space/#BqOcrrUCZAn
 
 ---
 
+# faker: seed
+
+Чтобы в будущем было проще разбираться с упавшими тестами, выставляем seed явно:
+```
+	var seed int64 = time.Now().UnixNano()
+	s.T().Logf("rand seed: %d", seed)
+	rand.Seed(seed)
+	s.genFakeData()
+```
+
+Когда тесты упадут, то увидим в логах:
+```
+--- FAIL: TestStoreSuire (0.00s)
+    --- FAIL: TestStoreSuire/TestDuplicate (0.00s)
+        store_test.go:45: rand seed: 1599764658164627786
+```
+
+И сможем воспроизвести тест:
+```
+	...
+	var seed int64 = 1599764658164627786 //time.Now().UnixNano()
+	...
+```
+
+---
+
+# faker: валидация случайных данных
+
+Случайные данные могут оказаться "невалидными". Частые кейзы:
+- дубликаты
+- зарезервированные слова
+
+```
+	argNames := []string{faker.Word(), faker.Word()}
+	for isLuaReservedWord(argNames[0]) {
+		argNames[0] = faker.Word()
+	}
+	for argNames[0] == argNames[1] || isLuaReservedWord(argNames[1]) {
+		argNames[1] = faker.Word()
+	}
+```
+
+---
+
 # Тестирование мутированием
 
-* ### https://github.com/zimmski/go-mutesting
-
-<br>
-
-Устарел. Поддержка модулей в ПРе - https://github.com/zimmski/go-mutesting/pull/77.
+* ### https://github.com/AntonStoeckl/go-mutesting
 
 ---
 
@@ -165,7 +207,7 @@ https://goplay.space/#BqOcrrUCZAn
 
 ---
 
-# Моки для ФС
+# Стаб для ФС
 
 * ### https://github.com/spf13/afero
 
@@ -209,6 +251,35 @@ func TestSomething(t *testing.T) {
 # Примеры с занятия
 
 * ### https://github.com/OtusGolang/webinars_practical_part/tree/master/03-unit-testing
+
+
+---
+
+# Следующее занятие
+
+## Горутины и каналы
+
+<br>
+<br>
+<br>
+
+## 6 октября, вторник
+
+---
+
+# Результаты первого модуля "Начало работы с Go"
+
+.left-text[
+Пройдите, пожалуйста, тест по первому модулю.
+<br><br>
+Он поможет вспомнить, что мы уже прошли, и покажет, какие области запомнились лучше, а какие хуже.
+<br><br>
+Ссылка в чате
+]
+
+.right-image[
+![](img/gopher_science.png)
+]
 
 ---
 

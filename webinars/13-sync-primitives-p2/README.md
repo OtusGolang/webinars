@@ -12,10 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
@@ -65,12 +64,13 @@ background-image: url(img/message.svg)
 
 ---
 
-# Модель памяти Go
+# Go memory model
 
 ```
 func main() {
 	text := ""
 	isInit := false
+
 	go func() {
 		text = "go-go-go"
 		isInit = true
@@ -85,7 +85,7 @@ func main() {
 
 ---
 
-# Модель памяти Go
+# Go memory model
 
 https://golang.org/ref/mem
 <br/>
@@ -157,8 +157,7 @@ https://goplay.space/#1Itioa-0cXF
 ![](img/cachecontention.png)
 ]
 
-При блокировке на чтение каждое ядро обновляет счетчик.
-Следующие ядра - вычитывают значение из кэша предыдущего.
+При блокировке на чтение каждое ядро обновляет счетчик. Что приводит к инвалидации счетчика в кэше других ядер.
 
 https://habr.com/ru/post/338718/
 
@@ -199,9 +198,11 @@ type Counters struct {
 }
 
 func (c *Counters) Load(key string) (int, bool) {
-	val, _ := c.m.Load(key)
-	v, ok := val.(int)
-	return v, ok
+	val, ok := c.m.Load(key)
+	if !ok {
+		return 0, false
+	}
+	return val.(int), true
 }
 
 func (c *Counters) Store(key string, value int) {
@@ -215,7 +216,7 @@ func (c *Counters) Range(f func(k string, v int) bool) {
 }
 ```
 
-https://goplay.space/#5CbUZMh7cIT
+https://goplay.space/#SYciXadco3q
 
 ---
 
@@ -290,7 +291,7 @@ func worker() {
 		for len(tasks) == 0 { // <=== for, а не if! Почему?
 			cond.Wait()
 		}
-		task, tasks = tasks[0], tasks[1:]
+		task, tasks = tasks[0], tasks[1:] // <=== Это плохо. Почему?
 		mu.Unlock()
 
 		task()
@@ -424,13 +425,86 @@ func BenchmarkWithoutPoolGC(b *testing.B) {
 
 ---
 
-# atomic
+# atomic: Add
 
-* Store/Load
-* Add
-* CompareAndSwap
+```
+func main() {
+	wg := sync.WaitGroup{}
 
-https://golang.org/pkg/sync/atomic/
+	var v int64
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func() {
+			atomic.AddInt64(&v, 1) // атомарный v++
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+	fmt.Println(v)
+}
+```
+
+https://goplay.space/#SHwBoHdsUsg
+
+---
+
+# atomic: Store/Load
+
+```
+func main() {
+	wg := sync.WaitGroup{}
+	var luckyNumber int32 = 7
+
+	wg.Add(2)
+
+	go func() {
+		atomic.StoreInt32(&luckyNumber, 42)
+		wg.Done()
+	}()
+
+	go func() {
+		fmt.Println(atomic.LoadInt32(&luckyNumber))
+		wg.Done()
+	}()
+
+	wg.Wait()
+}
+
+```
+
+https://goplay.space/#1CKmqzRzXfb
+
+---
+
+# atomic: CompareAndSwap
+
+Вариант реализации sync.Once
+```
+const (
+	onceInit int32 = iota
+	onceDoing
+	onceDone
+)
+
+type Once struct {
+	state int32
+}
+
+func (o *Once) Do(fn func()) {
+	if atomic.CompareAndSwapInt32(&o.state, onceInit, onceDoing) {
+		fn()
+		atomic.StoreInt32(&o.state, onceDone)
+		return
+	}
+
+	for atomic.LoadInt32(&o.state) == onceDone {
+		time.Sleep(10 * time.Nanosecond)
+	}
+}
+```
+
+https://goplay.space/#QayPezK-9xI
 
 ---
 

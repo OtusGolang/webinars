@@ -248,3 +248,8 @@ table img {
 #semantic-versioning~table th {
   text-align: left;
 }
+
+.f18 li {
+  font-size: 18px !important;
+}
+

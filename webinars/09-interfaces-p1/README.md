@@ -287,6 +287,11 @@ func Fprintln(w io.Writer, a ...interface{}) (n int, err error) {
 }
 ```
 
+<br>
+<b>interface{} is says nothing</b>
+
+https://go-proverbs.github.io/
+
 
 ---
 
@@ -542,7 +547,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw04_lru_cache
 
 # Опрос
 
-https://otus.ru/polls/11418/
+https://otus.ru/polls/15933/
 
 
 ---

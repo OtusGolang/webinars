@@ -26,7 +26,7 @@ background-image: url(img/message.svg)
 
 # Метрики и мониторинг
 
-### Дмитрий Смаль, Антон Телышев
+### Антон Телышев
 
 ---
 
@@ -73,7 +73,10 @@ Operability (работоспособность) - мера того, наско
 
 .big-list[
 * Отладка, решение текущих проблем
-* SRE мир: SLA, SLO, SLI
+* <a href="https://www.atlassian.com/incident-management/kpis/sla-vs-slo-vs-sli">SRE мир</a>:
+  * SLA (Service Level Agreement)
+  * SLI (Service Level Indicator)
+  * SLO (Service Level Objective)
 * Отправка уведомлений
 * Технические и бизнесовые A/B эксперименты
 * Анализ трендов, прогнозирование
@@ -105,7 +108,7 @@ https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/
 Особенности:
 * мониторинг специфических/одноразовых задач
 * может работать за NAT
-* не нужно открывать никакие URL'ы/порты на стороне пирложения
+* не нужно открывать никакие URL'ы/порты на стороне приложения
 * из приложения нужно конфигурировать подключение
 
 Примеры: `graphite`, `statsd`
@@ -138,7 +141,7 @@ https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/
 
 # Load Average
 
-LA - сложная метрика, ее можно интерпретировать как количество процессов(потоков) в ОС, 
+LA - сложная метрика, ее можно интерпретировать как количество процессов (потоков) в ОС, 
 находящихся в ожидании какого-либо ресурса (чаще всего CPU или диск). 
 <br><br>
 *Нормальной* считается загрузка когда LA ~ числу ядер процессора.
@@ -478,7 +481,7 @@ https://medium.com/@copyconstruct/monitoring-and-observability-8417d1952e1c
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/8478/
+https://otus.ru/polls/11443/
 ]
 
 .right-image[

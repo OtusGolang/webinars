@@ -9,7 +9,7 @@ background-image: url(tmp/title.svg)
 
 # Форматирование данных
 
-### Иван Ремень
+### Антон Телышев
 
 ---
 
@@ -37,13 +37,12 @@ background-size: 130%
 ]
 
 # 
+.f18[
 - Изучить возможности кодирования бинарных данных в текстовой форме
 - Научиться использовать стандартную библиотеку для кодирования в формате base64
-- Изучить форматы JSON, XML, YAML.
-- Изучить подходы к парсингу XML.
-- Научиться парсить JSON через стандартную библиотеку
-- Изучить библиотеку easyjson
+- Изучить форматы JSON, XML, YAML
 - Изучить библиотеки для работы с MsgPack и Protobuf
+]
 
 ---
 
@@ -58,6 +57,8 @@ background-size: 130%
 ---
 
 # Кодировка quoted-printable
+
+https://en.wikipedia.org/wiki/Quoted-printable
 
 ```
 Content-Disposition: inline
@@ -99,10 +100,19 @@ Content-Type: text/plain; charset="UTF-8"
 
 Избыточность = 300%
 
+
 ---
 
 # Кодировка base64
 
+https://en.wikipedia.org/wiki/Base64
+
+```
+Man is distinguished, not only by his reason, but by this singular passion
+from other animals, which is a lust of the mind, that by a perseverance of 
+delight in the continued and indefatigable generation of knowledge, exceeds 
+the short vehemence of any carnal pleasure.
+```
 
 ```
 TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0
@@ -120,27 +130,31 @@ LCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=
 ```
 package main
 
-import b64 "encoding/base64"
-import "fmt"
+import (
+	b64 "encoding/base64"
+	"fmt"
+)
 
 func main() {
+	data := "Hello world"
 
-    data := "Hello world"
+	sEnc := b64.StdEncoding.EncodeToString([]byte(data))
+	fmt.Println(sEnc)
 
-    sEnc := b64.StdEncoding.EncodeToString([]byte(data))
-    fmt.Println(sEnc)
+	sDec, err := b64.StdEncoding.DecodeString(sEnc)
+	mustNil(err)
+	fmt.Println(string(sDec))
+	fmt.Println()
 
-    sDec, _ := b64.StdEncoding.DecodeString(sEnc)
-    fmt.Println(string(sDec))
-    fmt.Println()
-
-    uEnc := b64.URLEncoding.EncodeToString([]byte(data))
-    fmt.Println(uEnc)
-    uDec, _ := b64.URLEncoding.DecodeString(uEnc)
-    fmt.Println(string(uDec))
+	uEnc := b64.URLEncoding.EncodeToString([]byte(data))
+	fmt.Println(uEnc)
+	uDec, err := b64.URLEncoding.DecodeString(uEnc)
+	mustNil(err)
+	fmt.Println(string(uDec))
 }
 ```
-https://play.golang.org/p/4oFM2M2Sirq
+https://goplay.space/#gOlY0HvwRbc
+
 
 ---
 
@@ -170,7 +184,9 @@ func main() {
 	encoder.Close()
 }
 ```
-https://play.golang.org/p/GwrvXsSzeN7
+
+https://goplay.space/#T2e6bwI3h4g
+
 
 ---
 
@@ -181,19 +197,20 @@ package main
 
 import (
 	"encoding/base64"
-	"os"
 	"io"
+	"os"
 	"strings"
 )
 
 func main() {
 	input := "Zm9vAGJhcg=="
 	r := base64.NewDecoder(base64.StdEncoding, strings.NewReader(input))
-        io.Copy(os.Stdout, r)
+	io.Copy(os.Stdout, r)
 }
+
 ```
 
-https://play.golang.org/p/uxmmi_OX42i
+https://goplay.space/#oKiYPu6jfDj
 
 
 ---
@@ -326,7 +343,7 @@ func main() {
 }
 ```
 
-https://play.golang.org/p/p9uRcgPUX8B (полная версия)
+https://goplay.space/#EwX5Dq2l60C (полная версия)
 
 ---
 
@@ -352,7 +369,8 @@ func main() {
 	fmt.Printf("name=%s\n", person["Name"])
 }
 ```
-https://play.golang.org/p/mGVtP-hSQjq
+
+https://goplay.space/#8SgUuo2L23z
 
 ---
 
@@ -370,8 +388,7 @@ type Person struct {
 }
 ```
 
-
-https://play.golang.org/p/RxcV-MjmgAm (полная версия)
+https://goplay.space/#RxcV-MjmgAm (полная версия)
 
 
 ---
@@ -395,7 +412,7 @@ type Person struct {
 }
 ```
 
-https://play.golang.org/p/QbfwL44vjJU (полная версия)
+https://goplay.space/#xCtXEHUgKAU (полная версия)
 
 ---
 
@@ -417,7 +434,8 @@ type Person struct {
 	Comment string `xml:",comment"`
 }
 ```
-https://play.golang.org/p/FekJkpuj9KT (полная версия)
+
+https://goplay.space/#FekJkpuj9KT (полная версия)
 
 ---
 
@@ -427,6 +445,8 @@ https://play.golang.org/p/FekJkpuj9KT (полная версия)
 
 ---
 # SAX Parser
+
+https://en.wikipedia.org/wiki/Simple_API_for_XML
 
 ```
 for {
@@ -451,7 +471,8 @@ for {
 	}
 ```
 
-https://play.golang.org/p/cuSIsVyZpD-
+
+https://goplay.space/#ADbUEs1PeUF
 
 ---
 
@@ -465,13 +486,13 @@ https://play.golang.org/p/cuSIsVyZpD-
 
 # Бинарные сериализаторы
 
-- gob
+- gob (https://golang.org/pkg/encoding/gob/)
 - msgpack
-- protobuf
+- Protobuf
 
 ---
 
-# msgpack (github.com/vmihailenco/msgpack)
+# msgpack (<a href="https://github.com/vmihailenco/msgpack">github.com/vmihailenco/msgpack</a>)
 
 ```
 type Person struct {
@@ -480,29 +501,28 @@ type Person struct {
 	Age         uint8
 	ChildrenAge map[string]uint8
 }
+
 func main() {
-	p := Person{Name:  "Ivan",
-		Surname: "Remen", Age: 27,
-	}
+	p := Person{Name: "Ivan", Surname: "Remen", Age: 27}
 	p.ChildrenAge = make(map[string]uint8)
 	p.ChildrenAge["Alex"] = 5
 	p.ChildrenAge["Maria"] = 2
 
 	marshaled, _ := msgpack.Marshal(&p)
 
-	fmt.Printf("Length of marshaled: %v 
-	   IMPL: %v\n", len(marshaled), string(marshaled))
+	fmt.Printf("Length of marshaled: %v IMPL: %v\n", len(marshaled), string(marshaled))
 
 	p2 := &Person{}
 	msgpack.Unmarshal(marshaled, p2)
 	fmt.Printf("Unmarshled: %v\n", p2)
 }
 ```
-https://play.golang.org/p/4pYvh-Qa_wg
+
+https://goplay.space/#HFmhdDcmnx0
 
 ---
 
-#protobuf (proto-файл)
+# Protobuf
 
 ```
 syntax = "proto3";
@@ -518,49 +538,20 @@ message Person {
 }
 ```
 
-Сборка: protoc --go_out=. *.proto
-
----
-
-#Работа с protobuf
-
+#### Установка:
+https://developers.google.com/protocol-buffers/docs/downloads
++
 ```
-package main
+go get google.golang.org/protobuf/cmd/protoc-gen-go
+```
 
-import (
-	"fmt"
-	"github.com/golang/protobuf/proto"
-)
-
-func main() {
-	p := &Person{
-		Age:         27,
-		Name:        "Ivan",
-		Surname:     "Remen",
-		ChildrenAge: make(map[string]uint32),
-	}
-	p.ChildrenAge["Maria"] = 2
-	p.ChildrenAge["Alex"] = 5
-
-	marshaled, _ := proto.Marshal(p)
-
-	fmt.Printf("marshaled len %d message = %s\n", len(marshaled), string(marshaled))
-
-	p2 := &Person{}
-	proto.Unmarshal(marshaled, p2)
-
-	fmt.Printf("Unmarshaled %v", p2)
-
-}
+#### Сборка:
+```
+protoc --go_out=. *.proto
 ```
 
 ---
 
-# Практика
-
-### Изучаем easyjson
-
----
 
 # Тест
 
@@ -571,14 +562,12 @@ https://forms.gle/SiDmYTPUU5La3rA88
 
 # На занятии
 
+.f18[
 - Изучили возможности кодирования бинарных данных в текстовой форме
 - Научились использовать стандартную библиотеку для кодирования в формате base64
-- Изучили форматы JSON, XML, YAML.
-- Изучили подходы к парсингу XML.
-- Научились использовать стандартную библиотеку для кодирования в формате base64
-- Научиться парсить JSON через стандартную библиотеку
-- Изучили библиотеку easyjson
+- Изучили форматы JSON, XML, YAML и подходы к их парсингу
 - Изучили библиотеки для работы с MsgPack и Protobuf
+]
 
 ---
 
@@ -588,7 +577,15 @@ https://forms.gle/SiDmYTPUU5La3rA88
 
 # Опрос
 
-Не заполните заполнить опрос. Ссылка на опрос будет в слаке.
+.left-text[
+Заполните пожалуйста опрос
+<br><br>
+https://otus.ru/polls/15948/
+]
+
+.right-image[
+![](img/gopher7.png)
+]
 
 ---
 

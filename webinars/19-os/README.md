@@ -12,10 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
@@ -120,7 +119,7 @@ pflag.Lookup("msg").NoOptDefVal = "bye"
 
 ---
 
-# cobra: сложные CLI приложения
+# Сложные CLI приложения
 
 ```
 git commit -m 123
@@ -131,6 +130,8 @@ aws s3 ls s3://bucket-name
 ```
 
 https://github.com/spf13/cobra/
+
+https://github.com/urfave/cli
 
 ---
 
@@ -395,6 +396,12 @@ func main() {
 # Временные файлы: safefile
 
 https://github.com/dchest/safefile
+
+---
+
+# Примеры с занятия
+
+* ### https://github.com/OtusGolang/webinars_practical_part/tree/master/19-os
 
 ---
 

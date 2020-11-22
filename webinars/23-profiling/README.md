@@ -12,10 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **–** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
@@ -73,9 +72,10 @@ go test -bench=BenchmarkFillSlice -benchmem -benchtime 10s
 
 Сравнить два бенчмарка
 ```
-benchcmp old new
+benchstat -delta-test none old new
 ```
-https://golang.org/x/tools/cmd/benchcmp
+
+https://github.com/golang/perf/tree/master/cmd/benchstat
 
 ---
 
@@ -95,7 +95,6 @@ benchstat ret
 ```
 benchstat old new
 ```
-https://golang.org/x/perf/cmd/benchstat
 
 ---
 
@@ -184,6 +183,12 @@ go tool pprof -http=":8080" http://127.0.0.1:7070/debug/pprof/profile?seconds=5
 
 ---
 
+# Домашнее задание: "Оптимизация программы"
+
+https://github.com/OtusGolang/home_work/tree/master/hw10_program_optimization
+
+---
+
 # Тест по третьему модулю
 
 .left-code[
@@ -198,6 +203,19 @@ go tool pprof -http=":8080" http://127.0.0.1:7070/debug/pprof/profile?seconds=5
 .right-image[
 ![](img/gopher_science.png)
 ]
+
+---
+
+# Следующее занятие
+
+## Контекст и низкоуровневые сетевые протоколы
+
+<br>
+<br>
+<br>
+
+## 26 ноября, четверг
+
 ---
 
 # Опрос
@@ -214,20 +232,15 @@ go tool pprof -http=":8080" http://127.0.0.1:7070/debug/pprof/profile?seconds=5
 
 ---
 
-# Дополнительное чтение
+# Дополнительные материалы
 
+- https://www.youtube.com/watch?v=dGcI1OsDCio
 - https://stephen.sh/posts/quick-go-performance-improvements
 - https://dave.cheney.net/high-performance-go-workshop/dotgo-paris.html
 - https://habr.com/ru/company/badoo/blog/301990/
 - https://habr.com/ru/company/badoo/blog/324682/
 - https://habr.com/ru/company/mailru/blog/331784/
 - https://habr.com/ru/post/443378/
-
----
-
-# Домашнее задание: "Оптимизация программы"
-
-https://github.com/OtusGolang/home_work/tree/master/hw10_program_optimization
 
 ---
 

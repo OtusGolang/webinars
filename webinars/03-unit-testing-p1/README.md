@@ -69,28 +69,31 @@ background-image: url(img/message.svg)
 
 # Зачем?
 
-* Упрощают рефакторинг (safety net)
+* Упрощают рефакторинг.
 
 
-* Документируют код
+* Документируют код.
 
 
-* Отделение интерфейса от реализации (mocks), менее связный код
+* Отделение интерфейса от реализации (mocks), менее связный код.
 
 
-* Помогают найти неактуальный код
+* Помогают найти неактуальный код.
 
 
-* Помогают найти новые кейсы
+* Помогают найти новые кейсы.
 
 
-* Метрика для менеджмента (покрытие)
+* Считают метрику для менеджмента (покрытие).
 
 
-* Определяют контракт
+* Определяют контракт.
 
 
-* Качество кода
+* Повышают качество кода.
+
+
+* Придают уверености при деплое в продакшен.
 
 ---
 
@@ -316,27 +319,32 @@ https://goplay.space/#ssdm9GN6SiO
 # Blackbox тесты
 
 ```
-package strings
+package router
 
-func Contains(s, sub string) bool {
-	...
+func New(...) *Router {
+	return &Router{
+		// ...
+	}
 }
 
-func contains(s, p, sub, string) bool {
-	...
+func (r *Router) run() { // <--- приватный метод будет недоступен
+	// ...
 }
 ```
 
 ```
-package strings_test
+package router_test
 
 import (
 	"strings"
-	"testing"
+
+	// тестируемый пакет импортируется
+	"github.com/kulti/task-list/server/internal/router"
 )
 
-func TestContains(t *testing.T) {
-	strings.Contains(...)
+func TestRouter(t *testing.T) {
+	r := router.New(...)
+	// ....
 }
 ```
 ---
@@ -395,7 +403,7 @@ https://blog.golang.org/cover
 <br>
 <br>
 
-## 8 сентября, вторник
+## 3 декабря, четверг
 
 ---
 

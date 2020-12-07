@@ -24,7 +24,7 @@ background-image: url(img/message.svg)
 
 # Инструментарий и начало <br> работы с Go
 
-### Алексей Бакин
+### Антон Телышев
 
 ---
 
@@ -625,24 +625,12 @@ https://github.com/OtusGolang/home_work/wiki
 
 ---
 
-# Следующее занятие
-
-## Тестирование в Go. Часть 1
-
-<br>
-<br>
-<br>
-
-## 3 сентября, четверг
-
----
-
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-Ссылка в чате
+https://otus.ru/polls/19006/
 ]
 
 .right-image[

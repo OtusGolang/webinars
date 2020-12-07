@@ -26,7 +26,7 @@ background-image: url(img/message.svg)
 
 # Работа с SQL
 
-### Елена Граховац, Антон Телышев
+### Антон Телышев
 
 ---
 
@@ -64,7 +64,7 @@ background-image: url(img/message.svg)
 $ sudo apt-get update
 
 # установить PostgreSQL сервер и клиент
-$ sudo apt-get install postgresql-10
+$ sudo apt-get -y install postgresql
 
 # запустить PostgreSQL
 $ sudo systemctl start postgresql
@@ -73,46 +73,49 @@ $ sudo systemctl start postgresql
 $ sudo -u postgres psql
 ```
 
----
-
-# Работаем с PostgreSQL локально
-
-Работаем в клиенте СУБД:
-```sql
--- создаем "проектного" пользователя СУБД
-postgres=# create user myuser password 'mypass';
-CREATE ROLE
-
--- создаем "проектную" базу данных
-postgres=# create database mydb owner myuser;
-CREATE DATABASE
-```
-
-Удобный клиент с графическим интерфейсом: https://www.pgadmin.org/download/
+https://www.postgresql.org/download/linux/ubuntu/
 
 ---
 
 # Работаем с PostgreSQL локально через Docker
 
-(См. https://hub.docker.com/_/postgres)
-
-Создаем сеть для доступа между контейнерами:
-
-```
-docker network create postgres
-```
-
 Запускаем контейнер с сервером PostgreSQL:
 ```
-docker run --network postgres --name dpostgres \
-    -e POSTGRES_PASSWORD=password -d postgres
+docker run -d \
+    --name pg \
+    -e POSTGRES_PASSWORD=postgres \
+    -e PGDATA=/var/lib/postgresql/data/pgdata \
+    -v /Users/anthony/psqldata:/var/lib/postgresql/data \
+    -p 5432:5432 \
+    postgres
 ```
+
+<b>Ждём немного, пока СУБД поднимется</b>
+
+<br>
 
 Подключаемся к серверу:
 ```
-docker run --network postgres -it --rm postgres \
-    psql -h dpostgres -U postgres
+docker exec -it pg psql -Upostgres -dpostgres
 ```
+
+<br><br>
+https://hub.docker.com/_/postgres
+
+---
+
+# Работаем с PostgreSQL локально
+
+Работаем в клиенте СУБД:
+```
+postgres=# create database exampledb;
+
+postgres=# create user anthony with encrypted password 'anthony';
+
+postgres=# grant all privileges on database exampledb to anthony;
+```
+
+Удобный клиент с графическим интерфейсом: https://www.pgadmin.org/download/
 
 ---
 
@@ -138,7 +141,7 @@ create index start_idx on events using btree (start_date, start_time);
 
 Выполнение SQL скрипта из консоли:
 ```
-psql 'host=localhost user=myuser password=mypass dbname=mydb'  < 001.sql
+psql 'host=localhost user=myuser password=mypass dbname=mydb' < 001.sql
 ```
 ---
 
@@ -148,8 +151,9 @@ psql 'host=localhost user=myuser password=mypass dbname=mydb'  < 001.sql
 
 ```sql
 insert into events(owner, title, descr, start_date, end_date) 
-values(42, 'new year', 'watch the irony of fate', 
-        '2019-12-31', '2019-12-31')
+values(
+  42, 'new year', 'watch the irony of fate',
+  '2019-12-31', '2019-12-31')
 returning id;
 ```
 <br><br>
@@ -660,16 +664,13 @@ for rows.Next() {
 * [https://gorm.io/](https://gorm.io/) - использует пустые интерфейсы :(
 * [https://github.com/go-reform/reform](https://github.com/go-reform/reform) - использует кодогенерацию, но разработка немного заброшена
 
-Пример использования (не идеальный код, но может пригодиться): https://github.com/rumyantseva/mif
-
 ---
 
 # Другие ресурсы для изучения
 
 .big-list[
-* [en] [https://github.com/rumyantseva/pglocal](Пример окружения для локальной разработки)
-* [ru] [https://habr.com/ru/company/oleg-bunin/blog/461935/](Статья и видео о тонкастях работы с Postgres в Go)
-* [en] [http://go-database-sql.org/index.html](Полезная документация по работе с Postgres из Go)
+* [ru] [https://habr.com/ru/company/oleg-bunin/blog/461935/](Статья и видео о тонкостях работы с Postgres в Go)
+* [en] [http://go-database-sql.org/index.html](Полезная документация по работе с SQL из Go)
 * [en] [https://golang.org/pkg/database/sql](Документация к database/sql)
 * [en] [https://jmoiron.github.io/sqlx](sqlx)
 ]
@@ -690,7 +691,7 @@ for rows.Next() {
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/8471/](https://otus.ru/polls/8471/)
+https://otus.ru/polls/15951/
 ]
 
 .right-image[

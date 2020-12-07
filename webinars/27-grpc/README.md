@@ -9,7 +9,7 @@ background-image: url(tmp/title.svg)
 
 # gRPC
 
-### Юрий Юрочко
+### Антон Телышев
 
 
 ---
@@ -56,11 +56,23 @@ background-size: 130%
 ]
 
 ---
+# Прежде, чем начать
+
+1) Обновляем protoc
+https://github.com/protocolbuffers/protobuf/releases
+
+2) Обновлем protoc-gen-go
+```
+go get -u google.golang.org/protobuf/cmd/protoc-gen-go
+```
+
+---
 
 # Что такое gRPC
 
-
-<br><br>
+RPC - Remote Procedure Call
+<br>
+<br>
 
 RPC: (CORBA, Sun RPC, DCOM etc.)
 - сетевые вызовы абстрагированы от кода
@@ -71,21 +83,12 @@ RPC: (CORBA, Sun RPC, DCOM etc.)
 ```
       try {
          XmlRpcClient client = new XmlRpcClient("http://localhost/RPC2"); 
-         Vector params = new Vector();
-         
-         params.addElement(new Integer(17));
-         params.addElement(new Integer(13));
-
-         Object result = server.execute("sample.sum", params);
-
+         Object result = server.execute("sample.sum", new Vector(17, 13));
          int sum = ((Integer) result).intValue();
-
       } catch (Exception exception) {
          System.err.println("JavaClient: " + exception);
       }
- 
 ```
-
 <br>
 
 g:<br>
@@ -97,6 +100,9 @@ https://github.com/grpc/grpc/blob/master/doc/g_stands_for.md
 
 ```
 syntax = "proto3";
+
+package search;
+option go_package = ".;searchpb";
 
 service Google {
   // Search returns a Google search result for the query.
@@ -120,21 +126,27 @@ message Result {
 # Что такое gRPC
 
 ```
-protoc ./search.proto --go_out=plugins=grpc:.
+protoc search.proto --go_out=. --go-grpc_out=.
 ```
 
 ```
+package searchpb;
+
 type GoogleClient interface {
     // Search returns a Google search result for the query.
     Search(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Result, error)
 }
+
 type GoogleServer interface {
     // Search returns a Google search result for the query.
     Search(context.Context, *Request) (*Result, error)
+
 }
+
 type Request struct {
     Query string `protobuf:"bytes,1,opt,name=query" json:"query,omitempty"`
 }
+
 type Result struct {
     Title   string `protobuf:"bytes,1,opt,name=title" json:"title,omitempty"`
     Url     string `protobuf:"bytes,2,opt,name=url" json:"url,omitempty"`
@@ -284,7 +296,7 @@ background-image: url(img/wiretype.png)
 
 # Protocol buffers: repeated fields
 
-Массив реализуется через repeated:
+Слайс реализуется через repeated:
 
 ```
 message SearchResponse {
@@ -325,11 +337,11 @@ message Result {
 
 - string: пустая строка
 - number (int32/64 etc.): 0
-- bytes: пустой массив
+- bytes: пустой слайс
 - enum: первое значение
-- repeated: пустой массив
+- repeated: пустой слайс
 - Message - зависит от языка (https://developers.google.com/protocol-buffers/docs/reference/go-generated#singular-message)
-в го- nil
+в Go - nil
 
 ---
 
@@ -460,7 +472,7 @@ message Person {
 # Protocol buffers: go_package
 
 <br><br>
-simplepb - более эксплицитно
+simplepb - более явно
 
 ```
 syntax = "proto3";
@@ -550,7 +562,7 @@ background-image: url(img/backwardforward.png)
 
 - не меняйте теги
 - старый код будет игнорировать новые поля
-- при неизвестных полях испольуются дефолтные значения (TODO!)
+- при неизвестных полях испольуются дефолтные значения
 - поля можно удалять, но не переиспользовать тег / добавить префик OBSOLETE_ / сделать поле reserved
 
 https://developers.google.com/protocol-buffers/docs/proto#updating
@@ -671,239 +683,16 @@ background-image: url(img/grpcapitypes.png)
 
 ---
 
-# Пример 1. Unary. Схема
-```
-syntax = "proto3";
+# Примеры
 
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
-
-option go_package="main";
-
-message Vote {
-  string passport = 1;
-  uint32 candidate_id = 2;
-  string note = 3;
-  google.protobuf.Timestamp time = 4;
-}
-
-service Elections {
-  rpc SubmitVote(Vote) returns (google.protobuf.Empty) {}
-}
-```
+https://github.com/OtusGolang/webinars_practical_part/tree/master/27-grpc
 
 ---
-# Пример 1. Unary. Server
-```
-type Service struct{}
 
-func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
-        log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
-                req.Passport, req.CandidateId, ptypes.TimestampString(req.Time))
-
-        if req.Passport == "" || req.CandidateId == 0 { 
-                log.Printf("invalid arguments, skip vote")
-                return nil, status.Error(codes.InvalidArgument, "passport or candidate_id wrong")
-        }
-
-        log.Printf("vote accepted")
-        return &empty.Empty{}, nil
-}
-```
-
----
-# Пример 1. Unary. Client
-```
-func main() {
-        addr := "localhost:50051"
-        conn, err := grpc.Dial(addr, grpc.WithInsecure())
-        if err != nil {
-                log.Fatal(err)
-        }
-
-        client := NewElectionsClient(conn)
-
-        reader := bufio.NewReader(os.Stdin)
-        for {
-                req, err := getRequest(reader)
-                if err != nil {
-                        log.Printf("error: %v", err)
-                        continue
-                }
-
-                if _, err := client.SubmitVote(context.Background(), req); err != nil {
-                        log.Fatal(err)
-                }
-
-                log.Printf("vote submitted")
-        }
-}
-
-```
-
----
-# Пример 2. Server streaming. Схема
-```
-syntax = "proto3";
-
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
-
-option go_package="main";
-
-message Vote {
-  string passport = 1;
-  uint32 candidate_id = 2;
-  string note = 3;
-  google.protobuf.Timestamp time = 4;
-}
-
-message Stats {
-  map<uint32, uint32> records = 1;
-  google.protobuf.Timestamp time = 2;
-}
-
-service Elections {
-  rpc SubmitVote(Vote) returns (google.protobuf.Empty) {}
-  rpc GetStats(google.protobuf.Empty) returns (stream Stats) {}
-}
-```
-
-
----
-# Пример 2. Server streaming. Server
-```
-...
-stop := false
-for !stop {
-        select {
-        case <-time.After(defaultInterval):
-                s.lock.RLock()                  
-                stats := make(map[uint32]uint32)
-                for k, v := range s.stats {     
-                        stats[k] = v                    
-                }
-                s.lock.RUnlock()                
-                msg := &Stats{                  
-                        Records: stats,                 
-                        Time:    ptypes.TimestampNow(), 
-                }
-                if err := srv.Send(msg); err != nil {
-                        log.Printf("unable to send message to stats listener: %v", err)
-                        stop = true                     
-                }
-
-        case <-srv.Context().Done():    
-                log.Printf("stats listener disconnected")
-                stop = true                     
-        }
-}
-...
-```
-
----
-# Пример 3. Схема
-```
-...
-message Vote {
-  string passport = 1;
-  uint32 candidate_id = 2;
-  string note = 3;
-  google.protobuf.Timestamp time = 4;
-}
-
-message Stats {
-  map<uint32, uint32> records = 1;
-  google.protobuf.Timestamp time = 2;
-}
-
-message StatsVote {
-  oneof body {
-    Stats stats = 1;
-    Vote vote = 2;
-  }
-}
-
-service Elections {
-  rpc SubmitVote(Vote) returns (google.protobuf.Empty) {}
-  rpc Internal(stream Vote) returns (stream StatsVote) {}
-}
-```
-
-
----
-# Пример 3. Server (reading goroutine)
-```
-inChan := make(chan *Vote)      
-go func() {
-        defer close(inChan)             
-
-        for {
-                req, err := srv.Recv()          
-                if err != nil {                 
-                        log.Printf("unable to read message from internal listener: %v", err)
-                        return                          
-                }
-                inChan <- req                   
-        }
-}()
-```
-
-
----
-# Пример 3. Server (for loop part1)
-```
-stop := false
-for !stop {
-        select {
-        case req, ok := <-inChan:       
-                if !ok {                        
-                        log.Printf("read loop for internal listener stopped, disconnect it")
-                        stop = true                     
-                        break                           
-                }
-                if _, err := s.SubmitVote(srv.Context(), req); err != nil {
-                        log.Printf("unable to submit vote, skip it, error: %v", err)
-                        continue                        
-                }
-                msg := &StatsVote{              
-                        Body: &StatsVote_Vote{          
-                                Vote: req,                      
-                        },                              
-                }
-                if err := srv.Send(msg); err != nil {
-                        log.Printf("unable to send vote to internal listener, disconnect it, error: %v", err)
-                        stop = true                     
-                }
-```
-
-
----
-# Пример 3. Server (for loop part2)
-```
-                case <-time.After(defaultInterval):
-                        msg := &StatsVote{              
-                                Body: &StatsVote_Stats{         
-                                        Stats: s.getStats(),            
-                                },                              
-                        }
-                        if err := srv.Send(msg); err != nil {
-                                log.Printf("unable to send stats to internal listener, disconnect it, error: %v", err)
-                                stop = true                     
-                        }
-
-                case <-srv.Context().Done():    
-                        log.Printf("stats listener disconnected")
-                        stop = true                     
-                }
-        }
-```
-
-
----
 # gRPC: Errors
 
 - https://grpc.io/docs/guides/error/
+- https://grpc.io/docs/guides/error/#protocol-errors
 - https://godoc.org/google.golang.org/grpc/codes
 - https://godoc.org/google.golang.org/grpc/status
 - https://jbrandhorst.com/post/grpc-errors/
@@ -911,21 +700,18 @@ for !stop {
 
 ```
 // Server
-func (*server) SquareRoot(ctx context.Context,
-        req *calculatorpb.SquareRootRequest)
-        (*calculatorpb.SquareRootResponse, error) {
+func (*server) SquareRoot(ctx context.Context, req *calculatorpb.SquareRootRequest) 
+    (*calculatorpb.SquareRootResponse, error) {
 
-	fmt.Println("Received SquareRoot RPC")
 	number := req.GetNumber()
 	if number < 0 {
-		return nil, status.Errorf(
-			codes.InvalidArgument,
-			fmt.Sprintf("Received a negative number: %v", number),
-		)
+		return nil, status.Errorf(codes.InvalidArgument,
+          "received a negative number: %v", number)
 	}
+
 	return &calculatorpb.SquareRootResponse{
-		NumberRoot: math.Sqrt(float64(number)),
-	}, nil
+      NumberRoot: math.Sqrt(float64(number)),
+    }, nil
 }
 ```
 
@@ -971,18 +757,28 @@ if ctx.Err() == context.Canceled {
 ```
 
 ---
+
 # gRPC: Security (SSL/TLS)
 
 - https://bbengfort.github.io/programmer/2017/03/03/secure-grpc.html
 - https://medium.com/@gustavoh/building-microservices-in-go-and-python-using-grpc-and-tls-ssl-authentication-cfcee7c2b052
 
 ---
+
 # gRPC: tools
 
 - https://github.com/ktr0731/evans
 - https://github.com/fullstorydev/grpcurl
+- https://github.com/uw-labs/bloomrpc
 
 ---
+
+# gRPC: gateway
+
+- https://github.com/grpc-ecosystem/grpc-gateway
+
+---
+
 # На занятии
 
 - Узнали, что такое gRPC
@@ -990,7 +786,22 @@ if ctx.Err() == context.Canceled {
 - Научились писать gRPC сервисы
 
 ---
+
 ## Вопросы?
+
+---
+
+# Опрос
+
+.left-text[
+Заполните пожалуйста опрос
+<br><br>
+https://otus.ru/polls/?????/
+]
+
+.right-image[
+![](img/gopher7.png)
+]
 
 ---
 class: white

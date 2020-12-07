@@ -54,6 +54,8 @@ background-size: 130%
 
 ### Зачем кодировать бинарные данные в текстовый вид?
 
+https://en.wikipedia.org/wiki/Binary-to-text_encoding
+
 ---
 
 # Кодировка quoted-printable

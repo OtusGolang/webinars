@@ -2,20 +2,18 @@
 
 ---
 
-
 class: white
-background-image: url(tmp/title.svg)
+background-image: url(img/message.svg)
 .top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
 
 # gRPC
 
 ### Антон Телышев
 
-
 ---
 
 class: top white
-background-image: url(tmp/sound.svg)
+background-image: url(img/sound.svg)
 background-size: 130%
 .top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
 
@@ -58,8 +56,9 @@ background-size: 130%
 ---
 # Прежде, чем начать
 
-1) Обновляем protoc
+1) Обновляем protoc<br>
 https://github.com/protocolbuffers/protobuf/releases
+<br><br>
 
 2) Обновлем protoc-gen-go
 ```
@@ -321,12 +320,10 @@ Results              []*Result `protobuf:"bytes,1,rep,name=results,proto3" json:
 # Protocol buffers: комментарии
 
 ```
-/* Подробное описание
-* результата поиска */
+/* Подробное описание результата поиска */
 message Result {
-  string url = 1;
-  // название страницы
-  string title = 2;
+  string url = 1;               // URL страницы
+  string title = 2;             // название страницы
   repeated string snippets = 3; // фрагменты страницы
 }
 ```
@@ -787,6 +784,9 @@ if ctx.Err() == context.Canceled {
 
 ---
 
+class: white
+background-image: url(img/message.svg)
+
 ## Вопросы?
 
 ---
@@ -805,7 +805,7 @@ https://otus.ru/polls/?????/
 
 ---
 class: white
-background-image: url(tmp/title.svg)
+background-image: url(img/message.svg)
 .top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
 
 # Спасибо за внимание!

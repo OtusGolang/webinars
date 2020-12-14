@@ -75,7 +75,7 @@ RPC - Remote Procedure Call
 
 RPC: (CORBA, Sun RPC, DCOM etc.)
 - сетевые вызовы абстрагированы от кода
-- интерфейсы как сигнатуры функций (Interface Definition Language для language-agnostic)
+- интерфейсы как сигнатуры функций (Interface Definition Language)
 - тулзы для кодогенерации
 - кастомные протоколы
 
@@ -794,9 +794,11 @@ background-image: url(img/message.svg)
 # Опрос
 
 .left-text[
-Заполните пожалуйста опрос
+Заполните пожалуйста опросы
 <br><br>
-https://otus.ru/polls/?????/
+https://otus.ru/polls/15953/
+<br>
+https://forms.gle/PAhXZByxfkmkLSKj9
 ]
 
 .right-image[

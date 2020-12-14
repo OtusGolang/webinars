@@ -141,15 +141,14 @@ unsafe.Sizeof("A") // 16 (длина + указатель)
 
 var x struct {
     a bool   // 1 (offset 0)
-    b bool   // 1 (offset 1)
-    c string // 16 (offset 8)
+    c bool   // 1 (offset 1)
+    b string // 16 (offset 8)
 }
 
 unsafe.Sizeof(x) // 24!
 ```
 ![img/aling.png](img/align.png)
 
-https://github.com/tyranron/golang-sizeof.tips <br>
 https://github.com/dominikh/go-tools/tree/master/cmd/structlayout <br>
 https://en.wikipedia.org/wiki/Data_structure_alignment
 
@@ -570,7 +569,7 @@ ch <- struct{}{}
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/11415/](https://otus.ru/polls/11415/)
+https://otus.ru/polls/19010/
 ]
 
 .right-image[

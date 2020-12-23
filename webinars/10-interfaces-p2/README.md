@@ -7,9 +7,9 @@ class: white
 background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
-# Интерфейсы <br> в Go
+# Интерфейсы в Go. <br>Часть 2
 
-### 
+### Антон Телышев
 
 ---
 
@@ -33,11 +33,13 @@ background-size: 130%
 
 # О чем будем говорить:
 
-* Значение типа интерфейс и ошибки, связанные с nil;
-* Внутренняя структура интерфейсов
-* Определение типа значения интерфейса
-* Опасный и безопасный type cast
-* Где мои generic-и?
+* Значение типа интерфейс и ошибки, связанные с nil
+* Правила присваивания значений переменным типа интерфейс
+* Опасное и безопасное приведение типов (type cast)
+* Использование switch в контексте интерфейсов
+* Слайсы и словари с интерфейсами
+* Реализация подхода обобщенного программирования (generics) через интерфейсы
+
 ---
 
 # Интерфейсы - вспоминаем прошлое занятие
@@ -64,12 +66,12 @@ func (t Temp) String() string {
 
 
 func main() {
-
 	var x fmt.Stringer
 	x = Temp(24)
 	fmt.Printf("%v %T\n", x, x) // 24 °C main.Temp
 }
 ```
+https://goplay.tools/snippet/JjXQsIsXwac
 
 
 ---
@@ -79,7 +81,6 @@ func main() {
 ...или с помощью пакета reflect
 
 ```
-
 import (
 	"fmt"
 	"reflect"
@@ -91,16 +92,16 @@ func (e MyError) Error() string {
 	return "smth happened"
 }
 
-
 func main() {
-
 	var e error
 	e = MyError{}
 
 	fmt.Println(reflect.TypeOf(e).Name()) // main MyError
-	fmt.Printf("%T\n", e) // // main MyError
+	fmt.Printf("%T\n", e)                 // main MyError
 }
 ```
+https://goplay.tools/snippet/Xmsbk5DEdqE
+
 
 ---
 
@@ -116,15 +117,12 @@ type Shape interface {
 
 func main() {
 	var s Shape
-	fmt.Println("value of s is", s)
-	fmt.Printf("type of s is %T\n", s)
+	fmt.Println("value of s is", s)     // value of s is <nil>
+	fmt.Printf("type of s is %T\n", s)  // type of s is <nil>
 }
 ```
+https://goplay.tools/snippet/sxE9AxAQ8lH
 
-```
-value of s is <nil>
-type of s is <nil>
-```
 
 ---
 
@@ -133,38 +131,39 @@ type of s is <nil>
 
 ```
 type Rect struct {
-	width  float64
-	height float64
+    width  float64
+    height float64
 }
 
 func (r Rect) Area() float64 {
-	return r.width * r.height
+    return r.width * r.height
 }
 
 func (r Rect) Perimeter() float64 {
-	return 2 * (r.width + r.height)
+    return 2 * (r.width + r.height)
 }
 
 func main() {
-	var s Shape
-	s = Rect{5.0, 4.0}
-	fmt.Printf("type of s is %T\n", s) // type of s is main.Rect
-	fmt.Printf("value of s is %v\n", s) // value of s is {5 4}
-	fmt.Println("area of rectange s", s.Area()) // area of rectange s 20
+    var s Shape
+    s = Rect{5.0, 4.0}
+    fmt.Printf("type of s is %T\n", s)          // type of s is main.Rect
+    fmt.Printf("value of s is %v\n", s)         // value of s is {5 4}
+    fmt.Println("area of rectange s", s.Area()) // area of rectange s 20
 }
 ```
+https://goplay.tools/snippet/wbmnTcriHJ-
+
 
 ---
 
 # Значение типа интерфейс
 
 <br>
-Переменная типа интерфейс I может принимать значение любого типа,
-который реализует интерфейс I
+Переменная типа интерфейс `I` может принимать значение любого типа, который реализует интерфейс `I`.
 
 ```
 type I interface {
-	method1()
+    method1()
 }
 
 type T1 struct{}
@@ -175,12 +174,14 @@ func (T2) method1() {}
 func (T2) method2() {}
 
 func main() {
-	var i I = T1{}
+    var i I = T1{}
 
-	i = T2{}
-	fmt.Println(i) //{}
+    i = T2{}
+    fmt.Println(i) // {}
 }
+
 ```
+https://goplay.tools/snippet/a8PLrfRQL02
 
 
 ---
@@ -188,30 +189,15 @@ func main() {
 #  Интерфейсы: nil
 
 <br>
-Значение интерфейсного типа равно nil тогда и только тогда, когда nil его статическая и динамическая части.
+Значение интерфейсного типа равно `nil` тогда и только тогда, когда `nil` его статическая и динамическая части.
 
-```
-type I interface { M() }
+<br>
 
-type T struct {}
-func (T) M() {}
+https://goplay.tools/snippet/E8_TX3Zwznn
 
-func main() {
-    var t *T
-    if t == nil { fmt.Println("t is nil") } else {
-        fmt.Println("t is not nil")
-    }
-    var i I = t
-    if i == nil { fmt.Println("i is nil") } else {
-        fmt.Println("i is not nil")
-    }
-}
-```
+<br>
 
-```
-t is nil
-i is not nil
-```
+http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#nil_in_nil_in_vals
 
 ---
 
@@ -223,31 +209,31 @@ i is not nil
 package main
 
 import (
-	"io"
-	"log"
-	"os"
-	"strings"
+    "io"
+    "log"
+    "os"
+    "strings"
 )
 
 func main() {
+    var r io.Reader
 
-	var r io.Reader
+    r = strings.NewReader("hello")
+    r = io.LimitReader(r, 4)
 
-	r = strings.NewReader("hello")
-	r = io.LimitReader(r, 4)
-
-	if _, err := io.Copy(os.Stdout, r); err != nil {
-		log.Fatal(err)
-	}
+    if _, err := io.Copy(os.Stdout, r); err != nil {
+        log.Fatal(err)
+    }
 }
 ```
+https://goplay.tools/snippet/Tkx-7sKZhYD
 
 
 ---
 
 # Правила присваиваний (assignability rules):
 <br>
-- Если переменная реализует интерфейс T, мы можем присвоить ее переменной типа интерфейс T.
+- Если переменная `T` реализует интерфейс `Callable`, мы можем присвоить ее переменной типа интерфейс `Callable`.
 
 ```
 type Callable interface {
@@ -296,12 +282,15 @@ func main() {
 
 <br> валидно?
 
+<br>
+
+https://goplay.tools/snippet/4nNy7tBRbNJ
 
 ---
 
 # Интерфейсы: присваивание
 
-<br>Структура (вложенность) не имеет значения - v1 и v2 удовлетворяют I1, I2.
+<br>Структура (вложенность) не имеет значения - `v1` и `v2` удовлетворяют `I1`, `I2`.
 Порядок методов также не имеет значения.
 
 ```
@@ -324,6 +313,10 @@ func main() {
 }
 
 ```
+
+<br>
+
+https://goplay.tools/snippet/M-5AXWN2Es4
 
 ---
 
@@ -350,6 +343,10 @@ func main() {
 }
 ```
 
+<br>
+
+https://goplay.tools/snippet/HhAPdPUNrh7
+
 ---
 
 # Интерфейсы: присваивание
@@ -363,31 +360,28 @@ type I1 interface {
 }
 
 type T struct{}
-
 func (T) M1() {}
 
 func main() {
     var v1 I1 = T{}
-    var v2 T = v1
+    var v2 T = v1   // Boom!
     _ = v2
 }
 ```
 
-```
-cannot use v1 (type I1) as type T in assignment: need type assertion
-```
+<br>
+
+https://goplay.tools/snippet/GrpYzhBcPQr
 
 ---
 
 # Интерфейсы: type assertion
 
 
-x.(T) проверяет, что конкретная часть значения x имеет тип T и x != nil
+`x.(T)` проверяет, что конкретная часть значения `x` имеет тип `T` и `x != nil`:
 
 	- если T - не интерфейс, то проверяем, что динамический тип x это T
 	- если T - интерфейс: то проверяем, что динамический тип x его реализует
-
-
 ---
 
 # Интерфейсы: type assertion
@@ -410,11 +404,19 @@ x.(T) проверяет, что конкретная часть значени�
 	fmt.Println(f, ok)
 ```
 
+<br>
+
+https://goplay.tools/snippet/4VFT1joBgB6
+
+<br>
+
 ---
 
 # Интерфейсы: type assertion
 
 ```
+    var i interface{} = "hello"
+
 	f, ok := i.(float64) // 0 false
 	fmt.Println(f, ok)
 
@@ -423,14 +425,19 @@ x.(T) проверяет, что конкретная часть значени�
 	fmt.Println(f)
 ```
 
-проверка типа возможна только для интерфейса:
+Проверка типа возможна только для интерфейса:
 
 ```
 	s := 5
+    // Invalid type assertion: s.(int) (non-interface type int on left)
 	i := s.(int)
 ```
+
+<br>
+
+https://golangci-lint.run/usage/configuration/
 ```
-Invalid type assertion: s.(int) (non-interface type int on left)
+check-type-assertions: true
 ```
 
 ---
@@ -441,39 +448,17 @@ Invalid type assertion: s.(int) (non-interface type int on left)
 <br>
 можем объединить проверку нескольких типов в один type switch:
 
-```
-type I1 interface { M1() }
+<br>
 
-type T1 struct{}
-func (T1) M1() {}
+https://goplay.tools/snippet/QS_yLkiajPp
 
-type I2 interface { I1; M2() }
-
-type T2 struct{}
-func (T2) M1() {}
-func (T2) M2() {}
-
-func main() {
-    var v I1
-    switch v.(type) {
-    case T1:
-            fmt.Println("T1")
-    case T2:
-            fmt.Println("T2")
-    case nil:
-            fmt.Println("nil")
-    default:
-            fmt.Println("default")
-    }
-}
-```
 ---
 
 
 # Интерфейсы: type switch
 
 
-как и в обычном switch можем объединять типы:
+как и в обычном `switch` можем объединять типы:
 
 ```
     case T1, T2:
@@ -481,7 +466,7 @@ func main() {
     }
 ```
 
-и обрабатывать default:
+и обрабатывать `default`:
 
 ```
 var v I
@@ -524,122 +509,15 @@ func ToString(any interface{}) string {
 
 <br>
 реализовать функцию zoo
-https://play.golang.org/p/4zwgnjtDz_L
+
+<br>
+
+https://goplay.tools/snippet/XmnDh8X03nV
 
 
 ---
 
-# Интерфейсы изнутри
-
-```
-type Speaker interface {
-    SayHello()
-}
-
-type Human struct {
-    Greeting string
-}
-
-func (h Human) SayHello() {
-    fmt.Println(h.Greeting)
-}
-...
-var s Speaker
-h := Human{Greeting: "Hello"}
-s := Speaker(h)
-s.SayHello()
-
-```
-
----
-
-
-background-image: url(img/internalinterfaces.png)
-
----
-
-background-image: url(img/emptyinterface.png)
-
----
-
-# Интерфейсы изнутри: iface
-
-```
-type iface struct {
-    tab  *itab
-    data unsafe.Pointer
-}
-```
-
-```
-type itab struct { // 40 bytes on a 64bit arch
-    inter *interfacetype
-    _type *_type
-    hash  uint32 // copy of _type.hash. Used for type switches.
-    _     [4]byte
-    fun   [1]uintptr // variable sized. fun[0]==0 means _type does not implement inter.
-}
-```
-
-https://github.com/teh-cmc/go-internals/blob/master/chapter2_interfaces/README.md
-
----
-
-
-# Интерфейсы изнутри: benchmark
-
-```
-
-type Addifier interface{ Add(a, b int32) int32 }
-
-type Adder struct{ id int32 }
-
-func (adder Adder) Add(a, b int32) int32 { return a + b }
-
-func BenchmarkDirect(b *testing.B) {
-	adder := Adder{id: 6754}
-	for i := 0; i < b.N; i++ {
-		adder.Add(10, 32)
-	}
-}
-
-func BenchmarkInterface(b *testing.B) {
-	adder := Adder{id: 6754}
-	for i := 0; i < b.N; i++ {
-		Addifier(adder).Add(10, 32)
-	}
-}
-```
-
----
-
-
-# Интерфейсы изнутри: benchmark
-
-```
-go tool compile -m addifier.go
-
-Addifier(adder) escapes to heap
-```
-
-
-```
-➜  addifier go test -bench=.              
-goos: darwin
-goarch: amd64
-pkg: strexpand/interfaces/addifier
-BenchmarkDirect-8       2000000000               0.60 ns/op
-BenchmarkInterface-8    100000000               13.4 ns/op
-PASS
-ok      strexpand/interfaces/addifier   2.635s
-```
-
-
-
-
----
-
-# Интерфейсы: type assertion
+# Интерфейсы: type assertion: T(v)
 
 <br>
 interface type -> concrete type
@@ -654,7 +532,7 @@ func (T) M() {}
 
 func main() {
     var v I = T{}
-    fmt.Println(T(v))
+    fmt.Println(T(v)) // Boom!
 }
 ```
 
@@ -664,7 +542,7 @@ cannot convert v(type I) to type T: need type assertion
 
 ---
 
-# Интерфейсы: type assertion
+# Интерфейсы: type assertion: I2(v)
 
 <br>
 interface type -> interface type
@@ -673,13 +551,15 @@ interface type -> interface type
 type I1 interface {
     M()
 }
+
 type I2 interface {
     M()
     N()
 }
+
 func main() {
     var v I1
-    fmt.Println(I2(v))
+    fmt.Println(I2(v)) // Boom!
 }
 ```
 
@@ -688,9 +568,11 @@ main.go:16: cannot convert v (type I1) to type I2:
 	I1 does not implement I2 (missing N method)
 ```
 
+А наоборот?
+
 ---
 
-# Интерфейсы: type assertion
+# Интерфейсы: type assertion: T = v1
 
 ```
 type I1 interface {
@@ -703,7 +585,7 @@ func (T) M1() {}
 
 func main() {
     var v1 I1 = T{}
-    var v2 T = v1
+    var v2 T = v1 // Boom!
     _ = v2
 }
 ```
@@ -715,11 +597,11 @@ cannot convert v (type I) to type T: need type assertion
 
 ---
 
-# Интерфейсы: type assertion
+# Интерфейсы: type assertion для конкретных типов
 
 
 <br>
-для обычных типов:
+Для обычных типов:
 
 ```
 type I interface {
@@ -744,7 +626,7 @@ func main() {
 
 
 <br>
-для интерфейсов:
+Для интерфейсов:
 
 ```
 
@@ -760,7 +642,7 @@ type T2 struct{}
 
 func main() {
 	var v1 I = T1{}
-	v2 := v1.(T2) // impossible type assertion: 
+	v2 := v1.(T2) // compile time error: impossible type assertion: 
 				  // T2 does not implement I (missing M method)
 	fmt.Printf("%T\n", v2)
 }
@@ -770,7 +652,7 @@ func main() {
 
 # Интерфейсы: type assertion для конкретных типов
 
-<br> динамические части не совпадают:
+<br> Динамические части не совпадают:
 
 ```
 type I interface {
@@ -785,7 +667,7 @@ func (T2) M() {}
 
 func main() {
     var v1 I = T1{}
-    v2 := v1.(T2)
+    v2 := v1.(T2) // runtime error.
     fmt.Printf("%T\n", v2)
 }
 ```
@@ -799,11 +681,13 @@ panic: interface conversion: main.I is main.T1, not main.T2
 # Интерфейсы: type assertion для конкретных типов
 
 
-Можем проверить, выполниется ли приведение при помощи
+Можем проверить, выполнится ли приведение при помощи
 multi-valued type assertion:
 
 ```
-type I interface { M() }
+type I interface {
+    M()
+}
 
 type T1 struct{}
 func (T1) M() {}
@@ -813,9 +697,9 @@ func (T2) M() {}
 
 func main() {
     var v1 I = T1{}
-    v2, ok := v1.(T2)
+    v2, ok := v1.(T2) // Boom!
     if !ok {
-        fmt.Printf("ok: %v\n", ok) // ok: false
+        fmt.Printf("ok: %v\n", ok)      // ok: false
         fmt.Printf("%v,  %T\n", v2, v2) // {},  main.T2
     }
 }
@@ -827,14 +711,18 @@ func main() {
 # Интерфейсы: type assertion для интерфейсов
 
 ```
-type I1 interface { M() }
+type I1 interface {
+    M()
+}
 
-type I2 interface { I1; N() }
+type I2 interface {
+    I1
+    N()
+}
 
 type T struct{
     name string
 }
-
 func (T) M() {}
 func (T) N() {}
 
@@ -861,7 +749,6 @@ type I2 interface {
 }
 
 type T struct {}
-
 func (T) M() {}
 
 func main() {
@@ -890,13 +777,9 @@ func (T) M() {}
 
 func main() {
     var v1 I
-    v2 := v1.(T)
+    v2 := v1.(T) // panic: interface conversion: main.I is nil, not main.T
     fmt.Printf("%T\n", v2)
 }
-```
-
-```
-panic: interface conversion: main.I is nil, not main.T
 ```
 
 ---
@@ -936,8 +819,8 @@ type Person struct {
     Name string
     Age  int
 }
-// ByAge implements sort.Interface for []Person based on
-// the Age field.
+
+// ByAge implements sort.Interface for []Person based on the Age field.
 type ByAge []Person
 
 func (a ByAge) Len() int           { return len(a) }
@@ -953,6 +836,25 @@ people := []Person{
 
 sort.Sort(ByAge(people))
 ```
+
+<br>
+
+https://goplay.tools/snippet/SHZXfLu-ulF
+
+---
+
+# Опрос
+
+.left-text[
+Заполните пожалуйста опрос
+<br>
+https://otus.ru/polls/19013/
+]
+
+.right-image[
+![](img/gopher7.png)
+]
+
 
 ---
 

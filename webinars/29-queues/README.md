@@ -275,7 +275,7 @@ http://localhost:15672/ guest:guest
 # Краткие выводы
 
 - используем каналы и concurrency паттерны
-- не забываем про circuit breaker
+- не забываем про backoff
 - реализуем код исходя из особенностей конкретного брокера
 
 ---
@@ -377,12 +377,7 @@ https://github.com/rabbitmq/rabbitmq-tutorials/tree/master/go
 .left-text[
 Заполните пожалуйста опрос
 <br>
-https://otus.ru/polls/11440/
-
-<br><br><br>
-И небольшой тест
-<br>
-https://forms.gle/UJsm7qNJonMnvmXe7
+https://otus.ru/polls/15955/
 ]
 
 .right-image[

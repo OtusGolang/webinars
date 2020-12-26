@@ -12,11 +12,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-]
-
+    ## > Напишите в чат
+    + если все хорошо
+    - если есть проблемы cо звуком или с видео]
 
 ---
 
@@ -40,12 +38,9 @@ background-image: url(img/message.svg)
 
 # О чем будем говорить
 
-.big-list[
-* Юнит-тестирование vs интеграционное
-* TDD
-* Настройка окружения
-* BDD
-]
+* ### Юнит-тестирование vs интеграционное
+* ### Подходы к тестированию (TDD, BDD)
+* ### Примеры
 
 ---
 
@@ -80,18 +75,23 @@ background-image: url(img/message.svg)
 
 # Зачем?
 
-* Упростить рефакторинг (safety net)
+* Упрощают рефакторинг.
 
-* Документировать код, определить контракт
+* Документируют код.
 
-* Отделить интерфейса от реализации (mocks)
+* Отделение интерфейса от реализации (mocks), менее связный код.
 
-* Найти найти неактуальный код
+* Помогают найти неактуальный код.
 
-* Найти найти новые кейсы
+* Помогают найти новые кейсы.
 
-* Повысить качество кода
+* Считают метрику для менеджмента (покрытие).
 
+* Определяют контракт.
+
+* Повышают качество кода.
+
+* Придают уверености при деплое в продакшен.
 ---
 
 # Думай, как тестировщик
@@ -112,9 +112,9 @@ background-size: 95%
 
 # Модульные VS Интеграционные
 
-https://habr.com/ru/post/358950/
+[Пирамида тестов на практике](https://habr.com/ru/post/358950/)
 <br>
-https://habr.com/ru/post/358178/
+[Антипаттерны тестирования ПО](https://habr.com/ru/post/358178/)
 
 
 ---
@@ -152,64 +152,31 @@ https://ru.wikipedia.org/wiki/Разработка_через_тестирова
 ---
 
 class: bottom
-background-image: url(img/unit_vs_integr.png)
-background-size: 95%
-
-# Интеграционные тесты
-
----
-
-# Интеграционные тесты: окружение
-
-## Варианты:
-- Поднимаем сервисы, базу, кеши и пр. локально
-
-- У нас есть виртуалка или админы любезно предоставили нам тестовое окружение, куда мы можем раскатиться
-
-- **docker-compose**:
-  - поднимаем всю инфраструктуру или только часть
-  - не храним состояние между запусками, если не хотим
-
-Что делать с сервисами, которые ходят во внешнюю сеть (стороннее API и пр.)?
-
----
-
-# docker-compose: полезные команды
-
-```
-docker-compose [-f file] up [–d] [–build] [--exit-code-from service]
-docker-compose [-f file] down
-docker-compose logs [–f service]
-docker-compose ps [–a]
-docker-compose [-f file] run service [command]
-docker-compose [-f file] exec service [command]
-```
-
----
-
-# Интеграционные тесты: пример
-
-https://github.com/kulti/task-list
-
----
-
-# Интеграционные тесты: резюме
-
-- Используйте окружение максимально похожее на проду
-- Не используйте тестируемый код
-- Используйте спецификации и кодогенеренных клиентов
-- Мокайте ненужные сервисы
-- Пишите интеграционные тесты на том языке, на каком удобнее
-
----
-
-class: bottom
 background-image: url(img/bdd.png)
 background-size: 80%
 
-# Behavior-Driven Development (BDD)
+# BDD (Behavior-Driven Development)
 
 https://en.wikipedia.org/wiki/Behavior-driven_development
+
+---
+
+# BDD: язык Gherkin
+
+```
+Feature: Guess the word
+
+  Scenario: Maker starts a game
+    When the Maker starts a game
+    Then the Maker waits for a Breaker to join
+
+  Scenario: Breaker joins a game
+    Given the Maker has started a game with the word "silky"
+    When the Breaker joins the Maker's game
+    Then the Breaker must guess a word with 5 characters
+```
+
+https://cucumber.io/docs/gherkin/reference/
 
 ---
 
@@ -224,29 +191,6 @@ https://en.wikipedia.org/wiki/Behavior-driven_development
 - Наиболее известная компания, продвигающая фреймворки для BDD - Cucumber.
 
 - BDD придуман, чтобы бизнесу был ближе к программистам. (как на самом деле?)
-
-
----
-
-# BDD: язык Gherkin
-
-```
-Feature: Guess the word
-
-  # The first example has two steps
-  Scenario: Maker starts a game
-    When the Maker starts a game
-    Then the Maker waits for a Breaker to join
-
-  # The second example has three steps
-  Scenario: Breaker joins a game
-    Given the Maker has started a game with the word "silky"
-    When the Breaker joins the Maker's game
-    Then the Breaker must guess a word with 5 characters
-```
-
-https://cucumber.io/docs/gherkin/reference/
-
 
 ---
 
@@ -309,6 +253,64 @@ https://github.com/DATA-DOG/godog
 ## Минусы
 - Сложно написать нетривиальные кейсы
 - Неудобный рефакторинг
+
+---
+
+class: bottom
+background-image: url(img/unit_vs_integr.png)
+background-size: 95%
+
+# Интеграционные тесты
+
+---
+
+# Интеграционные тесты: окружение
+
+## Варианты:
+- Поднимаем сервисы, базу, кеши и пр. локально
+
+- У нас есть виртуалка или тестовое окружение, куда мы можем раскатиться
+
+- Docker (docker-compose или kubernetes)
+
+Что делать с сервисами, которые ходят во внешнюю сеть (стороннее API и пр.)?
+
+---
+
+# docker-compose: полезные команды
+
+```
+docker-compose [-f file] up [–d] [–build] [--exit-code-from service]
+docker-compose [-f file] down
+docker-compose logs [–f service]
+docker-compose ps [–a]
+docker-compose [-f file] run service [command]
+docker-compose [-f file] exec service [command]
+```
+
+---
+
+# Интеграционные тесты: примеры
+
+### live-кодинг сессия по написанию интеграционных тестов
+https://www.youtube.com/watch?v=AV6xAeHQVl4
+<br>
+https://github.com/kulti/otus_ol_int_tests
+
+<br><br>
+
+### Пример с общим сьютом для юнит и интеграционных тестов
+https://github.com/kulti/task-list
+
+---
+
+# Интеграционные тесты: резюме
+
+- Используйте окружение максимально похожее на прод
+- Не используйте тестируемый код
+- Используйте спецификации и кодогенеренных клиентов
+- Мокайте ненужные сервисы
+- Пишите интеграционные тесты на том языке, на каком удобнее
 
 ---
 

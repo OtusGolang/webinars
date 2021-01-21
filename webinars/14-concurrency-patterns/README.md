@@ -36,6 +36,17 @@ background-size: 130%
 
 
 ---
+# Важно
+
+После вебинара обязательно разберите примеры самостоятельно и убедитесь, что
+все они понятны и не вызывают вопросов!
+
+<br><br>
+
+https://github.com/OtusGolang/webinars_practical_part/tree/master/14-concurrency-patterns
+
+
+---
 # Конкурентный код
 Глобально мы обеспечивавем безопаность за счет:
 - примитивов синхронизации (e.g. sync.Mutex, etc)
@@ -58,17 +69,17 @@ background-size: 130%
 data := make([]int, 4)
 
 loopData := func(handleData chan<- int) {
-        defer close(handleData)
-        for i := range data {
-                handleData <- data[i]
-        }
+    defer close(handleData)
+    for i := range data {
+        handleData <- data[i]
+    }
 }
 
 handleData := make(chan int)
 go loopData(handleData)
 
 for num := range handleData {
-        fmt.Println(num)
+    fmt.Println(num)
 }
 ```
 
@@ -77,21 +88,21 @@ for num := range handleData {
 Никакой договоренности нет, по сути, она неявно создана кодом.
 ```
 chanOwner := func() <-chan int {
-        results := make(chan int, 5)
-        go func() {
-                defer close(results)
-                for i := 0; i <= 5; i++ {
-                        results <- i
-                }
-        }()
-        return results
+    results := make(chan int, 5)
+    go func() {
+        defer close(results)
+        for i := 0; i <= 5; i++ {
+            results <- i
+        }
+    }()
+    return results
 }
 
 consumer := func(results <-chan int) {
-        for result := range results {
-                fmt.Printf("Received: %d\n", result)
-                }
-        fmt.Println("Done receiving!")
+    for result := range results {
+        fmt.Printf("Received: %d\n", result)
+    }
+    fmt.Println("Done receiving!")
 }
 
 results := chanOwner()
@@ -104,22 +115,22 @@ consumer(results)
 Пример 1
 ```
 for _, i := range []int{1, 2, 3, 4, 5} {
-        select {
-        case <-done:
-                return
-        case intStream <- i:
-        }
+    select {
+    case <-done:
+        return
+    case intStream <- i:
+    }
 }
 ```
 
 Пример 2 (активное ожидание)
 ```
 for {
-        select {
-                case <- done:
-                        return
-                default:
-        }
+    select {
+    case <- done:
+        return
+    default:
+    }
 }
 ```
 
@@ -128,16 +139,16 @@ for {
 # Как предотвратить утечку горутин
 Проблема:
 ```
-doWork := func(strings <-chan string) <-chan interface{} {
-        completed := make(chan interface{})
-        go func() {
-                defer fmt.Println("doWork exited.")
-                defer close(completed)
-                for s := range strings {
-                        fmt.Println(s)
-                }
-        }()
-        return completed
+doWork := func(strings <-chan string) <-chan struct{} {
+    completed := make(chan struct{})
+    go func() {
+        defer fmt.Println("doWork exited.")
+        defer close(completed)
+        for s := range strings {
+            fmt.Println(s)
+        }
+    }()
+    return completed
 }
 
 doWork(nil)
@@ -155,22 +166,22 @@ https://youtu.be/TVe8pIFn2mY
 # Как предотвратить утечку горутин
 Решение - явный индиктор того, что пора завершаться:
 ```
-doWork := func(done <-chan interface{}, strings <-chan string)
-        <-chan interface{} {
-        terminated := make(chan interface{})
-        go func() {
-                defer fmt.Println("doWork exited.")
-                defer close(terminated)
-                for {
-                        select {
-                        case s := <-strings:
-                                fmt.Println(s)
-                        case <-done:
-                                return
-                        }
-                }
-        }()
-        return terminated
+doWork := func(done <-chan struct{}, strings <-chan string)
+    <-chan struct{} {
+    terminated := make(chan struct{})
+    go func() {
+        defer fmt.Println("doWork exited.")
+        defer close(terminated)
+        for {
+            select {
+            case s := <-strings:
+                fmt.Println(s)
+            case <-done:
+                return
+            }
+        }
+    }()
+    return terminated
 }
 ...
 ```
@@ -200,23 +211,22 @@ doWork := func(done <-chan interface{}, strings <-chan string)
 # Обработка ошибок
 Пример:
 ```
-checkStatus := func(done <-chan interface{}, urls ...string)
-        <-chan Result {
-        results := make(chan Result)
-        go func() {
-                defer close(results)
-                for _, url := range urls {
-                        var result Result
-                        resp, err := http.Get(url)
-                        result = Result{Error: err, Response: resp}
-                        select {
-                        case <-done:
-                                return
-                        case results <- result:
-                        }
-                }
-        }()
-        return results
+checkStatus := func(done <-chan struct{}, urls ...string) <-chan Result {
+    results := make(chan Result)
+    go func() {
+        defer close(results)
+        or _, url := range urls {
+            var result Result
+            resp, err := http.Get(url)
+            result = Result{Error: err, Response: resp}
+            select {
+            case <-done:
+                return
+            case results <- result:
+            }
+        }
+    }()
+    return results
 }
 ```
 
@@ -238,7 +248,7 @@ https://medium.com/statuscode/pipeline-patterns-in-go-a37bb3a7e61d
 # Pipeline
 Свойства, обычно применимые к этапу (stage)
 - входные и выходные данные имеют один тип
-- должна быть возможность передавать этап (например, фукнции в го - подходят)
+- должна быть возможность передавать этап (например, фукнции в Go - подходят)
 
 
 ---
@@ -246,21 +256,21 @@ https://medium.com/statuscode/pipeline-patterns-in-go-a37bb3a7e61d
 Stage 1
 ```
 multiply := func(values []int, multiplier int) []int {
-        multipliedValues := make([]int, len(values))
-        for i, v := range values {
-                multipliedValues[i] = v * multiplier
-        }
-        return multipliedValues
+    multipliedValues := make([]int, len(values))
+    for i, v := range values {
+        multipliedValues[i] = v * multiplier
+    }
+    return multipliedValues
 }
 ```
 Stage 2
 ```
 add := func(values []int, additive int) []int {
-        addedValues := make([]int, len(values))
-        for i, v := range values {
-                addedValues[i] = v + additive
-        }
-        return addedValues
+    addedValues := make([]int, len(values))
+    for i, v := range values {
+        addedValues[i] = v + additive
+    }
+    return addedValues
 }
 ```
 
@@ -271,7 +281,7 @@ add := func(values []int, additive int) []int {
 ```
 ints := []int{1, 2, 3, 4}
 for _, v := range add(multiply(ints, 2), 1) {
-        fmt.Println(v)
+    fmt.Println(v)
 }
 ```
 
@@ -280,19 +290,19 @@ for _, v := range add(multiply(ints, 2), 1) {
 # Тот же пайплайн, но с горутинами
 Генератор
 ```
-generator := func(done <-chan interface{}, integers ...int) <-chan int {
-        intStream := make(chan int)
-        go func() {
-                defer close(intStream)
-                for _, i := range integers {
-                        select {
-                        case <-done:
-                                return
-                        case intStream <- i:
-                        }
-                }
-        }()
-        return intStream
+generator := func(done <-chan struct{}, integers ...int) <-chan int {
+    intStream := make(chan int)
+    go func() {
+        defer close(intStream)
+        for _, i := range integers {
+            select {
+            case <-done:
+                return
+            case intStream <- i:
+            }
+        }
+    }()
+    return intStream
 }
 ```
 
@@ -301,20 +311,19 @@ generator := func(done <-chan interface{}, integers ...int) <-chan int {
 # Тот же пайплайн, но с горутинами
 Горутина с умножением
 ```
-multiply := func(done <-chan interface{}, intStream <-chan int,
-        multiplier int) <-chan int {
-        multipliedStream := make(chan int)
-        go func() {
-                defer close(multipliedStream)
-                for i := range intStream {
-                        select {
-                        case <-done:
-                                return
-                        case multipliedStream <- i*multiplier:
-                        }
-                }
-        }()
-        return multipliedStream
+multiply := func(done <-chan struct{}, intStream <-chan int, multiplier int) <-chan int {
+    multipliedStream := make(chan int)
+    go func() {
+        defer close(multipliedStream)
+        for i := range intStream {
+            select {
+            case <-done:
+                return
+            case multipliedStream <- i*multiplier:
+            }
+        }
+    }()
+    return multipliedStream
 }
 ```
 
@@ -323,20 +332,19 @@ multiply := func(done <-chan interface{}, intStream <-chan int,
 # Тот же пайплайн, но с горутинами
 Горутина с добавлением
 ```
-add := func(
-done <-chan interface{},intStream <-chan int, additive int) <-chan int {
-        addedStream := make(chan int)
-        go func() {
-                defer close(addedStream)
-                for i := range intStream {
-                        select {
-                        case <-done:
-                                return
-                        case addedStream <- i+additive:
-                        }
-                }
-        }()
-        return addedStream
+add := func(done <-chan struct{},intStream <-chan int, additive int) <-chan int {
+    addedStream := make(chan int)
+    go func() {
+        defer close(addedStream)
+        for i := range intStream {
+            select {
+            case <-done:
+                return
+            case addedStream <- i+additive:
+            }
+        }
+    }()
+    return addedStream
 }
 ```
 
@@ -345,7 +353,7 @@ done <-chan interface{},intStream <-chan int, additive int) <-chan int {
 # Тот же пайплайн, но с горутинами
 Использование:
 ```
-done := make(chan interface{})
+done := make(chan struct{})
 defer close(done)
 
 intStream := generator(done, 1, 2, 3, 4)
@@ -360,20 +368,19 @@ for v := range pipeline {
 ---
 # Полезные генераторы - Repeat
 ```
-repeatFn := func(done <-chan interface{}, fn func() interface{})
-        <-chan interface{} {
-        valueStream := make(chan interface{})
-        go func() {
-                defer close(valueStream)
-                for {
-                        select {
-                        case <-done:
-                                return
-                        case valueStream <- fn():
-                        }
-                }
-        }()
-        return valueStream
+repeatFn := func(done <-chan struct{}, fn func() interface{}) <-chan interface{} {
+    valueStream := make(chan interface{})
+    go func() {
+        defer close(valueStream)
+        for {
+            select {
+            case <-done:
+                return
+            case valueStream <- fn():
+            }
+        }
+    }()
+    return valueStream
 }
 ```
 
@@ -381,20 +388,19 @@ repeatFn := func(done <-chan interface{}, fn func() interface{})
 ---
 # Полезные генераторы - Take
 ```
-take := func(done <-chan interface{}, valueStream <-chan interface{},
-        num int) <-chan interface{} {
-        takeStream := make(chan interface{})
-        go func() {
-                defer close(takeStream)
-                for i := 0; i < num; i++ {
-                        select {
-                        case <-done:
-                                return
-                        case takeStream <- <-valueStream:
-                        }
-                }
-        }()
-        return takeStream
+take := func(done <-chan struct{}, valueStream <-chan interface{}, num int) <-chan interface{} {
+    takeStream := make(chan interface{})
+    go func() {
+        defer close(takeStream)
+        for i := 0; i < num; i++ {
+            select {
+            case <-done:
+                return
+            case takeStream <- <-valueStream:
+            }
+        }
+    }()
+    return takeStream
 }
 ```
 
@@ -417,7 +423,7 @@ take := func(done <-chan interface{}, valueStream <-chan interface{},
 ---
 # Выводы
 - старайтесь писать максимально простой и понятный код
-- пораждая горутину, всегда используйте done канал для управления
+- порождая горутину, задумайтесь, не нужен ли ей done-канал
 - не игнорируйте ошибки, старайтесь вернуть их туда, где больше контекста
 - использование пайплайнов делает код более читаемым
 - использование пайплайнов позволяет легко менять отдельные этапы
@@ -477,6 +483,19 @@ func Merge2Channels(
 ---
 ## Вопросы?
 
+
+---
+# Опрос
+
+.left-text[
+Заполните пожалуйста опрос
+<br>
+https://otus.ru/polls/????/
+]
+
+.right-image[
+![](tmp/gopher7.png)
+]
 
 ---
 class: white

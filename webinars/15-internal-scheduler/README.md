@@ -326,6 +326,194 @@ Go 1.14 Asynchronous Preemption:
 
 ---
 
+# Каналы
+
+https://golang.org/src/runtime/chan.go
+
+---
+
+# Каналы
+
+.center-image[
+![](img/write_read_make.png)
+]
+
+---
+
+# Каналы: запись
+
+.center-image[
+![](img/write_read_w0.png)
+]
+
+---
+
+# Каналы: запись
+
+.center-image[
+![](img/write_read_w1.png)
+]
+
+---
+
+# Каналы: чтение
+
+.center-image[
+![](img/write_read_r0.png)
+]
+
+---
+
+# Каналы: concurrency
+
+.center-image[
+![](img/concurrency_w_init.png)
+]
+
+---
+
+# Каналы: concurrency
+
+.center-image[
+![](img/concurrency_w_g1_lock.png)
+]
+
+---
+
+# Каналы: concurrency
+
+.center-image[
+![](img/concurrency_w_g1_copy.png)
+]
+
+---
+
+# Каналы: concurrency
+
+.center-image[
+![](img/concurrency_w_g1_unlock.png)
+]
+
+---
+
+# Каналы: concurrency
+
+.center-image[
+![](img/concurrency_w_g2_lock.png)
+]
+
+---
+
+# Каналы: concurrency
+
+.center-image[
+![](img/concurrency_w_g2_copy.png)
+]
+
+---
+
+# Каналы: concurrency
+
+.center-image[
+![](img/concurrency_w_g2_unlock.png)
+]
+
+---
+
+# Каналы: concurrency (write full)
+
+.center-image[
+![](img/concurrency_wf_init.png)
+]
+
+---
+
+# Каналы: concurrency (write full)
+
+.center-image[
+![](img/concurrency_wf_init_2.png)
+]
+
+---
+
+# Каналы: concurrency (write full)
+
+.center-image[
+![](img/concurrency_wf_g1_lock.png)
+]
+
+---
+
+# Каналы: concurrency (write full)
+
+.center-image[
+![](img/concurrency_wf_g2_copy.png)
+]
+
+---
+
+# Каналы: concurrency (write full)
+
+.center-image[
+![](img/concurrency_wf_g2_g1_copy.png)
+]
+
+---
+
+# Каналы: concurrency (write full)
+
+.center-image[
+![](img/concurrency_wf_g1_ready.png)
+]
+
+---
+
+# Каналы: concurrency (read empty)
+
+.center-image[
+![](img/concurrency_re_init.png)
+]
+
+---
+
+# Каналы: concurrency (read empty)
+
+.center-image[
+![](img/concurrency_re_init_2.png)
+]
+
+---
+
+# Каналы: concurrency (read empty)
+
+.center-image[
+![](img/concurrency_re_g2_lock.png)
+]
+
+---
+
+# Каналы: concurrency (read empty)
+
+.center-image[
+![](img/concurrency_re_g1_w1.png)
+]
+
+---
+
+.center-image[
+![](img/no_double_copy.jpg)
+]
+
+---
+
+# Каналы: concurrency (read empty)
+
+.center-image[
+![](img/concurrency_re_g1_w2.png)
+]
+
+---
+
 # Материалы
 
 * ### Сага о планировщике - https://youtu.be/YHRO5WQGh0k

@@ -30,9 +30,9 @@ background-image: url(img/message.svg)
 
 # Как проходит занятие
 
-* ### Активно участвуем - задаем вопросы.
-* ### Чат вижу - могу ответить не сразу.
-* ### После занятия - оффтопик, ответы на любые вопросы.
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
 
 ---
 
@@ -128,7 +128,7 @@ func TestIndex(t *testing.T) { // <-- Test...(t *testing.T)
 }
 ```
 
-https://goplay.space/#yybc8Np1JjK
+https://goplay.tools/snippet/yybc8Np1JjK
 
 ---
 
@@ -147,7 +147,7 @@ func TestAtoi(t *testing.T) {
 }
 ```
 
-https://goplay.space/#vjAsrBrQrxu
+https://goplay.tools/snippet/vjAsrBrQrxu
 
 
 ---
@@ -173,9 +173,9 @@ https://goplay.space/#vjAsrBrQrxu
 ## Задание
 * ### Дописать существующие тесты.
 * ### Придумать один новый тест.
-* ### Не закрывайте playground - еще пригодится :)
+* ### Не закрывайте playground — еще пригодится :)
 
-https://goplay.space/#PQCd4_FqLeZ
+https://goplay.tools/snippet/PQCd4_FqLeZ
 
 ---
 
@@ -192,13 +192,15 @@ func TestAtoi(t *testing.T) {
 }
 ```
 
-https://goplay.space/#5cpT652lEyy
+https://goplay.tools/snippet/5cpT652lEyy (IDE)
+
+https://goplay.tools/snippet/9h-9ha70qTb (playground)
 
 ---
 
 # testify: assert vs require
 
-## Простое правило - всегда используйте require.
+## Простое правило — всегда используйте require.
 
 ---
 
@@ -242,7 +244,7 @@ https://goplay.space/#5cpT652lEyy
 
 ## Задание
 * ### Переписать тесты на testify.
-* ### Не закрывайте playground - еще пригодится :)
+* ### Не закрывайте playground — еще пригодится :)
 
 ---
 
@@ -262,20 +264,20 @@ func TestParseInt(t *testing.T) {
 	for _, tc := range tests {
 		got, err := strconv.ParseInt(tc.str, 10, 8)
 		require.NoError(t, err)
-		require.EqualValues(t, tc.expected, got)
+		require.Equal(t, tc.expected, got)
 	}
 }
 
 func TestParseIntErrors(t *testing.T) {
-	tests := []string{"-129", "128", "byaka"}
-
-	for _, str := range tests {
+	for _, str := range []string{"-129", "128", "byaka"} {
 		_, err := strconv.ParseInt(str, 10, 8)
 		require.Error(t, err)
 	}
 }
 ```
-https://goplay.space/#YAgI798H8kj
+https://goplay.tools/snippet/p1Bxjoh1iZp (IDE)
+
+https://goplay.tools/snippet/GWtEanaAKp9 (Playground)
 
 ---
 
@@ -297,14 +299,15 @@ func TestParseInt(t *testing.T) {
 		t.Run(tc.str, func(t *testing.T) {
 			got, err := strconv.ParseInt(tc.str, 10, 8)
 			require.NoError(t, err)
-			require.EqualValues(t, tc.expected, got)
+			require.Equal(t, tc.expected, got)
 		})
 	}
 }
 ```
 
-https://goplay.space/#ssdm9GN6SiO
+https://goplay.tools/snippet/R9YMRmsM2h3 (IDE)
 
+https://goplay.tools/snippet/v-_TxOG6isX (Playground)
 ---
 
 # Табличные тесты: практика
@@ -314,39 +317,6 @@ https://goplay.space/#ssdm9GN6SiO
 * ### Постараться придумать еще один тест.
 * ### Можно закрывать playground :)
 
----
-
-# Blackbox тесты
-
-```
-package router
-
-func New(...) *Router {
-	return &Router{
-		// ...
-	}
-}
-
-func (r *Router) run() { // <--- приватный метод будет недоступен
-	// ...
-}
-```
-
-```
-package router_test
-
-import (
-	"strings"
-
-	// тестируемый пакет импортируется
-	"github.com/kulti/task-list/server/internal/router"
-)
-
-func TestRouter(t *testing.T) {
-	r := router.New(...)
-	// ....
-}
-```
 ---
 
 # Как запускать тесты
@@ -373,9 +343,9 @@ go test -tags=integration
 
 # Coverage
 
-* ### `go test -cover` - посмотреть покрытие
-* ### `go test -coverprofile=c.out` - записать отчет о покрытии
-* ### `go tool cover -html=c.out` - посмотреть отчет о покрытии
+* ### `go test -cover` — посмотреть покрытие
+* ### `go test -coverprofile=c.out` — записать отчет о покрытии
+* ### `go tool cover -html=c.out` — посмотреть отчет о покрытии
 
 https://blog.golang.org/cover
 
@@ -403,7 +373,7 @@ https://blog.golang.org/cover
 <br>
 <br>
 
-## 3 декабря, четверг
+## 9 марта, вторник
 
 ---
 

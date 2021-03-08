@@ -399,7 +399,7 @@ https://go101.org/article/unsafe.html
 
 ---
 
-# Зачем нужен пакет unsafe ? 
+# Зачем нужен пакет unsafe? 
 
 В первую очередь он используется в самом Go, например в пакетах `runtime` и `reflect`
 
@@ -432,6 +432,14 @@ func (v Value) SetFloat(x float64) {
 * без помощи рефлексии для конкретного интерфейса Y (например, можно взять `Writer` или `Stringer`);
 * с помощью рефлексии для любого переданного Y.
 
+https://goplay.tools/snippet/dnn4cNykjLT
+
+---
+
+# Домашнее задание
+
+https://github.com/OtusGolang/home_work/tree/master/hw09_struct_validator
+
 ---
 
 # Дополнительные материалы
@@ -449,7 +457,7 @@ func (v Value) SetFloat(x float64) {
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/15946/
+https://otus.ru/polls/19025/
 ]
 
 .right-image[

@@ -79,9 +79,9 @@ sudo apt-get install golang
 
 Или просто скачать с официального сайта
 ```
-wget https://dl.google.com/go/go1.14.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.16.linux-amd64.tar.gz
 
-sudo tar -C /usr/local -xzf go1.14.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.16.linux-amd64.tar.gz
 
 sudo ln -s /usr/local/go/bin/go /usr/bin/go
 ```
@@ -129,7 +129,7 @@ vim /usr/local/go/src/runtime/slice.go
 export GOPATH=/path/your/go/projects
 ```
 
-Однако, если не задать, то `GOPATH` будет предполагаться `/home/<username>/go`
+Однако, если не задать, то `GOPATH` будет предполагаться `$HOME/go`
 
 
 ---
@@ -150,8 +150,10 @@ func main() {
 
 ```
 $ go build -o prog prog.go
+
 $ file prog
 prog: Mach-O 64-bit executable x86_64
+
 $ ./prog
 Hello!
 ```
@@ -228,7 +230,7 @@ go: finding golang.org/x/net latest
 $ cat go.mod
 module github.com/mialinx/foobar
 
-go 1.14
+go 1.16
 
 require (
 	github.com/beevik/ntp v0.2.0 // indirect
@@ -420,7 +422,7 @@ prog: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, no
 - Вне GOPATH - если рядом лежит go.mod, то модули «включаются»
 
 - Переменная окружения `GO111MODULE`:
-	- auto / unser - применяются правила выше
+	- auto / unset - применяются правила выше
 	- on - форсируем использование модулей внезависимости от директории
 	- off - форсируем игнорирование модулей внезависимости от директории и go.mod
 
@@ -473,8 +475,9 @@ Build compiles the packages named by the import paths,
 along with their dependencies, but it does not install the results.
 ...
 ```
----
 
+
+---
 
 # Форматирование кода
 
@@ -530,6 +533,21 @@ func main() {
 }
 ```
 ]
+
+
+---
+
+# Форматирование кода: advanced
+
+```
+$ cd /tmp
+$ go get mvdan.cc/gofumpt
+```
+
+```
+$ gofumpt -l -w .
+```
+
 ---
 
 # Обновление и сортировка импортов
@@ -561,6 +579,19 @@ func main() {
 }
 ```
 
+
+---
+
+# Обновление и сортировка импортов: advanced
+
+```
+$ cd /tmp
+$ go get github.com/daixiang0/gci
+```
+
+```
+$ gci -w -local github.com/Antonboom/hw01 .
+```
 
 ---
 
@@ -630,7 +661,7 @@ https://github.com/OtusGolang/home_work/wiki
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/19006/
+https://otus.ru/polls/22826/
 ]
 
 .right-image[

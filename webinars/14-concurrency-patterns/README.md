@@ -85,7 +85,7 @@ for num := range handleData {
 
 ---
 # Lexical
-Никакой договоренности нет, по сути, она неявно создана кодом.
+Никакой договоренности нет, но она, по сути, неявно создана кодом.
 ```
 chanOwner := func() <-chan int {
     results := make(chan int, 5)
@@ -490,7 +490,7 @@ func Merge2Channels(
 .left-text[
 Заполните пожалуйста опрос
 <br>
-https://otus.ru/polls/????/
+https://otus.ru/polls/19019/
 ]
 
 .right-image[

@@ -359,7 +359,7 @@ rows.Scan(dest ...interface{}) error
 rows.Close()
 
 // возвращает ошибку, встреченную при итерации
-rows.Error() error
+rows.Err() error
 ```
 
 ---
@@ -691,7 +691,7 @@ for rows.Next() {
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/15951/
+https://otus.ru/polls/19030/
 ]
 
 .right-image[

@@ -569,7 +569,7 @@ ch <- struct{}{}
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/19010/
+https://otus.ru/polls/????/
 ]
 
 .right-image[

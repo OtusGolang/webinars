@@ -7,9 +7,9 @@ class: white
 background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
-# Элементарные типы данных <br> в Go
+# Элементарные типы <br> данных в Go
 
-### Дмитрий Смаль
+### Антон Телышев
 
 ---
 
@@ -35,33 +35,17 @@ background-size: 130%
 
 # Ретроспектива первого ДЗ
 
-У программ есть несколько стандартных файловых дескрипторов
-- STDIN (`os.Stdin`)
-- STDOUT (`os.Stdout`)
-- STDERR  (`os.Stderr`)
+- Модулем в Go является директория с файлом **go.mod**.
+- Чтобы модуль был доступен через систему контроля версий, он должен иметь правильное имя
+```
+module github.com/Antonboom/Otus_hw/hw01_hello_otus
+```
+- Установить новую зависимость можно через **go get**:
+```
+go get golang.org/x/example/stringutil
+```
+- **go.mod** и **go.sum** следует коммитить в репозиторий!
 
-Сообщения для пользователя нужно выводить в `os.Stdout`, например через `fmt.Printf`.<br>
-Ошибки нужно выводить в `os.Stderr`, например через `log.Printf`.
-<br><br>
-Если ошибка фатальная, нужно прервать выполнение программы и вернуть *ненулевой* код выхода, 
-например c помощью `os.Exit(1)` или `log.Fatalf("message")` или `panic`
-
----
-
-
-# Небольшой тест
-
-.left-text[
-Пожалуйста, пройдите небольшой тест. 
-<br><br>
-Возможно вы уже многое знаете про типы данных в Go =)
-<br><br>
-[https://forms.gle/zHXnyDAkTLyyQaAK8](https://forms.gle/zHXnyDAkTLyyQaAK8)
-]
-
-.right-image[
-![](img/gopher9.png)
-]
 
 ---
 
@@ -97,10 +81,12 @@ func main() {
 
 ```
 type User struct {
-  Name     string  // будет видно в json.Marshal
-  password string  // не будет видно
+    Name     string  // Будет видно в json.Marshal.
+    password string  // Не будет видно.
 }
 ```
+
+
 ---
 
 # Какие есть элементарные типы данных в Go ?
@@ -111,9 +97,12 @@ type User struct {
 - Комплексные: `complex64`, `complex128`
 - Строки: `string`
 - Указатели: `uintptr`, `*int`, `*string`, ...
+- Decimal только через сторонние модули.
+
+https://golang.org/ref/spec#Types
+
 
 ---
-
 
 # Особенности целых чисел в Go
 
@@ -121,6 +110,8 @@ type User struct {
 - Типы `int` и `uint` могут занимать 32 и 64 бита на разных платформах
 - Нет автоматического преобразования типов
 - `uintptr` - целое число, не указатель
+
+
 ---
 
 
@@ -206,7 +197,8 @@ s := "hello world"            // в двойных кавычках, на одн
 
 s := "hello \n world \u9333"  // c непечатными символами
 
-// если нужно включить в строку кавычки или переносы строки - используем обратные кавычки
+// если нужно включить в строку кавычки или переносы строки 
+// - используем обратные кавычки
 s := `hello
 "cruel"
 'world'
@@ -220,7 +212,7 @@ s := `hello
 ```
 s := "hello world"       // создавать
 
-var c byte = s[0]       // получать доступ к байту(!) в строке
+var c byte = s[0]        // получать доступ к байту(!) в строке
 
 var s2 string = s[5:10]  // получать подстроку (в байтах!)
 
@@ -234,10 +226,10 @@ l := len(s)              // узнавать длину в байтах
 
 # Задачка
 
-Написать функцию `itoa` (integer to ascii), которая принимает на вход <br>
+Написать функцию `itoa` (integer to ASCII), которая принимает на вход <br>
 целое число и возвращает строку с этим же числом
 <br><br>
-[https://play.golang.org/p/K54lV4LnvzV](https://play.golang.org/p/K54lV4LnvzV)
+https://goplay.tools/snippet/ekR3yrYQG0j
 
 Подсказка: преобразовать цифру (0 - 9) в строку можно так `string('0' + i)`
 
@@ -258,7 +250,7 @@ l := len(s)              // узнавать длину в байтах
 - `Я` = `D0` `AF`
 - `♬` = `E2` `99` `AC`
 
-*Количество символов в строке != длинна строки*
+*Количество символов в строке != длина строки*
 
 `s[i]` - *это i-ый байт, не символ*
 
@@ -279,7 +271,7 @@ var r rune = '\xff'   // последовательность байт
 var r rune = '\u12e4' // unicode code-point
 ```
 
-Руны, это целые числа, поэтому их можно складывать:
+Руны - это целые числа, поэтому их можно складывать:
 ```
 s := "hello " + string('0' + 3) // "hello 3"
 s := "hello " + string('A' + 1) // "hello B"
@@ -317,10 +309,9 @@ fmt.Printf("% v\b\n", ba)
 fmt.Printf("% v\n\n", ra)
 ```
 
-[https://play.golang.org/p/hCSF7LWU24B](https://play.golang.org/p/hCSF7LWU24B)
+https://goplay.tools/snippet/9u1TrdpEN2a
 
 ---
-
 
 # Итерация по строке
 
@@ -340,8 +331,9 @@ for i, r := range s {
     // r - имеет тип rune, int32
 }
 ```
----
 
+
+---
 
 # Стандартная библиотека
 
@@ -361,6 +353,9 @@ Join(a []string, sep string) string
 Split(s, sep string) []string
 ```
 
+https://golang.org/pkg/strings/
+
+
 ---
 
 
@@ -373,10 +368,12 @@ Split(s, sep string) []string
 import "strings"
 
 var b strings.Builder
+
 for i := 33; i >= 1; i-- {
     b.WriteString("Код")
     b.WriteRune('ъ')
 }
+
 result := b.String()
 ```
 
@@ -390,10 +387,12 @@ result := b.String()
 ```
 const PI = 3             // принимает подходящий тип
 const pi float32 = 3.14  // строгий тип
+
 const (
   TheA = 1
   TheB = 2
 )
+
 const (
   X = iota   // 0
   Y          // 1
@@ -409,10 +408,13 @@ const (
 
 ```
 package main
+
 const HelloConst = 3
+
 var HelloVar = 5
+
 func main() {
-	print(HelloVar, HelloConst)
+    print(HelloVar, HelloConst)
 }
 ```
 
@@ -429,8 +431,9 @@ $ go tool nm 1.out  | grep Hello
 # Домашнее задание
 
 Создать Go функцию, осуществляющую примитивную распаковку строки, содержащую повторяющиеся символы / руны.
+<br><br>
 
-Примеры:
+**Примеры:**
 
 - `"a4bc2d5e"` => `"aaaabccddddde"`
 - `"abcd"` => `"abcd"`
@@ -442,27 +445,12 @@ $ go tool nm 1.out  | grep Hello
 
 ---
 
-# Небольшой тест
-
-.left-text[
-Проверим что мы узнали за этот урок
-<br><br>
-[https://forms.gle/zHXnyDAkTLyyQaAK8](https://forms.gle/zHXnyDAkTLyyQaAK8)
-]
-
-.right-image[
-![](img/gopher9.png)
-]
-
----
-
-
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/3567/](https://otus.ru/polls/3567/)
+https://otus.ru/polls/????/
 ]
 
 .right-image[

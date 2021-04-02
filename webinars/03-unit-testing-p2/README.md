@@ -38,11 +38,45 @@ background-image: url(img/message.svg)
 
 # О чем будем говорить
 
+* ### Blackbox тесты
 * ### Дубли (моки для интерфейсов, time, фс)
 * ### Faker (сгенерированные данные)
 * ### Тестирование мутированием
 * ### Golden files
 
+---
+
+# Blackbox тесты
+
+```
+package router
+
+func New(...) *Router {
+	return &Router{
+		// ...
+	}
+}
+
+func (r *Router) run() { // <--- приватный метод будет недоступен
+	// ...
+}
+```
+
+```
+package router_test
+
+import (
+	"strings"
+
+	// тестируемый пакет импортируется
+	"github.com/kulti/task-list/server/internal/router"
+)
+
+func TestRouter(t *testing.T) {
+	r := router.New(...)
+	// ....
+}
+```
 ---
 
 # Моки: DI
@@ -146,7 +180,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#BqOcrrUCZAn
+https://goplay.tools/snippet/BqOcrrUCZAn
 
 ---
 
@@ -203,7 +237,7 @@ https://goplay.space/#BqOcrrUCZAn
 # Моки для времени
 
 * ### https://github.com/cabify/timex
-* ### https://github.com/facebookarchive/clock
+* ### https://github.com/benbjohnson/clock
 
 ---
 
@@ -255,18 +289,6 @@ func TestSomething(t *testing.T) {
 
 ---
 
-# Следующее занятие
-
-## Горутины и каналы
-
-<br>
-<br>
-<br>
-
-## 6 октября, вторник
-
----
-
 # Результаты первого модуля "Начало работы с Go"
 
 .left-text[
@@ -280,6 +302,18 @@ func TestSomething(t *testing.T) {
 .right-image[
 ![](img/gopher_science.png)
 ]
+
+---
+
+# Следующее занятие
+
+## Горутины и каналы
+
+<br>
+<br>
+<br>
+
+## 6 апреля, вторник
 
 ---
 

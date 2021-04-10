@@ -30,9 +30,9 @@ background-image: url(img/message.svg)
 
 # Как проходит занятие
 
-* ### Активно участвуем - задаем вопросы.
-* ### Чат вижу - могу ответить не сразу.
-* ### После занятия - оффтопик, ответы на любые вопросы.
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
 
 ---
 
@@ -163,7 +163,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#8is1y5tu-m3
+https://goplay.tools/snippet/8is1y5tu-m3
 
 ---
 
@@ -175,7 +175,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#SBO2dnLQPue
+https://goplay.tools/snippet/SBO2dnLQPue
 
 ---
 
@@ -320,7 +320,7 @@ ch := make(chan int, ?)
 
 # Проверьте себя
 
-https://goplay.space/#K4bxk92rF3q
+https://goplay.tools/snippet/K4bxk92rF3q
 
 ---
 
@@ -348,7 +348,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#TeLXxeAP0D6
+https://goplay.tools/snippet/TeLXxeAP0D6
 
 ---
 
@@ -367,14 +367,14 @@ func main() {
 }
 ```
 
-https://goplay.space/#TeLXxeAP0D6
+https://goplay.tools/snippet/TeLXxeAP0D6
 
 ---
 
 # Чтение из канала, пока он не закрыт
 
 ```
-v, ok := <-ch // значение и флаг "открытости" канала
+v, ok := <-ch // значение и флаг «могут ли еще появиться значения»
 ```
 
 ---
@@ -456,7 +456,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#t6bVfgg6BTu
+https://goplay.tools/snippet/t6bVfgg6BTu
 
 ---
 
@@ -464,7 +464,7 @@ https://goplay.space/#t6bVfgg6BTu
 
 ```
 select {
-case <-ch1:
+case x := <-ch1:
 	// ...
 case ch2 <- y:
 	// ...
@@ -487,7 +487,7 @@ case <-timer.C:
 }
 ```
 
-https://goplay.space/#40A5bnJQiAk
+https://goplay.tools/snippet/40A5bnJQiAk
 
 ---
 
@@ -508,7 +508,7 @@ for {
 }
 ```
 
-https://goplay.space/#E2wyvzdXYIS
+https://goplay.tools/snippet/E2wyvzdXYIS
 
 ---
 # Каналы: как сигналы
@@ -559,7 +559,7 @@ for i := 0; i < 5; i++ {
 time.Sleep(2 * time.Second)
 ```
 
-https://goplay.space/#rSKy5YetcJS
+https://goplay.tools/snippet/rSKy5YetcJS
 
 ---
 
@@ -608,7 +608,7 @@ for {
 <br>
 <br>
 
-## 8 октября, четверг
+## 8 апреля, четверг
 
 ---
 

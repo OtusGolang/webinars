@@ -77,7 +77,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#KY1h-xjHYuO
+https://goplay.tools/snippet/KY1h-xjHYuO
 
 ---
 
@@ -101,7 +101,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#O0C7h_IsWl8
+https://goplay.tools/snippet/O0C7h_IsWl8
 
 ---
 
@@ -121,11 +121,11 @@ func main() {
 		}()
 	}
 
-	wg.Wait()
+	wg.Wait() // <===
 }
 ```
 
-https://goplay.space/#u90fGD8vZ_X
+https://goplay.tools/snippet/u90fGD8vZ_X
 
 ---
 
@@ -138,8 +138,8 @@ func main() {
 	for i := 0; i < 5; i++ {
 		wg.Add(1) // <===
 		go func() {
+			defer wg.Done() // <===
 			fmt.Println("go-go-go")
-			wg.Done() // <===
 		}()
 	}
 
@@ -189,7 +189,7 @@ func doJob(t task) {
 	}
 ```
 
-https://goplay.space/#BnGpsftx3zo
+https://goplay.tools/snippet/BnGpsftx3zo
 
 ---
 
@@ -214,7 +214,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#VxMyPmXHPzq
+https://goplay.tools/snippet/VxMyPmXHPzq
 
 ---
 
@@ -279,7 +279,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#bf6NKB5z0QO
+https://goplay.tools/snippet/bf6NKB5z0QO
 
 ---
 
@@ -420,7 +420,7 @@ func doSomething(){
 
 <br/>
 
-https://goplay.space/#PLLvZfDiDqs
+https://goplay.tools/snippet/PLLvZfDiDqs
 
 ---
 
@@ -475,7 +475,7 @@ http://robertknight.github.io/talks/golang-race-detector.html
 func main() {
 	for i := 0; i < 10000; i++ {
 		go func() {
-			time.Sleep(time.Second)
+			time.Sleep(10*time.Second)
 		}()
 	}
 	time.Sleep(time.Second)
@@ -528,7 +528,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw05_parallel_execution
 <br>
 <br>
 
-## 13 октября, вторник
+## 19 января, вторник
 
 ---
 

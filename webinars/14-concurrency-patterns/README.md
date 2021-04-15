@@ -490,7 +490,7 @@ func Merge2Channels(
 .left-text[
 Заполните пожалуйста опрос
 <br>
-https://otus.ru/polls/19019/
+https://otus.ru/polls/?????/
 ]
 
 .right-image[

@@ -25,7 +25,7 @@ background-image: url(img/message.svg)
 
 # Работа с вводом/выводом
 
-### Антон Телышев, Алексей Бакин
+### Антон Телышев
 
 ---
 
@@ -48,7 +48,7 @@ background-image: url(img/message.svg)
 Он поможет понять, что вы уже знаете,
 а&nbsp;что предстоит узнать во время занятия.
 <br><br>
-Ссылка в чате
+https://forms.gle/1HwYp7AYdcyAPrSu9
 ]
 
 .right-image[
@@ -98,15 +98,14 @@ defer file.Close()
 Сколько мы хотим прочитать?
 
 ```
-N := 1024 // мы заранее знаем сколько хотим прочитать
+// Вычитываем мегабайт данных с помощью килобайтного буфера.
+const n = 1 << 20
+buf := make([]byte, 1024)
 
-buf := make([]byte, N)  // подготавливаем буфер нужного размера
-
-file, _ := os.Open(path) // открываем файл
+file, _ := os.Open(path) // Открываем файл.
 
 offset := 0
-
-for offset < N {
+for offset < n {
   read, err := file.Read(buf[offset:])
   offset += read
   if err == io.EOF {
@@ -118,7 +117,7 @@ for offset < N {
   }
 }
 
-// мы прочитали N байт в buf!
+// Мы прочитали n байт с помощью buf!
 ```
 
 `io.EOF` - специальная ошибка, означающая что мы достигли конца файла
@@ -224,7 +223,7 @@ err := ioutil.WriteFile(path, b, 0644)
 
 Реализуйте метод StreamCapitalizer
 
-https://goplay.space/#IkUWfB1kmfb
+https://goplay.space/#ySXvjFfq5Oj
 
 ---
 
@@ -627,7 +626,8 @@ https://github.com/OtusGolang/home_work/tree/master/hw07_file_copying
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-Ссылка в чате]
+https://otus.ru/polls/22842/
+]
 
 .right-image[
 ![](img/gopher7.png)

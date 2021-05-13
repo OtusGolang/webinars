@@ -457,7 +457,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw09_struct_validator
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/19025/
+https://otus.ru/polls/?????/
 ]
 
 .right-image[

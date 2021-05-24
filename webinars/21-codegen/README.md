@@ -13,11 +13,9 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-  ### !проверить запись!
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 
 ---
@@ -28,19 +26,48 @@ background-image: url(img/message.svg)
 
 # Кодогенерация в Go
 
-### Антон Телышев
-
+### Алексей Бакин
 
 ---
 
+# Как проходит занятие
+
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
+
+---
 
 # План занятия
 
-.big-list[
-* Поговорим о кодогенерации
-* Посмотрим, где она может нам помочь
-* Посмотрим на Protocol Buffers
-]
+* ### Поговорим о кодогенерации
+* ### Посмотрим, где она может нам помочь
+* ### Посмотрим на Protocol Buffers
+
+---
+
+# Кодогенерация
+
+* ### Что это такое?
+
+---
+
+# Кодогенерация
+* ### Зачем она нужна?
+* ### Какие задачи помогает решить?
+
+---
+
+# Зачем нужна кодогененрация
+
+* ### Генерировать код по метаописанию.
+* ### Генерировать заглушки для интерфейсов.
+* ### Генерировать обобщенный код.
+* ### Встраивать данные в код.
+
+<br><br>
+Пример в стандартной библиотеке:<br>
+https://golang.org/src/unicode/tables.go
 
 ---
 
@@ -69,8 +96,43 @@ https://github.com/golang/go/blob/master/src/cmd/go/internal/generate/generate.g
 
 ---
 
-# Go generate
+# Цикл разработки пакета с go generate
+
+```
+	% edit …
+	% go generate
+	% go test
+
+	% git add *.go  # коммитим сгенерированный код
+	% git commit
+```
+
+---
+
+# Принципы go generate
+
+[Go generate: A Proposal](https://docs.google.com/document/d/1V03LUfjSADDooDMhe-_K59EgpTEm3V8uvQRuNMAEnjg/edit)
+
 <br>
+
+* ### Запускать на машине разработчика пакета, а не пользователя.
+  * утилиты для генерации нужны только разработчику
+  * генерация не происходит автоматически при go get
+
+* ### Добавлять disclaimer.
+
+```
+/*
+* CODE GENERATED AUTOMATICALLY WITH tool name
+* THIS FILE SHOULD NOT BE EDITED BY HAND
+*/
+```
+* ### Работать только с .go-файлами, как часть тулкита go.
+
+---
+
+# Go generate
+
 псевдоним:
 ```
 //go:generate -command foo go tool foo
@@ -91,58 +153,6 @@ go generate -x
 ```
 go generate -n
 ```
-
-
----
-
-# Зачем?
-
- - генерировать структуры на основе JSON
- - генерировать заглушки для интерфейсов (моки для тестов)
- - protobuf: генерировать код из описания протокола (.proto)
- - bindata: вставка бинарных данных JPEGs в код на Go в виде byte array
- - и пр. и пр.
-
-<br><br>
-В стандартной библиотеке, например:<br>
-https://golang.org/src/unicode/tables.go
-
----
-
-# Цикл разработки пакета с go generate
-
-```
-	% edit …
-	% go generate
-	% go test
-
-	% git add *.go  # коммитим сгенерированный код
-	% git commit
-```
-
-
----
-
-
-# Принципы go generate
-
-
-- go generate запускается разработчиком программы/пакета, а не пользователем
-- инструментарий для go generate находится у создателя пакета
-- генерация кода не должна происходить автоматически во время go build, go get
-- инструменты генерации кода "невидимы" для пользователя, и могут быть недоступны для него
-- go generate работает только с .go-файлами, как часть тулкита go
-
-- не забывайте добавлять disclaimer
-
-```
-/*
-* CODE GENERATED AUTOMATICALLY WITH tool name
-* THIS FILE SHOULD NOT BE EDITED BY HAND
-*/
-```
-
-https://docs.google.com/document/d/1V03LUfjSADDooDMhe-_K59EgpTEm3V8uvQRuNMAEnjg/edit
 
 ---
 
@@ -174,40 +184,16 @@ go-bindata -o myfile.go data/
 - скрипты
 - ...
 
-Черновик дизайна `//go:embed`
-https://go.googlesource.com/proposal/+/master/design/draft-embed.md
-
-
 ---
 
-# Генерация go структур из JSON
+# Go embed
 
-https://mholt.github.io/json-to-go/
-
-```
-go get github.com/ChimeraCoder/gojson/gojson
-```
+https://golang.org/pkg/embed/
 
 ```
-{
-  "name" : "Alex",
-  "age": 24,
-  "courses": ["go", "python"]
-}
+//go:embed static/gopher.png
+var gopherPngBytes []byte
 ```
-
-```
-cat schema.json | gojson -name Person
-
-package main
-
-type Person struct {
-        Age     int64    `json:"age"`
-        Courses []string `json:"courses"`
-        Name    string   `json:"name"`
-}
-```
-
 
 ---
 
@@ -239,7 +225,6 @@ func main() {
 }
 ```
 
-
 ---
 
 # JSON Enums
@@ -265,10 +250,63 @@ const (
 )
 ```
 
+---
+
+# Генерация Marshal/Unmarshal: easyjson
+
+
+```
+go get -u github.com/mailru/easyjson/...
+```
+
+```
+easyjson -all <file>.go
+```
+
+ <br>
+генерирует MarshalEasyJSON / UnmarshalEasyJSON, для структур из файла
+<br>
+кратно быстрее за счет отсутствия рефлексии
+
+<br><br>
+
+
+***
+P.S. https://github.com/json-iterator/go
 
 ---
 
-# impl: реализация интерфейсов
+# Генерация go структур из JSON
+
+https://mholt.github.io/json-to-go/
+
+```
+go get github.com/ChimeraCoder/gojson/gojson
+```
+
+```
+{
+  "name" : "Alex",
+  "age": 24,
+  "courses": ["go", "python"]
+}
+```
+
+```
+cat schema.json | gojson -name Person
+
+package main
+
+type Person struct {
+        Age     int64    `json:"age"`
+        Courses []string `json:"courses"`
+        Name    string   `json:"name"`
+}
+```
+
+---
+
+# Реализация интерфейсов: impl
 
 ```
 go get -u github.com/josharian/impl
@@ -292,44 +330,76 @@ func (f *File) Close() error {
 
 ---
 
-# gomock: моки интерфейсов
+# Моки интерфейсов: gomock
 
 ```
 GO111MODULE=on go get github.com/golang/mock/mockgen@latest
 ```
 
 ```
-//go:generate mockgen -source=$GOFILE 
+//go:generate mockgen -source=$GOFILE
 //-destination ./mocks/mock_getter.go -package mocks Getter
 type Getter interface {
     Get(url string) (resp *http.Response, err error)
 }
 ```
 
+---
+
+# Generics: дилема
+
+```
+The generic dilemma is this: do you want slow programmers,
+slow compilers and bloated binaries, or slow execution times?
+(c) Russ Cox
+```
 
 ---
 
-# easyjson
+# Generics: какие есть варианты?
 
+
+- copy & paste (см. пакеты strings and bytes)
+- интерфейсы
 
 ```
-go get -u github.com/mailru/easyjson/...
+type Interface interface {
+    Len() int
+    Less(i, j int) bool
+    Swap(i, j int)
+}
+```
+
+- type assertions
+- рефлексия
+- go generate
+- https://www.google.com/search?q=go+generics+gif
+
+---
+
+# Generics!
+
+```
+go get github.com/cheekybits/genny
 ```
 
 ```
-easyjson -all <file>.go
+//go:generate genny -in=$GOFILE -out=gen-$GOFILE
+gen "KeyType=string,int ValueType=string,int"
 ```
 
- <br>
-генерирует MarshalEasyJSON / UnmarshalEasyJSON, для структур из файла
-<br>
-кратно быстрее за счет отсутствия рефлексии
+объявляем заглушки по типам:
 
-<br><br>
+```
+type KeyType generic.Type
+type ValueType generic.Type
+```
 
+пишем обычный код:
 
-***
-P.S. https://github.com/json-iterator/go
+```
+func SetValueTypeForKeyType(key KeyType, value ValueType) { /* ... */ }
+```
 
 ---
 
@@ -362,68 +432,14 @@ go help build
 
 ---
 
-# Вернемся к дженерикам
-
-```
-The generic dilemma is this: do you want slow programmers, 
-slow compilers and bloated binaries, or slow execution times?
-(c) Russ Cox
-```
-
----
-
-# Какие варианты:
-
-- copy & paste (см. пакеты strings and bytes)
-- интерфейсы
-
-```
-type Interface interface {
-    Len() int
-    Less(i, j int) bool
-    Swap(i, j int)
-}
-```
-
-- type assertions
-- рефлексия
-- go generate
-
----
-
-# Generics!
-
-```
-go get github.com/cheekybits/genny
-```
-
-```
-//go:generate genny -in=$GOFILE -out=gen-$GOFILE
-gen "KeyType=string,int ValueType=string,int"
-```
-
-объявляем заглушки по типам:
-
-```
-type KeyType generic.Type
-type ValueType generic.Type
-```
-
-пишем обычный код:
-
-```
-func SetValueTypeForKeyType(key KeyType, value ValueType) { /* ... */ }
-```
-
----
-
 # Что посмотрели:
 
-- моки интерфейсов: github.com/josharian/impl
+- встраивание даных в код
 - Stringer: String() для целочисленных типов: golang.org/x/tools/cmd/stringer
 - Marshal/Unmarhsal для Enums:  github.com/campoy/jsonenums
 - генерация структур из JSON: github.com/ChimeraCoder/gojson/gojson
 - easyjson для быстрой работы с JSON
+- моки интерфейсов: github.com/josharian/impl
 
 - generics при помощи кодогенерации
 
@@ -557,7 +573,7 @@ func (*Foo) ProtoMessage()    {}
 ```
 	course := &myotus.Course{
 		Title:   "Golang",
-		Teacher: []*myotus.Teacher{{Name: "Dmitry Smal", Id: 1}, 
+		Teacher: []*myotus.Teacher{{Name: "Dmitry Smal", Id: 1},
 								   {Name: "Alexander Davydov", Id: 2}},
 	}
 
@@ -600,18 +616,28 @@ enum Corpus {
     IMAGES = 2;
 ```
 
-Maps: 
+Maps:
 ```
 map<string, Project> projects = 3;
 ```
 
 ---
 
-# Домашнее задание
+# Protocol buffers: еще типы
 
-Генератор валидаторов
-https://github.com/OtusGolang/home_work/tree/master/hw09_generator_of_validators
+https://github.com/gogo/protobuf/tree/master/protobuf/google/protobuf
 
+---
+
+# Следующее занятие
+
+## Файлы конфигурации и логирование
+
+<br>
+<br>
+<br>
+
+## 20 мая, четверг
 
 ---
 
@@ -620,12 +646,20 @@ https://github.com/OtusGolang/home_work/tree/master/hw09_generator_of_validators
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/11432/
+Ссылка в чате.
 ]
 
 .right-image[
 ![](img/gopher7.png)
 ]
+
+---
+
+# Домашнее задание
+
+Валидатор структур
+
+https://github.com/OtusGolang/home_work/tree/master/hw09_struct_validator
 
 ---
 

@@ -30,9 +30,9 @@ background-image: url(img/title.svg)
 
 # Как проходит занятие
 
-* ### Активно участвуем - задаем вопросы.
-* ### Чат вижу - могу ответить не сразу.
-* ### После занятия - оффтопик, ответы на любые вопросы.
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
 
 ---
 
@@ -126,7 +126,7 @@ https://github.com/OtusGolang/webinars_practical_part/tree/master/23-profiling
 
 <br>
 
-**00_lesson** - примеры с урока
+**00_lesson** — примеры с урока
 
 ---
 
@@ -161,7 +161,7 @@ wrk -t4 -c1000 -d10s -R10000 --latency http://127.0.0.1:7070/
 
 Снять 5 секунд cpu профиля и проанализировать
 ```
-go tool pprof -http=":8080" http://127.0.0.1:7070/debug/pprof/profile?seconds=5
+go tool pprof -http=":8080" "http://127.0.0.1:7070/debug/pprof/profile?seconds=5"
 ```
 
 ---
@@ -214,7 +214,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw10_program_optimization
 <br>
 <br>
 
-## 26 ноября, четверг
+## 27 мая, четверг
 
 ---
 

@@ -60,9 +60,10 @@ background-size: 130%
 https://github.com/protocolbuffers/protobuf/releases
 <br><br>
 
-2) Обновлем protoc-gen-go
+2) Обновляем `protoc-gen-go` и `protoc-gen-go-grpc`
 ```
 go get -u google.golang.org/protobuf/cmd/protoc-gen-go
+go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 ```
 
 ---
@@ -101,7 +102,7 @@ https://github.com/grpc/grpc/blob/master/doc/g_stands_for.md
 syntax = "proto3";
 
 package search;
-option go_package = ".;searchpb";
+option go_package = "./;searchpb";
 
 service Google {
   // Search returns a Google search result for the query.
@@ -346,14 +347,15 @@ message Result {
 
 ```
 enum EyeColor {
-	UNKNOWN_EYE_COLOR = 0;
-	EYE_GREEN = 1;
-	EYE_BLUE = 2;
+  EYE_COLOR_UNSPECIFIED = 0;
+  EYE_GREEN = 1;
+  EYE_BLUE = 2;
 }
+
 message Person {
-	string name = 1;
-	repeated string phone_numbers = 2;
-	EyeColor eye_color = 3;
+  string name = 1;
+  repeated string phone_numbers = 2;
+  EyeColor eye_color = 3;
 }
 ```
 
@@ -361,9 +363,9 @@ message Person {
 type EyeColor int32                                                             
                                                                                 
 const (                                                                         
-    EyeColor_UNKNOWN_EYE_COLOR EyeColor = 0                                     
-    EyeColor_EYE_GREEN         EyeColor = 1                                     
-    EyeColor_EYE_BLUE          EyeColor = 2                                     
+  EyeColor_UNSPECIFIED EyeColor = 0                                     
+  EyeColor_EYE_GREEN   EyeColor = 1                                     
+  EyeColor_EYE_BLUE    EyeColor = 2                                     
 ) 
 ```
 
@@ -373,29 +375,29 @@ const (
 
 ```
 message Person {
-    string name = 1;
-    Date birthday = 2;
+  string name = 1;
+  Date birthday = 2;
 }
 
 message Date {
-    int32 year = 1;
-    int32 month = 2;
-    int32 day = 3;
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
 }
 ```
 
 ```
 message Person {
-    string name = 1;
-    Date birthday = 2;
+  string name = 1;
+  Date birthday = 2;
 
-    message Address {
-        string street = 1;
-        string city = 2;
-        string country = 3;
-    }
+  message Address {
+    string street = 1;
+    string city = 2;
+    string country = 3;
+  }
 
-    Address address = 3;
+  Address address = 3;
 }
 ```
 
@@ -407,9 +409,9 @@ message Person {
 date.proto:
 ```
 message BirthDate {
-    int32 year = 1;
-    int32 month = 2;
-    int32 day = 3;
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
 }
 ```
 
@@ -418,16 +420,16 @@ person.proto:
 import "date.proto";
 
 message Person {
-    string name = 1;
-    BirthDate birthday = 2;
+  string name = 1;
+  BirthDate birthday = 2;
 
-    message Address {
-        string street = 1;
-        string city = 2;
-        string country = 3;
-    }
+  message Address {
+    string street = 1;
+    string city = 2;
+    string country = 3;
+  }
 
-    Address address = 3;
+  Address address = 3;
 }
 ```
 
@@ -443,9 +445,9 @@ syntax = "proto3";
 package my.date;
 
 message Date {
-    int32 year = 1;
-    int32 month = 2;
-    int32 day = 3;
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
 }
 ```
 
@@ -457,9 +459,9 @@ import "date.proto";
 import "mydate.proto";
 
 message Person {
-    string name = 1;
-    BirthDate birthday = 2;
-    my.date.Date last_seen = 4;
+  string name = 1;
+  BirthDate birthday = 2;
+  my.date.Date last_seen = 4;
 }
 ```
 
@@ -476,7 +478,7 @@ syntax = "proto3";
 
 package example.simple;
 
-option go_package = "simplepb";
+option go_package = "./;simplepb";
 
 message SimpleMessage {
   int32 id = 1;
@@ -500,29 +502,28 @@ import math "math"
 
 # Protocol buffers: oneof, map
 
-oneof - только одно поле из списка может иметь значение
-и не может быть repeated
+`oneof` - только одно поле из списка может иметь значение и не может быть repeated.
 
 ```
 message Message {
-    int32 id = 1;
-    oneof auth {
-        string mobile = 2;
-        string email = 3;
-        int32 userid = 4;
-    }
+  int32 id = 1;
+  oneof auth {
+    string mobile = 2;
+    string email = 3;
+    int32 userid = 4;
+  }
 }
 ```
 
-map: - асс. массив, ключи - скаляры (кроме float/double) значения - любые типы, не может быть repeated
+`map` - ассоциативный массив; ключи - скаляры (кроме float/double); значения - любые типы, не может быть repeated.
 
 ```
 message Result {
-    string result = 1;
+  string result = 1;
 }
 
 message SearchResponse {
-    map<string, Result> results = 1;
+  map<string, Result> results = 1;
 }
 ```
 
@@ -540,8 +541,8 @@ import "google/protobuf/duration.proto";
 
 
 message MyMessage {
-    google.protobuf.Timestamp last_online = 1;
-    google.protobuf.Duration session_length = 2;
+  google.protobuf.Timestamp last_online = 1;
+  google.protobuf.Duration session_length = 2;
 }
 ```
 
@@ -572,8 +573,8 @@ https://developers.google.com/protocol-buffers/docs/proto#updating
 
 ```
 message MyMessage {
-	int32 id = 1;
-	+ добавим string fist_name = 2;
+  int32 id = 1;
+  + добавим string fist_name = 2;
 }
 ```
 
@@ -585,9 +586,9 @@ message MyMessage {
 
 ```
 message MyMessage {
-	int32 id = 1;
-	- fist_name = 2;
-	+ person_first_name = 2;
+  int32 id = 1;
+  - fist_name = 2;
+  + person_first_name = 2;
 }
 ```
 
@@ -602,8 +603,8 @@ message MyMessage {
 
 ```
 message Foo {
-    reserved 2, 15, 9 to 11;
-	reserved "foo", "bar";
+  reserved 2, 15, 9 to 11;
+  reserved "foo", "bar";
 }
 ```
 
@@ -623,10 +624,10 @@ message Foo {
 
 ```
 func (m *Course) GetTitle() string {
-	if m != nil {
-		return m.Title
-	}
-	return ""
+  if m != nil {
+    return m.Title
+  }
+  return ""
 }
 ```
 
@@ -635,11 +636,11 @@ enum'ы тоже можно добавлять, удалять и резерви
 
 ```
 enum DayOfWeek {
-    DAY_OF_WEEK_UNCPECIFIED = 0;
-    MONDAY = 1;
-    TUESDAY = 2;
-    WEDNESDAY = 3;
-    ...
+  DAY_OF_WEEK_UNCPECIFIED = 0;
+  MONDAY = 1;
+  TUESDAY = 2;
+  WEDNESDAY = 3;
+  // ...
 }
 ```
 
@@ -667,8 +668,6 @@ enum Foo {
   FOO_SECOND_VALUE = 2;
 }
 ```
-
-# 
 
 ---
 
@@ -764,9 +763,16 @@ if ctx.Err() == context.Canceled {
 
 # gRPC: tools
 
+
+### Для разработки:
+- https://github.com/uber/prototool
+- https://github.com/bufbuild/buf
+
+### Для отладки:
 - https://github.com/ktr0731/evans
 - https://github.com/fullstorydev/grpcurl
 - https://github.com/uw-labs/bloomrpc
+
 
 ---
 
@@ -796,7 +802,7 @@ background-image: url(img/message.svg)
 .left-text[
 Заполните пожалуйста опросы
 <br><br>
-https://otus.ru/polls/15953/
+https://otus.ru/polls/?????/
 <br>
 https://forms.gle/PAhXZByxfkmkLSKj9
 ]

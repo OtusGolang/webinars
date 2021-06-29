@@ -377,7 +377,7 @@ https://github.com/rabbitmq/rabbitmq-tutorials/tree/master/go
 .left-text[
 Заполните пожалуйста опрос
 <br>
-https://otus.ru/polls/15955/
+https://otus.ru/polls/?????/
 ]
 
 .right-image[

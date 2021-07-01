@@ -75,8 +75,8 @@ Operability (работоспособность) - мера того, наско
 * Отладка, решение текущих проблем
 * <a href="https://www.atlassian.com/incident-management/kpis/sla-vs-slo-vs-sli">SRE мир</a>:
   * SLA (Service Level Agreement)
-  * SLI (Service Level Indicator)
   * SLO (Service Level Objective)
+  * SLI (Service Level Indicator)
 * Отправка уведомлений
 * Технические и бизнесовые A/B эксперименты
 * Анализ трендов, прогнозирование
@@ -185,7 +185,7 @@ CPU usage: 5.11% user, 4.39% sys, 90.48% idle
 
 # Memory
 
-* Resident (`Res`/`RSS`) - память, занятая данными программ (как правило кучи). Высокое значение может говорить об утечках памяти в программах.
+* Resident (`Res`/`RSS`) - память, занятая данными программ (как правило кучей). Высокое значение может говорить об утечках памяти в программах.
 <br><br>
 
 * Shared (`Shr`) - память, разделяемая между разными процессами (как правило сегменты кода).
@@ -481,7 +481,7 @@ https://medium.com/@copyconstruct/monitoring-and-observability-8417d1952e1c
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/11443/
+https://otus.ru/polls/?????/
 ]
 
 .right-image[

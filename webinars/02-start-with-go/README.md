@@ -24,15 +24,15 @@ background-image: url(img/message.svg)
 
 # Инструментарий и начало <br> работы с Go
 
-### Антон Телышев
+### Алексей Бакин
 
 ---
 
 # Как проходит занятие
 
-* ### Активно участвуем - задаем вопросы.
-* ### Чат вижу - могу ответить не сразу.
-* ### После занятия - оффтопик, ответы на любые вопросы.
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
 
 ---
 
@@ -43,7 +43,7 @@ background-image: url(img/message.svg)
 * Сборка и запуск программ: go build, go run
 * Кросс-компиляция: GOOS, GOARCH
 * Модули и зависимости: go mod, go get
-* Мир до модулей: GOPATH, go install
+* Мир до модулей: GOPATH
 * Форматирование кода: go fmt, goimports
 * Линтеры: go vet, golint, gometalinter, golangci-lint
 * Как сдавать домашние задания?
@@ -92,15 +92,14 @@ sudo ln -s /usr/local/go/bin/go /usr/bin/go
 
 # Несколько версий Golang
 
-https://golang.org/doc/install#extra_versions
-
+https://golang.org/doc/manage-install
 
 ---
 
 
 # GOROOT
 
-`GOROOT` - переменная, которая указывает где лежит ваш дистрибутив Go, т.е.
+`GOROOT` — переменная, которая указывает где лежит ваш дистрибутив Go, т.е.
 компилятор, утилиты и стандартная библиотека. В новых версия Go (&gt; 1.0) утилиты сами определяют расположение Go.
 
 <br><br>
@@ -121,16 +120,21 @@ vim /usr/local/go/src/runtime/slice.go
 
 # GOPATH
 
-`GOPATH` - переменная окружения, показывает где лежит ваше дерево исходников.
+`GOPATH` — переменная окружения, показывает где лежит ваше дерево исходников.
 
 <br><br>
-Можно задать эту переменную явно, добавив в `.bashrc` например
+По умолчанию `$HOME/go`. Можно изменить, например, добавив в `.bashrc`
 ```
 export GOPATH=/path/your/go/projects
 ```
-
-Однако, если не задать, то `GOPATH` будет предполагаться `$HOME/go`
-
+<br>
+```
+$ tree -d -L 1 /path/your/go/projects
+/path/your/go/projects
+├── bin
+├── pkg
+└── src
+```
 
 ---
 
@@ -159,7 +163,7 @@ Hello!
 ```
 
 ```
-$ go run -o prog prog.go
+$ go run prog.go
 Hello!
 ```
 
@@ -183,18 +187,19 @@ prog: Mach-O i386 executable
 ```
 
 Возможные значения `GOOS` и `GOARCH`
-[https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63)
+- `go tool dist list`
+- [https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63)
 
 
 ---
 
 # Go Modules
 
-Начиная с Go 1.11 появилась поддержка модулей - системы версионирования и зависимостей, а также разработки вне `GOPATH`.
+Начиная с Go 1.11 появилась поддержка модулей — системы версионирования и зависимостей, а также разработки вне `GOPATH`.
 <br><br>
 Стандартные команды (`go get`, `go install`, `go test` и т.д.) работают по-разному внутри модуля и внутри `GOPATH`.
 <br><br>
-Модуль - любая директория вне `GOPATH`, содержащая файл `go.mod`
+Модуль — любая директория вне `GOPATH`, содержащая файл `go.mod`
 
 ---
 
@@ -214,7 +219,10 @@ cd /home/user/otus-go/hw-1
 go mod init github.com/user/otus-go/hw-1
 ```
 
-Теперь `/home/user/otus-go/hw-1` - это Go модуль.
+Теперь `/home/user/otus-go/hw-1` — это Go модуль.
+
+<br>
+https://blog.golang.org/using-go-modules
 
 ---
 
@@ -246,12 +254,13 @@ require (
 
 # Авто-добавление
 
-Есть еще более простой способ управлять зависимостями: просто редактируйте код.
+Также можно просто редактировать код
 ```
 package main
 
 import (
 	"fmt"
+
 	"github.com/go-loremipsum/loremipsum"
 )
 
@@ -259,106 +268,27 @@ func main() {
 	fmt.Println(loremipsum.New().Word())
 }
 ```
-А потом запустите
+А потом запустить
 ```
 $ go mod tidy
 ```
 Это добавит новые и удалит неиспользуемые зависимости.
 
-
----
-
-# Вернемся к GOPATH
-
-```
-$ tree -d -L 3 $GOPATH
-/Users/anthony/golang_workspace
-├── bin
-├── pkg
-│   ├── darwin_amd64
-│   ├── mod
-│   │   ├── bou.ke
-│   │   ├── cache
-│   │   ├── github.com
-│   │   └── syreclabs.com
-│   └── sumdb
-│       └── sum.golang.org
-└── src
-	├── cloud.google.com
-	│   └── go
-	├── github.com
-	│   ├── AndreyAndreevich
-	│   └── unixpickle
-	├── gitlab.com
-	│   └── snarksliveshere
-	└── go.uber.org
-		└── zap
-```
-
----
-
-# Загрузка пакетов в «безмодульном» режиме
-
-```
-go get -d github.com/OtusGolang/webinars_practical_part/1.1_first_go_program
-```
-
-```
-$ tree -L 5 $GOPATH
-/Users/anthony/go/
-├── bin
-├── pkg
-└── src
-    └──github.com/OtusGolang
-        └── webinars_practical_part
-            └── 1.1_first_go_program
-                ├── README.md
-                ├── feeds.go
-                ├── go.mod
-                ├── main.go
-                └── searcher
-                    ├── rss.go
-                    └── search.go
-3 directories, 6 files
-```
-
----
-
-
-# Установка пакетов в «безмодульном» режиме
-
-```
-go install github.com/OtusGolang/webinars_practical_part/1.1_first_go_program
-```
-
-```
-$ ls $GOPATH/bin
-1.1_first_go_program
-```
-
-Можем запустить!
-```
-$ 1.1_first_go_program
-...
-```
-
-https://golang.org/cmd/go/#hdr-Compile_and_install_packages_and_dependencies
-
 ---
 
 # Базовые команды
 
-`go get -d` - скачивает пакеты из Git репозиториев в `$GOPATH/src`.
+`go get -d` — скачивает пакеты из Git репозиториев в `$GOPATH/src`.
 <br><br>
 `go install` собирает и устанавливает указанные пакеты в `$GOPATH/pkg` и `$GOBIN` (по умолчанию `$GOPATH/bin`).
 <br><br>
-`go get` (без флажка `-d`) - так же вызовет `install`.
+`go get` (без флажка `-d`) — так же вызовет `install`.
 <br><br>
-`go run prog.go` - сборка и запуск программы.
+`go run prog.go` — сборка и запуск программы.
 <br><br><br>
 ### Многоточия
 
-`go get github.com/golang/protobuf/...` - многоточие тут означает
+`go get github.com/golang/protobuf/...` — многоточие тут означает
 "и все дочерние пакеты".
 <br>
 Это необходимо если пакет сложный, и содержит подпакеты.
@@ -367,30 +297,7 @@ https://golang.org/cmd/go/#hdr-Compile_and_install_packages_and_dependencies
 
 ---
 
-# Точечная сборка пакетов из $GOPATH/src
-
-```
-$ go build -o /tmp/thelib.a github.com/beevik/ntp
-
-$ file /tmp/thelib.a
-thelib.a: current ar archive
-```
-
-или
-
-```
-$ go build -o /tmp/prog github.com/golang/protobuf/protoc-gen-go
-
-$ file /tmp/prog
-prog: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, not stripped
-```
-
-Результат сборки зависит от пакета (`main` - executable, любой другой - библиотека).
-
-
----
-
-# Единое дерево кода с GOPATH
+# Работа в «безмодульном» GOPATH-режиме
 
 Для работы в парадигме `GOPATH` нужно:
 * Создать *публичный* проект `github.com/username/projectname`
@@ -406,9 +313,7 @@ prog: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, no
 * Иногда в проекте не только Go-код.
 * Неудобно для корпоративных и других непубличных проектов.
 
-
-## Заключение: пользуйтесь модулями!
-
+### **В Go 1.17 планируют убрать поддержку GOPATH-режима.**
 
 ---
 
@@ -417,14 +322,14 @@ prog: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, no
 [Читаем вики по модулям](https://github.com/golang/go/wiki/Modules#when-do-i-get-old-behavior-vs-new-module-based-behavior)
 <br><br><br>
 
-- Внутри GOPATH - модули игнорируются (старое поведение)
+- Внутри GOPATH — модули игнорируются (старое поведение)
 
-- Вне GOPATH - если рядом лежит go.mod, то модули «включаются»
+- Вне GOPATH — если рядом лежит go.mod, то модули «включаются»
 
 - Переменная окружения `GO111MODULE`:
-	- auto / unset - применяются правила выше
-	- on - форсируем использование модулей внезависимости от директории
-	- off - форсируем игнорирование модулей внезависимости от директории и go.mod
+	- auto / unset — применяются правила выше
+	- on — форсируем использование модулей внезависимости от директории
+	- off — форсируем игнорирование модулей внезависимости от директории и go.mod
 
 ---
 
@@ -480,7 +385,7 @@ along with their dependencies, but it does not install the results.
 ---
 
 # Форматирование кода
-
+<br>
 В Go нет style guide, зато есть `go fmt path/to/code.go`
 <br><br>
 .left-code[
@@ -554,7 +459,7 @@ $ gofumpt -l -w .
 
 ```
 $ go get golang.org/x/tools/cmd/goimports
-$ ~/go/bin/goimports -local my/module/name -w path/to/code.go
+$ goimports -local my/module/name -w path/to/code.go
 ```
 
 ```
@@ -597,9 +502,9 @@ $ gci -w -local github.com/Antonboom/hw01 .
 
 # Линтеры
 
-Линтер - программа, анализирующая код и сообщающая о потенциальных проблемах.
+Линтер — программа, анализирующая код и сообщающая о потенциальных проблемах.
 <br><br>
-`go vet` - встроенный линтер
+`go vet` — встроенный линтер
 ```
 $ go vet ./run.go
 # command-line-arguments
@@ -609,7 +514,7 @@ $ echo $?
 2
 ```
 
-`golint` - популярный сторонний линтер
+`golint` — популярный сторонний линтер
 ```
 $ go get -u golang.org/x/lint/golint
 
@@ -625,7 +530,7 @@ $ echo $?
 
 # Металинтеры
 
-Металинтеры - обертка, запускающая несколько линтеров за один проход.
+Металинтеры — обертка, запускающая несколько линтеров за один проход.
 <br><br>
 
 <b>Deprecated</b>:<br>
@@ -656,12 +561,24 @@ https://github.com/OtusGolang/home_work/wiki
 
 ---
 
+# Следующее занятие
+
+## Тестирование в Go. Часть 1
+
+<br>
+<br>
+<br>
+
+## 17 июня, четверг
+
+---
+
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/22826/
+Ссылка в чате
 ]
 
 .right-image[

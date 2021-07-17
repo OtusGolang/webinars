@@ -9,7 +9,7 @@ background-image: url(img/message.svg)
 
 # Интерфейсы в Go. <br>Часть 2
 
-### Антон Телышев
+### Алексей Бакин
 
 ---
 
@@ -23,11 +23,17 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-  ### !проверить запись!
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
+
+---
+
+# Как проходит занятие
+
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
 
 ---
 
@@ -41,14 +47,22 @@ background-size: 130%
 
 ---
 
-# Интерфейсы - вспоминаем прошлое занятие
+# Вспоминаем прошлое занятие
+
+### Что такое интерфейс?
+
+---
+
+# Вспоминаем прошлое занятие
 
 Интерфейс:
  - это набор сигнатур методов
- - который реализуется неявно
+ - методы реализуются неявно
+
+Свойства:
  - интерфейсы могут встраивать другие интерфейсы
  - имена методов не должны повторяться
- - интерфейс может быть пустым (не иметь методов), такому интерфейсу удовлетворяет любой тип
+ - интерфейс может быть пустым (не иметь методов `interface{}`), такому интерфейсу удовлетворяет любой тип
 
 ---
 
@@ -109,7 +123,13 @@ https://goplay.tools/snippet/lr6oueIJ4zF
 
 # Значение типа интерфейс
 
-nil - нулевое значение для интерфейсного типа
+### Какое zero-value для интерфейса?
+
+---
+
+# Значение типа интерфейс
+
+nil — нулевое значение для интерфейсного типа
 
 ```
 type IHTTPClient interface {
@@ -157,36 +177,6 @@ https://goplay.tools/snippet/wbmnTcriHJ-
 
 ---
 
-# Значение типа интерфейс
-
-<br>
-Переменная типа интерфейс `I` может принимать значение любого типа, который реализует интерфейс `I`.
-
-```
-type BaseStorage interface {
-    Close()
-}
-
-type UsersStorage struct{}
-func (UsersStorage) Close() {}
-
-type TicketsStorage struct{}
-func (TicketsStorage) Close()      {}
-func (TicketsStorage) GetTickets() {}
-
-func main() {
-    var s BaseStorage
-
-    s = UsersStorage{}
-    s = TicketsStorage{}
-    _ = s
-}
-```
-https://goplay.tools/snippet/jccNcScVWMZ
-
-
----
-
 # Интерфейсы: опасный nil
 <br>
 Что выведет программа?
@@ -218,11 +208,7 @@ https://goplay.tools/snippet/AUJ57LjntXb
 #  Интерфейсы: опасный nil
 
 <br>
-Значение интерфейсного типа равно `nil` тогда и только тогда, когда `nil` его статическая и динамическая части.
-
-<br>
-
-https://goplay.tools/snippet/E8_TX3Zwznn
+Значение интерфейсного типа равно `nil` тогда и только тогда, когда `nil` и тип, и знаечене.
 
 <br>
 
@@ -239,15 +225,22 @@ type BaseStorage interface {
     Close()
 }
 
+type UsersStorage struct{}
+func (UsersStorage) Close() {}
+
 type TicketsStorage struct{}
 func (TicketsStorage) Close()      {}
 func (TicketsStorage) GetTickets() {}
 
 func main() {
-    var s BaseStorage = TicketsStorage{}
+    var s BaseStorage
+
+    s = UsersStorage{}
+    s = TicketsStorage{}
     _ = s
 }
 ```
+https://goplay.tools/snippet/jccNcScVWMZ
 
 https://medium.com/golangspec/assignability-in-go-27805bcd5874
 
@@ -345,8 +338,8 @@ https://goplay.tools/snippet/SYe5kK0nz-5
 
 Выражение `x.(T)` проверяет, что интерфейс `x != nil` и конкретная часть `x` имеет тип `T`:
 
-	- если T - не интерфейс, то проверяем, что динамический тип x это T
-	- если T - интерфейс: то проверяем, что динамический тип x его реализует
+	- если T не интерфейс, то проверяем, что динамический тип x это T
+	- если T интерфейс: то проверяем, что динамический тип x его реализует
 ---
 
 # Интерфейсы: type assertion
@@ -385,7 +378,7 @@ https://goplay.tools/snippet/x-NbzVMZMUp
 	f, ok := i.(float64) // 0 false
 	fmt.Println(f, ok)
 
-	f = i.(float64) // panic: interface conversion: 
+	f = i.(float64) // panic: interface conversion:
 					// interface {} is string, not float64
 	fmt.Println(f)
 ```
@@ -532,27 +525,6 @@ https://goplay.tools/snippet/Olph29QStlp
 
 ---
 
-# Интерфейсы: nil всегда паникует
-
-```
-type Serializer interface {
-    ContentType()
-    Marshal()
-}
-
-type JSONSerializer struct{}
-func (JSONSerializer) ContentType() {}
-func (JSONSerializer) Marshal() {}
-
-func main() {
-    var s Serializer
-    // panic: interface conversion: main.Serializer is nil, 
-    // not main.JSONSerializer
-    _ = s.(JSONSerializer)
-}
-```
-
----
 
 # Интерфейсы: почти дженерики
 
@@ -576,11 +548,11 @@ func main() {
 type Interface interface {
     // Len is the number of elements in the collection.
     Len() int
-    
+
     // Less reports whether the element with
     // index i should sort before the element with index j.
     Less(i, j int) bool
-    
+
     // Swap swaps the elements with indexes i and j.
     Swap(i, j int)
 }
@@ -621,12 +593,24 @@ https://goplay.tools/snippet/SHZXfLu-ulF
 
 ---
 
+# Следующее занятие
+
+## Обработка ошибок. Понятие паники
+
+<br>
+<br>
+<br>
+
+## 13 июля, вторник
+
+---
+
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
-<br>
-https://otus.ru/polls/????/
+<br><br>
+Ссылка в чате.
 ]
 
 .right-image[

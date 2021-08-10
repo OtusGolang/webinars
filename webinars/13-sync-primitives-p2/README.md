@@ -121,7 +121,7 @@ func (c *Counters) Store(key string, value int) {
 }
 ```
 
-https://goplay.space/#Qp-w_QsOleR
+https://goplay.tools/snippet/Qp-w_QsOleR
 
 ---
 
@@ -147,7 +147,7 @@ func (c *Counters) Store(key string, value int) {
 }
 ```
 
-https://goplay.space/#1Itioa-0cXF
+https://goplay.tools/snippet/1Itioa-0cXF
 
 ---
 
@@ -165,7 +165,7 @@ https://habr.com/ru/post/338718/
 
 # sync.Map
 
-### Решает проблему map + rwmutex.
+### Решает проблему частых чтений для map + rwmutex.
 
 .full-image[
 ![](img/sync_map_win.png)
@@ -216,7 +216,7 @@ func (c *Counters) Range(f func(k string, v int) bool) {
 }
 ```
 
-https://goplay.space/#SYciXadco3q
+https://goplay.tools/snippet/SYciXadco3q
 
 ---
 
@@ -240,7 +240,7 @@ func (w *Worker) CheckReady() bool {
 }
 ```
 
-https://goplay.space/#djgdo2jollq
+https://goplay.tools/snippet/djgdo2jollq
 
 ---
 
@@ -255,12 +255,44 @@ type Cond struct {
 
 func NewCond(l Locker) *Cond
 
+func (c *Cond) Wait() // разблокирует c.L, ждет сигнала и снова блокирует c.L
+
 func (c *Cond) Broadcast() // будит все горутины, которые ждут c
 
 func (c *Cond) Signal() // будит одну горутину, которая ждет c, если такая есть
-
-func (c *Cond) Wait() // разблокирует c.L, ждет сигнала и снова блокирует c.L
 ```
+
+---
+
+# sync.Cond
+
+.main-image[
+  ![](img/sync_cond_1.png)
+]
+
+---
+
+# sync.Cond
+
+.main-image[
+  ![](img/sync_cond_2.png)
+]
+
+---
+
+# sync.Cond
+
+.main-image[
+  ![](img/sync_cond_3.png)
+]
+
+---
+
+# sync.Cond
+
+.main-image[
+  ![](img/sync_cond_4.png)
+]
 
 ---
 
@@ -291,7 +323,7 @@ func worker() {
 		for len(tasks) == 0 { // <=== for, а не if! Почему?
 			cond.Wait()
 		}
-		task, tasks = tasks[0], tasks[1:] // <=== Это плохо. Почему?
+		task, tasks = tasks[0], tasks[1:]
 		mu.Unlock()
 
 		task()
@@ -307,7 +339,7 @@ func produce(task func()) {
 }
 ```
 
-https://goplay.space/#FPuOkRPJzDh
+https://goplay.tools/snippet/FPuOkRPJzDh
 
 ---
 
@@ -324,7 +356,71 @@ func (w *Worker) WaitReady() {
 }
 ```
 
-https://goplay.space/#zq5RB88skD8
+https://goplay.tools/snippet/zq5RB88skD8
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_1.png)
+]
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_2.png)
+]
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_3.png)
+]
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_4.png)
+]
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_5.png)
+]
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_6.png)
+]
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_7.png)
+]
+
+---
+
+# sync.Pool
+
+.main-image[
+  ![](img/sync_pool_8.png)
+]
 
 ---
 
@@ -445,7 +541,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#SHwBoHdsUsg
+https://goplay.tools/snippet/SHwBoHdsUsg
 
 ---
 
@@ -473,7 +569,7 @@ func main() {
 
 ```
 
-https://goplay.space/#1CKmqzRzXfb
+https://goplay.tools/snippet/1CKmqzRzXfb
 
 ---
 
@@ -504,7 +600,7 @@ func (o *Once) Do(fn func()) {
 }
 ```
 
-https://goplay.space/#QayPezK-9xI
+https://goplay.tools/snippet/QayPezK-9xI
 
 ---
 
@@ -519,6 +615,18 @@ https://goplay.space/#QayPezK-9xI
 .right-image[
 ![](img/gopher_science.png)
 ]
+
+---
+
+# Следующее занятие
+
+## Concurrency patterns
+
+<br>
+<br>
+<br>
+
+## 29 июля, четверг
 
 ---
 

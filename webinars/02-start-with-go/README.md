@@ -1,11 +1,11 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -19,8 +19,8 @@ background-size: 130%
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Инструментарий и начало <br> работы с Go
 
@@ -313,7 +313,8 @@ $ go mod tidy
 * Иногда в проекте не только Go-код.
 * Неудобно для корпоративных и других непубличных проектов.
 
-### **В Go 1.17 планируют убрать поддержку GOPATH-режима.**
+### **В Go 1.17 планировали убрать поддержку GOPATH-режима.**
+https://go.dev/blog/go116-module-changes
 
 ---
 
@@ -338,7 +339,6 @@ $ go mod tidy
 .main-image[
   ![img/tools.jpeg](img/tools.jpeg)
 ]
-
 
 ---
 
@@ -403,7 +403,7 @@ type Student struct{
 }
 func main() {
 	for i:=99;i>0;i-- {
-		fmt.Printf(msg, i, i)
+		fmt.Printf(msg, i)
 		if i<10{
 			break
 		}
@@ -429,7 +429,7 @@ type Student struct {
 
 func main() {
 	for i := 99; i > 0; i-- {
-		fmt.Printf(msg, i, i)
+		fmt.Printf(msg, i)
 		if i < 10 {
 			break
 		}
@@ -533,11 +533,6 @@ $ echo $?
 Металинтеры — обертка, запускающая несколько линтеров за один проход.
 <br><br>
 
-<b>Deprecated</b>:<br>
-https://github.com/alecthomas/gometalinter
-<br><br>
-
-<b>Модно-молодёжно</b>:<br>
 https://github.com/golangci/golangci-lint/
 
 ```
@@ -557,19 +552,7 @@ $ echo $?
 
 # Как сдавать домашние задания?
 
-https://github.com/OtusGolang/home_work/wiki
-
----
-
-# Следующее занятие
-
-## Тестирование в Go. Часть 1
-
-<br>
-<br>
-<br>
-
-## 17 июня, четверг
+https://github.com/OtusGolang/home_work/wiki/[Студентам]-Процесс-сдачи-ДЗ
 
 ---
 
@@ -582,13 +565,25 @@ https://github.com/OtusGolang/home_work/wiki
 ]
 
 .right-image[
-![](img/gopher7.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
+# Следующее занятие
+
+## Тестирование в Go. Часть 1
+
+<br>
+<br>
+<br>
+
+## 7 сентября, вторник
+
+---
+
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

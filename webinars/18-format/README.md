@@ -2,19 +2,8 @@
 
 ---
 
-
-class: white
-background-image: url(tmp/title.svg)
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
-
-# Форматирование данных
-
-### Антон Телышев
-
----
-
 class: top white
-background-image: url(tmp/sound.svg)
+background-image: url(img/sound.svg)
 background-size: 130%
 .top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
 
@@ -23,25 +12,43 @@ background-size: 130%
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **–** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
-# Цель занятия 
 
-.right-image[
-![](tmp/gopher.png)
+class: white
+background-image: url(img/title.svg)
+.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
+
+# Форматирование данных
+
+### Алексей Бакин
+
+---
+
+# Цель занятия
+
+### Узнать про разные способы форматирования данных и их особенности,
+### чтобы уметь выбирать подходящий инструмент для реальной задачи.
+
+---
+
+# Настройка на занятие
+
+.left-text[
+Пожалуйста, пройдите небольшой тест.
+<br><br>
+Он поможет понять, что вы уже знаете,
+а&nbsp;что предстоит узнать во время занятия.
+<br><br>
+Ссылка в чате
 ]
 
-# 
-.f18[
-- Изучить возможности кодирования бинарных данных в текстовой форме
-- Научиться использовать стандартную библиотеку для кодирования в формате base64
-- Изучить форматы JSON, XML, YAML
-- Изучить библиотеки для работы с MsgPack и Protobuf
+.right-image[
+![](img/gopher_science.png)
 ]
 
 ---
@@ -49,9 +56,24 @@ background-size: 130%
 # А зачем?
 
 .right-image[
-![](tmp/gopher.png)
+![](img/gopher.png)
 ]
 
+### Что такое бинарные данные?
+### .
+
+.
+
+
+---
+
+# А зачем?
+
+.right-image[
+![](img/gopher.png)
+]
+
+### Что такое бинарные данные?
 ### Зачем кодировать бинарные данные в текстовый вид?
 
 https://en.wikipedia.org/wiki/Binary-to-text_encoding
@@ -63,42 +85,39 @@ https://en.wikipedia.org/wiki/Binary-to-text_encoding
 https://en.wikipedia.org/wiki/Quoted-printable
 
 ```
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Привет, мир!
+```
 
-=D0=91=D0=BE=D0=BB=D1=8C=D1=88=D0=B8=D0=BD=D1=81=D1=82=D0=B2=D0=BE =D0=BA=
-=D0=BE=D0=BD=D1=84=D0=B5=D1=80=D0=B5=D0=BD=D1=86=D0=B8=D0=B9 =D1=81=D1=82=
-=D0=B0=D1=80=D1=82=D1=83=D0=B5=D1=82 =D1=80=D0=B0=D0=BD=D0=BE =D1=83=D1=82=
-=D1=80=D0=BE=D0=BC, =D0=BA=D0=BE=D0=B3=D0=B4=D0=B0 =D1=83 =C2=AB=D1=81=D0=
-=BE=D0=B2=C2=BB =0D=0A=D0=B5=D1=89=D1=91 =D1=81=D0=BB=D0=B8=D0=BF=D0=B0=D1=
-=8E=D1=82=D1=81=D1=8F =D0=B3=D0=BB=D0=B0=D0=B7=D0=B0=0D=0A=0D=0A=D0=9C=D1=
-=8B =D1=83=D1=81=D1=82=D0=B0=D0=BB=D0=B8 =D1=82=D0=B5=D1=80=D0=BF=D0=B5=D1=
-=82=D1=8C =D1=8D=D1=82=D1=83 =D0=BD=D0=B5=D1=81=D0=BF=D1=80=D0=B0=D0=B2=D0=
-=B5=D0=B4=D0=BB=D0=B8=D0=B2=D0=BE=D1=81=D1=82=D1=8C =D0=B8 =D1=83=D1=81=D1=
+↓↓↓↓
+
+```
+=D0=9F=D1=80=D0=B8=D0=B2=D0=B5=D1=82, =D0=BC=D0=B8=D1=80!
 ```
 
 Какие минусы?
 
----
+<br>
 
+.
+
+---
 # Кодировка quoted-printable
 
-```
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+https://en.wikipedia.org/wiki/Quoted-printable
 
-=D0=91=D0=BE=D0=BB=D1=8C=D1=88=D0=B8=D0=BD=D1=81=D1=82=D0=B2=D0=BE =D0=BA=
-=D0=BE=D0=BD=D1=84=D0=B5=D1=80=D0=B5=D0=BD=D1=86=D0=B8=D0=B9 =D1=81=D1=82=
-=D0=B0=D1=80=D1=82=D1=83=D0=B5=D1=82 =D1=80=D0=B0=D0=BD=D0=BE =D1=83=D1=82=
-=D1=80=D0=BE=D0=BC, =D0=BA=D0=BE=D0=B3=D0=B4=D0=B0 =D1=83 =C2=AB=D1=81=D0=
-=BE=D0=B2=C2=BB =0D=0A=D0=B5=D1=89=D1=91 =D1=81=D0=BB=D0=B8=D0=BF=D0=B0=D1=
-=8E=D1=82=D1=81=D1=8F =D0=B3=D0=BB=D0=B0=D0=B7=D0=B0=0D=0A=0D=0A=D0=9C=D1=
-=8B =D1=83=D1=81=D1=82=D0=B0=D0=BB=D0=B8 =D1=82=D0=B5=D1=80=D0=BF=D0=B5=D1=
-=82=D1=8C =D1=8D=D1=82=D1=83 =D0=BD=D0=B5=D1=81=D0=BF=D1=80=D0=B0=D0=B2=D0=
-=B5=D0=B4=D0=BB=D0=B8=D0=B2=D0=BE=D1=81=D1=82=D1=8C =D0=B8 =D1=83=D1=81=D1=
 ```
+Привет, мир!
+```
+
+↓↓↓↓
+
+```
+=D0=9F=D1=80=D0=B8=D0=B2=D0=B5=D1=82, =D0=BC=D0=B8=D1=80!
+```
+
+Какие минусы?
+
+<br>
 
 Избыточность = 300%
 
@@ -111,8 +130,8 @@ https://en.wikipedia.org/wiki/Base64
 
 ```
 Man is distinguished, not only by his reason, but by this singular passion
-from other animals, which is a lust of the mind, that by a perseverance of 
-delight in the continued and indefatigable generation of knowledge, exceeds 
+from other animals, which is a lust of the mind, that by a perseverance of
+delight in the continued and indefatigable generation of knowledge, exceeds
 the short vehemence of any carnal pleasure.
 ```
 
@@ -133,29 +152,29 @@ LCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=
 package main
 
 import (
-	b64 "encoding/base64"
+	"encoding/base64"
 	"fmt"
 )
 
 func main() {
 	data := "Hello world"
 
-	sEnc := b64.StdEncoding.EncodeToString([]byte(data))
+	sEnc := base64.StdEncoding.EncodeToString([]byte(data))
 	fmt.Println(sEnc)
 
-	sDec, err := b64.StdEncoding.DecodeString(sEnc)
+	sDec, err := base64.StdEncoding.DecodeString(sEnc)
 	mustNil(err)
 	fmt.Println(string(sDec))
 	fmt.Println()
 
-	uEnc := b64.URLEncoding.EncodeToString([]byte(data))
+	uEnc := base64.URLEncoding.EncodeToString([]byte(data))
 	fmt.Println(uEnc)
-	uDec, err := b64.URLEncoding.DecodeString(uEnc)
+	uDec, err := base64.URLEncoding.DecodeString(uEnc)
 	mustNil(err)
 	fmt.Println(string(uDec))
 }
 ```
-https://goplay.space/#gOlY0HvwRbc
+https://goplay.tools/snippet/469rXJqiq0k
 
 
 ---
@@ -180,6 +199,31 @@ func main() {
 	input := []byte("foo\x00bar")
 	encoder := base64.NewEncoder(base64.StdEncoding, os.Stdout)
 	encoder.Write(input)
+	//
+	// Зачем закрывать?
+	//
+	encoder.Close()
+}
+```
+
+https://goplay.tools/snippet/T2e6bwI3h4g
+
+---
+
+# Поточная работа с base64 (кодирование)
+
+```
+package main
+
+import (
+	"encoding/base64"
+	"os"
+)
+
+func main() {
+	input := []byte("foo\x00bar")
+	encoder := base64.NewEncoder(base64.StdEncoding, os.Stdout)
+	encoder.Write(input)
 	// Must close the encoder when finished to flush any partial blocks.
 	// If you comment out the following line, the last partial block "r"
 	// won't be encoded.
@@ -187,7 +231,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#T2e6bwI3h4g
+https://goplay.tools/snippet/T2e6bwI3h4g
 
 
 ---
@@ -212,7 +256,7 @@ func main() {
 
 ```
 
-https://goplay.space/#oKiYPu6jfDj
+https://goplay.tools/snippet/oKiYPu6jfDj
 
 
 ---
@@ -237,7 +281,7 @@ https://goplay.space/#oKiYPu6jfDj
         "width": 500,
         "height": 500
     },
-    "image": { 
+    "image": {
         "src": "Images/Sun.png",
         "name": "sun1",
         "hOffset": 250,
@@ -254,7 +298,7 @@ https://goplay.space/#oKiYPu6jfDj
         "alignment": "center",
         "onMouseUp": "sun1.opacity = (sun1.opacity / 100) * 90;"
     }
-}}    
+}}
 ```
 
 ---
@@ -345,7 +389,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#EwX5Dq2l60C (полная версия)
+https://goplay.tools/snippet/EwX5Dq2l60C (полная версия)
 
 ---
 
@@ -372,7 +416,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#8SgUuo2L23z
+https://goplay.tools/snippet/8SgUuo2L23z
 
 ---
 
@@ -390,8 +434,17 @@ type Person struct {
 }
 ```
 
-https://goplay.space/#RxcV-MjmgAm (полная версия)
+https://goplay.tools/snippet/RxcV-MjmgAm (полная версия)
 
+
+---
+
+
+# Быстрый json
+
+https://github.com/mailru/easyjson
+
+https://jsoniter.com/
 
 ---
 
@@ -414,7 +467,7 @@ type Person struct {
 }
 ```
 
-https://goplay.space/#xCtXEHUgKAU (полная версия)
+https://goplay.tools/snippet/xCtXEHUgKAU (полная версия)
 
 ---
 
@@ -437,7 +490,7 @@ type Person struct {
 }
 ```
 
-https://goplay.space/#FekJkpuj9KT (полная версия)
+https://goplay.tools/snippet/FekJkpuj9KT (полная версия)
 
 ---
 
@@ -456,7 +509,7 @@ for {
 
 		switch se := token.(type) {
 		case xml.StartElement:
-			fmt.Printf("Start element: %v Attr %s\n", 
+			fmt.Printf("Start element: %v Attr %s\n",
 						se.Name.Local, se.Attr)
 			inFullName = se.Name.Local == "FullName"
 		case xml.EndElement:
@@ -474,7 +527,7 @@ for {
 ```
 
 
-https://goplay.space/#ADbUEs1PeUF
+https://goplay.tools/snippet/ADbUEs1PeUF
 
 ---
 
@@ -520,7 +573,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#HFmhdDcmnx0
+https://goplay.tools/snippet/HFmhdDcmnx0
 
 ---
 
@@ -555,25 +608,29 @@ protoc --go_out=. *.proto
 ---
 
 
-# Тест
+# Повторение
 
-https://forms.gle/SiDmYTPUU5La3rA88
+.left-text[
+Давайте проверим, что вы узнали за этот урок, а над чем стоит еще поработать.
+<br><br>
+Ссылка в чате
+]
 
----
-
-
-# На занятии
-
-.f18[
-- Изучили возможности кодирования бинарных данных в текстовой форме
-- Научились использовать стандартную библиотеку для кодирования в формате base64
-- Изучили форматы JSON, XML, YAML и подходы к их парсингу
-- Изучили библиотеки для работы с MsgPack и Protobuf
+.right-image[
+![](img/gopher_science.png)
 ]
 
 ---
 
-## Вопросы?
+# Следующее занятие
+
+## Взаимодействие с OS
+
+<br>
+<br>
+<br>
+
+## 26 августа, четверг
 
 ---
 
@@ -582,17 +639,17 @@ https://forms.gle/SiDmYTPUU5La3rA88
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/15948/
+Ссылка в чате.
 ]
 
 .right-image[
-![](img/gopher7.png)
+![](img/gopher.png)
 ]
 
 ---
 
 class: white
-background-image: url(tmp/title.svg)
+background-image: url(img/title.svg)
 .top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
 
 # Спасибо за внимание!

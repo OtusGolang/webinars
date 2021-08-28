@@ -186,7 +186,8 @@ blockquote {
   font-weight: bolder;
 }
 
-.left-code {
+.left-code,
+.left-text {
   float: left;
   width: 400px;
   /* margin-right: 40px; */

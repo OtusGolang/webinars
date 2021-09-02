@@ -1,33 +1,30 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-  ### !проверить запись!
-]
-
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Рефлексия
 
-### Антон Телышев
+### Алексей Бакин
 
 
 ---
@@ -36,17 +33,23 @@ background-image: url(img/message.svg)
 
 .big-list[
 * Что такое рефлексия?
-* Рефлексия на уровне языка
-* Использование пакета reflect
-* Type и Value
-* unsafe.Pointer
+* Использование рефлексии
+  * На уровне языка
+  * Пакет reflect
+  * Type и Value
+  * unsafe.Pointer
 ]
+---
+
+# Рефлексия
+
+## Что такое рефлексия?
 
 ---
 
 # Рефлексия
 
-**Рефлексия (отражение)** - процесс, во время которого программа может отслеживать и модифицировать собственную структуру и поведение во время выполнения.
+**Рефлексия (отражение)** — процесс, во время которого программа может отслеживать и модифицировать собственную структуру и поведение во время выполнения.
 
 ```
 MyClass.__class__ // Python
@@ -59,22 +62,21 @@ QPushButton::staticMetaObject.className(); // C++ Qt
 
 https://en.wikipedia.org/wiki/Reflection_(computer_programming)
 
+---
+
+# Когда нужна рефлексия?
 
 ---
 
-# Рефлексия
+# Когда нужна рефлексия?
 
-Пример рефлексии: возможность работы с переменными (включая тип и другие свойства) в рантайме.
-<br><br>
-
-Рефлексия в Go:
-
-.test[
-* на уровне языка
-* в пакете `reflect`
+.big-list[
+- Для работы с типами, которые не удовлетворяют одному интерфейсу.
+- Для работы с данными, которые не определены во время компиляции.
 ]
 
-### Примеры использования рефлексии:
+---
+# Примеры использования рефлексии:
 
 * `encoding/json` и `encoding/xml`
 * `text/template` и `html/template`
@@ -85,7 +87,7 @@ https://en.wikipedia.org/wiki/Reflection_(computer_programming)
 # Рефлексия: не путать с AST
 
 <br>
-**AST (абстрактное синтаксическое дерево)** - ориентированное дерево, в котором внутренние вершины сопоставлены с операторами языка программирования, а листья — с соответствующими операндами.
+**AST (абстрактное синтаксическое дерево)** — ориентированное дерево, в котором внутренние вершины сопоставлены с операторами языка программирования, а листья — с соответствующими операндами.
 
 ```
 fset := token.NewFileSet()
@@ -110,47 +112,37 @@ ast.Inspect(f, func(n ast.Node) bool {
 https://en.wikipedia.org/wiki/Abstract_syntax_tree<br>
 https://golang.org/pkg/go/ast/
 
+---
+
+# Рефлексия на уровне языка
+
+## Как думаете, о чем речь?
 
 ---
 
+# Рефлексия на уровне языка
 
-# Когда нужна рефлексия?
-
-.big-list[
-- Для работы с типами, которые не удовлетворяют одному интерфейсу.
-- Для работы с данными, которые не определены во время компиляции.
-]
-
----
-
-# Минусы рефлексии
-
-- Более чувствительный код: узнаем об ошибке не во время компиляции, а только в рантайме.
-- В коде нет информации о типах: статические анализаторы не применимы.
-- Нужна дополнительная документация (слишком много `interface{}`, не всегда понятно, что именно там ждут).
-- Скорость (но есть одно но).
-
----
-
-# Рефлексия на уровне языка: интерфейсы
-
-<br>
-Каждая переменная в Go обладает статическим типом, 
+Каждая переменная в Go обладает статическим типом,
 переменные разных типов нельзя присваивать (в большинстве случаев).
 
 ```
 type MyInt int
 
 var i int
-var j MyInt 
+var j MyInt
 j = i // ошибка компиляции
 ```
 
+---
+
+# Рефлексия на уровне языка: интерфейсы
+
 Однако мы можем присвоить переменную типа `T` переменной типа интерфейс `I`,
-если тип `T` реализует методы `I`. 
+если тип `T` реализует методы `I`.
 
 ```
-var fh *os.File = os.Open("bla.txt")
+var fh *os.File
+fh, _ = os.Open("my.txt")
 var rw io.ReadWriter = fh
 var r io.Reader = rw
 var any interface{} = r
@@ -158,8 +150,8 @@ any = []int{0}
 ```
 
 Для переменной `r`:
-* статический тип - `io.Reader`
-* динамический тип - `*os.File`
+* статический тип — `io.Reader`
+* динамический тип — `*os.File`
 
 ---
 
@@ -182,7 +174,6 @@ var r io.Reader
 var f *os.File
 
 f = r.(*os.File) // ?
-f, ok = r.(*os.File)
 ```
 
 **type switch**
@@ -275,7 +266,7 @@ t.MethodByName(string name) reflect.Value  // метод по имени
 Неправильный способ:
 ```
 var x float64 = 3.4
-v := reflect.ValueOf(x) // ??? 
+v := reflect.ValueOf(x) // ???
 v.SetFloat(7.1) // panic: reflect.Value.SetFloat using unaddressable value
 fmt.Println(v.CanSet()) // false
 ```
@@ -294,7 +285,7 @@ v.SetFloat(7.1)
 fmt.Println(x)           // 7.1
 ```
 
-`(reflect.Value).Elem()` - переходит по указателю или к базовому объекту интерфейса.
+`(reflect.Value).Elem()` — переходит по указателю или к базовому объекту интерфейса.
 
 ---
 
@@ -359,17 +350,21 @@ https://golang.org/pkg/reflect/#MakeFunc
 ---
 
 # Указатели в Go
-  
+
 В Go указатели на разные типы не совместимы между собой (т.к. сами являются разными типами)
 
 ```
-type St struct{ a, b int32}
+type St struct {
+	a, b int
+}
 
-var b [8]byte
-bp := &b
-var sp *St
-sp = bp // nop
-sp = (*St)(bp) // nop
+func main() {
+	var b [8]byte
+	bp := &b
+	var sp *St
+	sp = bp // not possible
+	sp = (*St)(bp) // not possible
+}
 ```
 
 ---
@@ -380,26 +375,31 @@ sp = (*St)(bp) // nop
 любого указателя в `unsafe.Pointer` и обратно (а также в `uintptr`).
 
 ```
-import "unsafe"
+type St struct {
+	a, b int
+}
 
-var b [8]byte
-bp := &b
-
-var sp *St
-var up unsafe.Pointer
-
-up = unsafe.Pointer(bp)
-sp = (*St)(up)
-sp.a = 12345678
-fmt.Println(b) // [78 97 188 0 0 0 0 0]
+func main() {
+	var b [8]byte
+	up := unsafe.Pointer(&b)
+	sp := (*St)(up)
+	sp.a = 12345678
+	fmt.Println(b) // [78 97 188 0 0 0 0 0]
+}
 ```
+
+https://goplay.tools/snippet/hpdw55xxlXO
 
 <br>
 https://go101.org/article/unsafe.html
 
 ---
 
-# Зачем нужен пакет unsafe? 
+# Зачем нужен пакет unsafe?
+
+---
+
+# Зачем нужен пакет unsafe?
 
 В первую очередь он используется в самом Go, например в пакетах `runtime` и `reflect`
 
@@ -423,22 +423,31 @@ func (v Value) SetFloat(x float64) {
   }
 }
 ```
+
 ---
 
-# Задачка
+# Минусы рефлексии
 
-Написать функцию, которая определяет, реализует ли тип X интерфейс Y:
+---
 
-* без помощи рефлексии для конкретного интерфейса Y (например, можно взять `Writer` или `Stringer`);
-* с помощью рефлексии для любого переданного Y.
+# Минусы рефлексии
 
-https://goplay.tools/snippet/dnn4cNykjLT
+- Более чувствительный код: узнаем об ошибке не во время компиляции, а только в рантайме.
+- В коде нет информации о типах: статические анализаторы не применимы.
+- Нужна дополнительная документация (слишком много `interface{}`, не всегда понятно, что именно там ждут).
+- Скорость (с небольшой оговоркой).
 
 ---
 
 # Домашнее задание
 
 https://github.com/OtusGolang/home_work/tree/master/hw09_struct_validator
+
+---
+
+# Примеры с занятия
+
+https://github.com/OtusGolang/webinars_practical_part/tree/master/20-reflection
 
 ---
 
@@ -452,22 +461,34 @@ https://github.com/OtusGolang/home_work/tree/master/hw09_struct_validator
 
 ---
 
+# Следующее занятие
+
+## Кодогенерация
+
+<br>
+<br>
+<br>
+
+## 9 сентября, четверг
+
+---
+
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-https://otus.ru/polls/?????/
+Ссылка в чате
 ]
 
 .right-image[
-![](img/gopher7.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

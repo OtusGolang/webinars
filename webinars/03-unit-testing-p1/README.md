@@ -1,11 +1,11 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -19,8 +19,8 @@ background-size: 130%
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Тестирование. Часть 1
 
@@ -56,7 +56,7 @@ background-image: url(img/message.svg)
 ]
 
 .right-image[
-![](img/gopher_science.png)
+![](../img/gopher_science.png)
 ]
 
 ---
@@ -216,7 +216,7 @@ https://goplay.tools/snippet/9h-9ha70qTb (playground)
 # testify: изучение API
 
 * ### `require.Equal()` vs `require.Equalf()`
-* ### `require.True(t, err == nil)`
+* ### `require.True(t, err == nil, msg)`
 * ### ` `
 * ### ` `
 
@@ -225,7 +225,7 @@ https://goplay.tools/snippet/9h-9ha70qTb (playground)
 # testify: изучение API
 
 * ### `require.Equal()` vs `require.Equalf()`
-* ### `require.True(t, err == nil)`
+* ### `require.True(t, err == nil, msg)`
 * ### `require.Nil(t, err)`
 * ### ` `
 
@@ -234,7 +234,7 @@ https://goplay.tools/snippet/9h-9ha70qTb (playground)
 # testify: изучение API
 
 * ### `require.Equal()` vs `require.Equalf()`
-* ### `require.True(t, err == nil)`
+* ### `require.True(t, err == nil, msg)`
 * ### `require.Nil(t, err)`
 * ### `require.NoError(t, err)`
 
@@ -360,20 +360,8 @@ https://blog.golang.org/cover
 ]
 
 .right-image[
-![](img/gopher_science.png)
+![](../img/gopher_science.png)
 ]
-
----
-
-# Следующее занятие
-
-## Элементарные типы данных в Go
-
-<br>
-<br>
-<br>
-
-## 9 марта, вторник
 
 ---
 
@@ -386,13 +374,25 @@ https://blog.golang.org/cover
 ]
 
 .right-image[
-![](img/gopher.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
+# Следующее занятие
+
+## Элементарные типы данных в Go
+
+<br>
+<br>
+<br>
+
+## 9 сентября, четверг
+
+---
+
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

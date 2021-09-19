@@ -1,31 +1,31 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
+
 
 # Конфигурация и логирование
 
-### Антон Телышев
+### Алексей Бакин
 
 ---
 
@@ -38,18 +38,19 @@ background-image: url(img/message.svg)
 * Стандартная библиотека для логирования
 * Расширенное логирование с помощью Zap
 ]
+---
+
+# Что хранить в переменных окружения?
 
 ---
 
 # Что хранить в переменных окружения?
 
-
-Конфигурация приложения – это всё, что может меняться между развёртываниями
-
-    - Идентификаторы подключения к ресурсам / сторонним службам
-    - Регистрационные данные для подключения к внешним сервисам, (Amazon S3 / Twitter)
-    - Значения зависимые от среды развёртывания (каноническое имя хоста)
-
+.big-list[
+* Идентификаторы подключения к ресурсам / сторонним службам
+* Регистрационные данные для подключения к внешним сервисам
+* Значения зависимые от среды развёртывания
+]
 
 ---
 
@@ -71,8 +72,6 @@ metadata:
 - переменные окружения
 
 ```
-env
-
 TRMPLN_IDENTITY_HANDLE=http://127.0.0.1:8080/matches
 VISITOR_TTL=60
 WORKERS=10
@@ -650,22 +649,40 @@ logger.Info("This should have a bracketed level name")
 
 ---
 
+# Примеры с занятия
+
+https://github.com/OtusGolang/webinars_practical_part/tree/master/22-config-n-log
+
+---
+
+# Следующее занятие
+
+## Профилирование и оптимизация Go программ
+
+<br>
+<br>
+<br>
+
+## 16 сентября, четверг
+
+---
+
 # Опрос
 
 .left-text[
 Заполните пожалуйста опрос
 <br><br>
-[https://otus.ru/polls/15948/](https://otus.ru/polls/15948/)
+Ссылка в чате
 ]
 
 .right-image[
-![](img/gopher7.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

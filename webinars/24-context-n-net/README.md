@@ -1,73 +1,111 @@
-.center.icon[![otus main](https://drive.google.com/uc?id=1NPIi9Hw5ZjA5SK24lTXckDjNAPSuFAHi)]
-
----
-
-
-class: white
-background-image: url(tmp/title.svg)
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
-
-# Низкоуровневые протоколы
-## TCP, UDP, DNS
-
-### Иван Ремень
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(tmp/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **–** если есть проблемы cо звуком или с видео
-]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
-# Цель занятия 
+class: white
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
+
+# Контекст и низкоуровневые сетевые протоколы
+
+### Алексей Бакин
+
+---
+
+# Как проходит занятие
+
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
+
+---
+
+# О чем будем говорить
+
+### 1. `context.Context`.
+### 2. Сетевые протоколы.
+### 3. Работа с ними в Go.
+
+---
+
+# Настройка на занятие
+
+.left-text[
+Пожалуйста, пройдите небольшой тест.
+<br><br>
+Он поможет понять, что вы уже знаете,
+а&nbsp;что предстоит узнать во время занятия.
+<br><br>
+Ссылка в чате
+]
 
 .right-image[
-![](tmp/gopher.png)
+![](../img/gopher_science.png)
 ]
 
-# 
-- Изучить что такое контекст
-- Изучить особенности протоколов TCP и UDP
-- Изучить стандартные типы Conn и Dialer
-- Узнать о типичных сетевых проблемах
-- Научиться обеспечивать тайм-ауты
-- Научиться отлаживать сетевые проблемы
-
 ---
+
 # Контекст
-Теперь это часть стандартной библиотеки
-```
-import "context"
-```
 
-Имеет природу матрешки: контексты вкладываются друг в друга
+# Что это?
+
+* Что уже знаете?
+* Какие идеи исходя из названия?
+
 ---
 
-# Виды контекстов
+# Контекст
+
+https://pkg.go.dev/context
+
+https://go.dev/blog/context
+
+---
+
+# Пакет context
+
 ```
 func Background() Context
 func TODO() Context
+```
+
+```
 func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
 func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)
 func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
+```
+
+```
 func WithValue(parent Context, key interface{}, val interface{}) Context
 ```
+
 ---
 
 # Практика
-Пишем эмулятор долгих операций
+
+# Пишем эмулятор долгих операций
+
+---
+
+# UDP
+
+# Какие особенности вы знаете?
 
 ---
 
@@ -83,6 +121,12 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 
 # TCP
 
+# Какие особенности вы знаете?
+
+---
+
+# TCP
+
 - Доставка пакета гарантируется (или получим ошибку)
 - Порядок пакетов гарантируется
 - Соединение устанавливается
@@ -93,7 +137,6 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 class: top black
 background-size: 35%
 background-image: url(img/5_4.gif)
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
 
 # TCP - диаграмма состояний
 
@@ -114,23 +157,6 @@ background-image: url(img/TCP_CLOSE.svg)
 
 
 ---
-
-# DNS
-
-- Служит для получение IP адреса по доменному имени (и не только)
-- Работает как поверх UDP, так и поверх TCP
-- Имеет рекурсивную природу
-- Имеет механизмы для кеширования
-- При высоких нагрузках можно использовать /etc/hosts
-
----
-class: black
-background-image: url(img/2880px-Example_of_an_iterative_DNS_resolver.svg.png)
-
-# Рекурсивная природа DNS
-
-
----
 # Пакет net
 В Go за сетевые возможности отвечает пакет net и его подпакеты
 
@@ -145,7 +171,7 @@ background-image: url(img/2880px-Example_of_an_iterative_DNS_resolver.svg.png)
 ```
 func (d *Dialer) Dial(network, address string) (Conn, error)
 
-func (d *Dialer) DialContext(ctx context.Context, 
+func (d *Dialer) DialContext(ctx context.Context,
                     network, address string) (Conn, error)
 ```
 
@@ -156,6 +182,7 @@ func DialTimeout(network, address string, timeout time.Duration) (Conn, error)
 ```
 
 ---
+
 # Примеры установки соединений
 ```
 Dial("tcp", "golang.org:http")
@@ -167,6 +194,7 @@ Dial("tcp", ":80")
 ```
 
 ---
+
 # Тип Conn
 
 Является абстракцией над поточным сетевым соединением.
@@ -176,10 +204,20 @@ Dial("tcp", ":80")
 Это потокобезопасный тип.
 
 ---
+
 # Практика
 - Пишем чат сервер
 - Учимся создавать многопоточные сервера
+
 ---
+
+# Типичные сетевые проблемы
+
+* Какие знаете?
+* С какими сталкивались? Что делали?
+
+---
+
 # Типичные сетевые проблемы
 
 - Потеря пакетов
@@ -187,7 +225,7 @@ Dial("tcp", ":80")
 - Тайм-ауты
 - Медленные соединения
 
-Как с ними бороться?
+Как с ними быть?
 
 ---
 # Практика
@@ -200,36 +238,54 @@ Dial("tcp", ":80")
 
 ---
 
-# Тест
+# Повторение
 
-https://forms.gle/SiDmYTPUU5La3rA88
+.left-text[
+Давайте проверим, что вы узнали за этот урок, а над чем стоит еще поработать.
+<br><br>
+Ссылка в чате
+]
 
----
-
-
-# На занятии
-
-- Изучили что такое контекст
-- Изучили особенности протоколов TCP и UDP
-- Изучили стандартные типы Conn и Dialer
-- Узнали о типичных сетевых проблемах
-- Научились обеспечивать тайм-ауты
-- Научились отлаживать сетевые проблемы
+.right-image[
+![](../img/gopher_science.png)
+]
 
 ---
 
-## Вопросы?
+# Примеры с занятия
+
+https://github.com/OtusGolang/webinars_practical_part/tree/master/24-context-n-net
+
+---
+
+# Следующее занятие
+
+## Работа с SQL
+
+<br>
+<br>
+<br>
+
+## 23 сентября, четверг
 
 ---
 
 # Опрос
 
-Не забудьте заполнить опрос. Ссылка на опрос будет в слаке.
+.left-text[
+Заполните пожалуйста опрос
+<br><br>
+Ссылка в чате
+]
+
+.right-image[
+![](../img/gopher_boat.png)
+]
 
 ---
 
 class: white
-background-image: url(tmp/title.svg)
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

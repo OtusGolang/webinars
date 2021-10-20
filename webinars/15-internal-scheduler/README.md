@@ -1,11 +1,11 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -19,8 +19,8 @@ background-size: 130%
 ---
 
 class: white
-background-image: url(img/title.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Go внутри. Планировщик
 
@@ -518,7 +518,7 @@ https://golang.org/src/runtime/chan.go
 
 # Каналы: горутина пишет в стек другой горутины!
 
-https://golang.org/src/runtime/chan.go#L208
+https://cs.opensource.google/go/go/+/master:src/runtime/chan.go;l=211
 
 ---
 
@@ -531,18 +531,6 @@ https://golang.org/src/runtime/chan.go#L208
 
 ---
 
-# Следующее занятие
-
-## Go внутри. Память и сборка мусора
-
-<br>
-<br>
-<br>
-
-## 5 августа, четверг
-
----
-
 # Опрос
 
 .left-text[
@@ -552,13 +540,25 @@ https://golang.org/src/runtime/chan.go#L208
 ]
 
 .right-image[
-![](img/gopher.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
+# Следующее занятие
+
+## Go внутри. Память и сборка мусора
+
+<br>
+<br>
+<br>
+
+## 26 октября, вторник
+
+---
+
 class: white
-background-image: url(img/title.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

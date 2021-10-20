@@ -1,11 +1,11 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -19,8 +19,8 @@ background-size: 130%
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Горутины и каналы
 
@@ -56,7 +56,7 @@ background-image: url(img/message.svg)
 ]
 
 .right-image[
-![](img/gopher9.png)
+![](../img/gopher_science.png)
 ]
 
 ---
@@ -176,6 +176,21 @@ func main() {
 ```
 
 https://goplay.tools/snippet/SBO2dnLQPue
+
+---
+
+# Горутины: замыкание
+
+```
+for i := 0; i < 5; i++ {
+	go func() {
+		fmt.Print(i)
+	}()
+}
+time.Sleep(2 * time.Second)
+```
+
+https://goplay.tools/snippet/rSKy5YetcJS
 
 ---
 
@@ -548,21 +563,6 @@ fmt.Printf("Got %v...\n", <-interruptCh)
 
 ---
 
-# Каналы: замыкание
-
-```
-for i := 0; i < 5; i++ {
-	go func() {
-		fmt.Print(i)
-	}()
-}
-time.Sleep(2 * time.Second)
-```
-
-https://goplay.tools/snippet/rSKy5YetcJS
-
----
-
 # Каналы: паттерн синхронизации
 
 ```
@@ -595,20 +595,8 @@ for {
 ]
 
 .right-image[
-![](img/gopher9.png)
+![](../img/gopher_science.png)
 ]
-
----
-
-# Следующее занятие
-
-## Примитивы синхронизации. Часть 1
-
-<br>
-<br>
-<br>
-
-## 8 апреля, четверг
 
 ---
 
@@ -621,13 +609,25 @@ for {
 ]
 
 .right-image[
-![](img/gopher.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
+# Следующее занятие
+
+## Примитивы синхронизации. Часть 1
+
+<br>
+<br>
+<br>
+
+## 12 октября, вторник
+
+---
+
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

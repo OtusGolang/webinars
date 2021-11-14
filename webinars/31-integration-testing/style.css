@@ -110,7 +110,7 @@ background-size: 100%
   font-size: 30px !important;
   padding-left: 1em;
   display: inline;
-  background-image: url(img/logodark.png);
+  background-image: url(../img/logodark.png);
   background-position: center right 2em;
   background-repeat: no-repeat;
   background-size: 100px 24px;

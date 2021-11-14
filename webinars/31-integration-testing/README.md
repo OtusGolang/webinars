@@ -1,30 +1,38 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
 ]
 
 .sound-bottom[
-    ## > Напишите в чат
-    + если все хорошо
-    - если есть проблемы cо звуком или с видео]
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Тестирование микросервисов
 
-### Антон Телышев
+### Алексей Бакин
+
+---
+
+# Как проходит занятие
+
+* ### Активно участвуем — задаем вопросы.
+* ### Чат вижу — могу ответить не сразу.
+* ### После занятия — оффтопик, ответы на любые вопросы.
 
 ---
 
@@ -39,6 +47,23 @@ background-image: url(img/message.svg)
 # Цель занятия
 
 ## Узнать об&nbsp;инструментах и&nbsp;подходах к&nbsp;интеграционному тестированию в&nbsp;Go.
+
+---
+
+# Настройка на занятие
+
+.left-text[
+Пожалуйста, пройдите небольшой тест.
+<br><br>
+Он поможет понять, что вы уже знаете,
+а&nbsp;что предстоит узнать во время занятия.
+<br><br>
+Ссылка в чате
+]
+
+.right-image[
+![](../img/gopher_science.png)
+]
 
 ---
 
@@ -67,6 +92,7 @@ background-image: url(img/message.svg)
 * Повышают качество кода.
 
 * Придают уверености при деплое в продакшен.
+
 ---
 
 # Думай, как тестировщик
@@ -207,7 +233,6 @@ background-size: 90%
 
 # BDD: реализация
 
-
 Реализация примера:<br>
 https://github.com/OtusGolang/webinars_practical_part/tree/master/31-integration-testing
 
@@ -294,11 +319,11 @@ https://github.com/kulti/task-list
 .left-text[
 Давайте проверим, что вы узнали за этот урок, а над чем стоит еще поработать.
 <br><br>
-https://forms.gle/55KLv181daxNEfyS9
+Ссылка в чате
 ]
 
 .right-image[
-![](img/gopher_science.png)
+![](../img/gopher_science.png)
 ]
 
 ---
@@ -306,20 +331,31 @@ https://forms.gle/55KLv181daxNEfyS9
 # Опрос
 
 .left-text[
-  Заполните пожалуйста опрос о занятии.
-  <br><br>
-  https://otus.ru/polls/?????/
+Заполните пожалуйста опрос
+<br><br>
+Ссылка в чате.
 ]
 
 .right-image[
-  ![](img/gopher7.png)
+![](../img/gopher_boat.png)
 ]
 
+---
+
+# Следующее занятие
+
+## Мониторинг
+
+<br>
+<br>
+<br>
+
+## 28 октября, четверг
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

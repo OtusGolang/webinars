@@ -36,14 +36,6 @@ background-image: url(../img/message.svg)
 
 ---
 
-# О чем будем говорить
-
-### 1. Зачем нужны тесты?
-### 2. testing и testify.
-### 3. Приемы тестирования.
-
----
-
 # Настройка на занятие
 
 .left-text[
@@ -58,6 +50,21 @@ background-image: url(../img/message.svg)
 .right-image[
 ![](../img/gopher_science.png)
 ]
+
+---
+
+# О чем будем говорить
+
+### 1. Зачем нужны тесты?
+### 2. testing и testify.
+### 3. Приемы тестирования.
+
+---
+
+# Цель
+
+## После занятия вы будете готовы писать тесты
+(и сдавать ДЗ)
 
 ---
 
@@ -335,7 +342,7 @@ go test github.com/otus/superapp/...
 go test -run TestFoo
 ```
 
-По тегам (`// +build integration`):
+По тегам (`//go:build integration`):
 ```
 go test -tags=integration
 ```
@@ -387,7 +394,7 @@ https://blog.golang.org/cover
 <br>
 <br>
 
-## 9 сентября, четверг
+## 25 ноября, четверг
 
 ---
 

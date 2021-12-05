@@ -1,11 +1,11 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -19,8 +19,8 @@ background-size: 130%
 ---
 
 class: white
-background-image: url(img/title.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Оптимизация <br>и профилирование
 
@@ -144,7 +144,7 @@ go tool pprof -http=":8090" bench.test cpu.out
 
 ---
 
-# Нагрузчное тестирование (wrk, wrk2)
+# Нагрузочное тестирование (wrk, wrk2)
 
 https://github.com/giltene/wrk2
 <br><br>
@@ -178,7 +178,7 @@ go tool pprof -http=":8080" "http://127.0.0.1:7070/debug/pprof/profile?seconds=5
 ]
 
 .right-image[
-![](img/gopher_meditation.png)
+![](../img/gopher_meditation.png)
 ]
 
 ---
@@ -201,7 +201,21 @@ https://github.com/OtusGolang/home_work/tree/master/hw10_program_optimization
 ]
 
 .right-image[
-![](img/gopher_science.png)
+![](../img/gopher_science.png)
+]
+
+---
+
+# Опрос
+
+.left-text[
+Заполните пожалуйста опрос
+<br><br>
+Ссылка в чате
+]
+
+.right-image[
+![](../img/gopher_boat.png)
 ]
 
 ---
@@ -214,21 +228,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw10_program_optimization
 <br>
 <br>
 
-## 27 мая, четверг
-
----
-
-# Опрос
-
-.left-code[
-Заполните пожалуйста опрос.
-<br><br>
-Ссылка в чате.
-]
-
-.right-image[
-![](img/gopher7.png)
-]
+## 2 декабря, четверг
 
 ---
 
@@ -245,7 +245,7 @@ https://github.com/OtusGolang/home_work/tree/master/hw10_program_optimization
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

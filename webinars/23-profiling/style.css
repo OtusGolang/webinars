@@ -34,6 +34,10 @@ body {
   /* default middle class */
 }
 
+br {
+  clear:both;
+  height: 1em;
+}
 h1,
 h2,
 h3,
@@ -54,7 +58,8 @@ h2 {
   font-size: 36px !important;
 }
 
-li {
+
+.big-list li {
   font-size: 24px !important;
   line-height: 2em;
 }
@@ -110,7 +115,7 @@ background-size: 100%
   font-size: 30px !important;
   padding-left: 1em;
   display: inline;
-  background-image: url(https://drive.google.com/uc?id=1NgqM8JAQ9UU_C8wRC-G3jtiUhbYFpv2f);
+  background-image: url(../img/logodark.png);
   background-position: center right 2em;
   background-repeat: no-repeat;
   background-size: 100px 24px;
@@ -139,6 +144,12 @@ background-size: 100%
 
 /* content */
 
+.small {
+  font-size: 75% !important;
+}
+.small .remark-code {
+  font-size: 14px;
+}
 .hidden {
   display: none;
 }
@@ -167,11 +178,26 @@ blockquote {
   font-style: italic
 }
 
+.left-image img {
+  float: left;
+  width: 400px;
+}
+
 .right-image img {
   float: right;
   width: 400px;
 }
 
+.main-image {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+.main-image img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+}
 /* code */
 
 .remark-inline {
@@ -180,19 +206,24 @@ blockquote {
 }
 
 .remark-inline-code {
-  font-family: 'Consolas';
-  font-size: 28px;
+  margin: 0;
+  font-family: monospace;
+  font-size: 85%;
   font-style: normal;
-  font-weight: bolder;
+  background-color: rgba(27,31,35,.05);
+  padding: .2em .4em;
+  border-radius: 3px;
 }
 
-.left-code {
+.left-code,
+.left-text {
   float: left;
   width: 400px;
   /* margin-right: 40px; */
 }
 
-.long-left-code {
+.long-left-code,
+.long-left-text {
   float: left;
   width: 480px;
   margin-right: 40px;
@@ -202,7 +233,8 @@ blockquote {
   margin-top: 20px;
 }
 
-.right-code {
+.right-code,
+.right-text {
   float: right;
   width: 400px;
   /* padding-left: 20px; */

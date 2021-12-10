@@ -1,45 +1,46 @@
-.center.icon[![otus main](https://drive.google.com/uc?id=1NPIi9Hw5ZjA5SK24lTXckDjNAPSuFAHi)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
 ]
 
 .sound-bottom[
-  ## > Напишите в чат
-  ### **+** если все хорошо
-  ### **-** если есть проблемы cо звуком или с видео
-  ### !проверить запись!
-]
-
+	## > Напишите в чат
+	+ если все хорошо
+	- если есть проблемы со звуком или с видео]
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Интерфейсы в Go. <br>Часть 1
 
-### Антон Телышев
-
+### Алексей Бакин
 
 ---
 
 # О чем будем говорить
 
-* Определение и реализация интерфейсов
-* Композиция интерфейсов
-* Пустой интерфейс
-* Внутреннее устройство интерфейсов
-* Интерфейсы и производительность программы
+* ### Определение и реализация интерфейсов
+* ### Композиция интерфейсов
+* ### Пустой интерфейс
+* ### Внутреннее устройство интерфейсов
+* ### Интерфейсы и производительность программы
 
+---
+
+# Интерфейсы: определение
+
+# Что это?
 
 ---
 
@@ -58,6 +59,10 @@ type Shape interface {
 }
 ```
 
+---
+
+# Интерфейсы и типы
+
 Переменная **типа интерфейс** может содержать значение типа, реализующего этот интерфейс.
 
 ```
@@ -65,13 +70,11 @@ var s Stringer
 s = time.Time{}
 ```
 
-https://golang.org/doc/effective_go.html#interfaces_and_types
+https://go.dev/doc/effective_go#interfaces_and_types
 
 ---
 
 # Интерфейсы реализуются неявно
-
-<br> Dog удовлетворяет интерфейсу Duck
 
 ```
 type Duck interface {
@@ -94,7 +97,7 @@ func (d Dog) Swim() { }
 
 ```
 
-https://goplay.space/#GWYHjaDPnLG
+https://goplay.tools/snippet/GWYHjaDPnLG
 
 ---
 
@@ -120,87 +123,68 @@ type Stringer interface {
 }
 ```
 
-https://goplay.space/#ppTH6Ya-fX5
+https://goplay.tools/snippet/ppTH6Ya-fX5
 
-https://golang.org/src/fmt/print.go#611
-
-
----
-
-# Тип может реализовать несколько интерфейсов
-
-```
-type Hound interface {
-    Hunt()
-}
-type Poodle interface {
-    Bark()
-}
-
-type GoldenRetriever struct{name string}
-
-func (GoldenRetriever) Hunt() { fmt.Println("hunt") }
-func (GoldenRetriever) Bark() { fmt.Println("bark") }
-
-```
-
-https://goplay.space/#h_7ODwUAXfM
-
+https://go.dev/src/fmt/print.go#L611
 
 ---
 
 # Одному интерфейсу могут соответствовать много типов
 
 ```
-type Poodle interface {
-    Bark()
+package io
+
+type Writer interface {
+	Write(p []byte) (n int, err error)
 }
-
-type ScandinavianClip struct{name string}
-func (ScandinavianClip) Bark() { fmt.Println("bark") }
-
-
-type ToyPoodle struct{name string}
-func (ToyPoodle) Bark() { fmt.Println("bark") }
 ```
 
-https://goplay.space/#0Mjn_Yd9K5W
+```
+package bytes
 
+type Buffer struct
+func (b *Buffer) Write(p []byte) (n int, err error)
+```
+
+```
+package os
+
+type File struct
+func (f *File) Write(b []byte) (n int, err error)
+```
+
+https://goplay.tools/snippet/0wMhI-6pdAF
+
+---
+
+# Тип может реализовать несколько интерфейсов
+
+```
+package io
+
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+	Write(p []byte) (n int, err error)
+}
+```
+
+```
+package bytes
+
+type Buffer struct
+func (b *Buffer) Read(p []byte) (n int, err error)
+func (b *Buffer) Write(p []byte) (n int, err error)
+```
+
+https://goplay.tools/snippet/bM3gJm3WIcc
 
 ---
 
 # Интерфейсы: композиция
 
-Интерфейс может встраивать в себя другой (определенный пользователем или импортируемый) интерфейс:
-
-```
-import "fmt"
-
-type Greeter interface {
-     hello()
-}
-
-type Stranger interface {
-    Bye() string
-    Greeter
-    fmt.Stringer
-}
-```
-
-
----
-
-# Интерфейсы: композиция
-
-
-```
-type error interface {
-    Error() string
-}
-
-```
-
-Пример из io:
 ```
 type Reader interface {
     Read(p []byte) (n int, err error)
@@ -216,6 +200,23 @@ type ReadCloser interface {
 }
 ```
 
+---
+
+# Интерфейсы: композиция (комплексный пример)
+
+```
+import "fmt"
+
+type Greeter interface {
+     hello()
+}
+
+type Stranger interface {
+    Bye() string
+    Greeter
+    fmt.Stringer
+}
+```
 
 ---
 
@@ -239,10 +240,14 @@ type K interface {
 ```
 
 ```
-./prog.go:15:6: invalid recursive type K
+./prog.go:5:6: invalid recursive type I
+	prog.go:5:6: I refers to
+	prog.go:10:6: J refers to
+	prog.go:15:6: K refers to
+	prog.go:5:6: I
 ```
 
-https://goplay.space/#2fDIbsBoZfv
+https://goplay.tools/snippet/2fDIbsBoZfv
 
 
 ---
@@ -265,10 +270,10 @@ type Retriever interface {
 ```
 
 ```
-./prog.go:7:2: duplicate method bark
+./prog.go:6:2: duplicate method bark
 ```
 
-https://goplay.space/#wMw2VKOIysx
+https://goplay.tools/snippet/wMw2VKOIysx
 
 
 ---
@@ -286,12 +291,6 @@ func Fprintln(w io.Writer, a ...interface{}) (n int, err error) {
    ...
 }
 ```
-
-<br>
-<b>interface{} is says nothing</b>
-
-https://go-proverbs.github.io/
-
 
 ---
 
@@ -312,11 +311,15 @@ func main() {
 }
 ```
 
-https://goplay.space/#1w7ksGW0uXh
-
+https://goplay.tools/snippet/1w7ksGW0uXh
 
 ---
 
+# interface{} is says nothing
+
+https://go-proverbs.github.io/
+
+---
 
 # Интерфейсы изнутри: iface
 
@@ -332,7 +335,7 @@ type iface struct {
 type itab struct {
     inter *interfacetype // Метаданные интерфейса
     _type *_type // Go-шный тип хранимого интерфейсом значения
-    hash  uint32 
+    hash  uint32
     _     [4]byte
     fun   [1]uintptr // Список методов типа, удовлетворяющих интерфейсу
 }
@@ -346,7 +349,6 @@ https://www.tapirgames.com/blog/golang-interface-implementation
 
 
 ---
-
 
 # Интерфейсы изнутри
 
@@ -372,12 +374,14 @@ s.SayHello()
 
 ```
 
-https://goplay.space/#rjboVEC3V6w
+https://goplay.tools/snippet/rjboVEC3V6w
 
 ---
 
-background-size: 80%
+background-size: 60%
 background-image: url(img/internalinterfaces.png)
+
+# Интерфейсы изнутри
 
 ---
 
@@ -428,10 +432,10 @@ s.SayHello()
 
 ---
 
-
 background-size: 60%
 background-image: url(img/emptyinterface.png)
 
+# Интерфейсы изнутри: пустой интерфейс
 
 ---
 
@@ -453,7 +457,7 @@ func main() {
 }
 ```
 
-https://goplay.space/#9ldo_icbhj0
+https://goplay.tools/snippet/9ldo_icbhj0
 
 
 ---
@@ -480,9 +484,9 @@ func BenchmarkDirect(b *testing.B) {
 }
 
 func BenchmarkInterface(b *testing.B) {
-    adder := Adder{id: 6754}
+    adder := Addifier(Adder{id: 6754})
     for i := 0; i < b.N; i++ {
-        Addifier(adder).Add(10, 32)
+        adder.Add(10, 32)
     }
 }
 ```
@@ -493,23 +497,21 @@ func BenchmarkInterface(b *testing.B) {
 # Интерфейсы изнутри: benchmark
 
 ```
+BenchmarkDirect-16      1000000000   0.2436 ns/op   0 B/op   0 allocs/op
+BenchmarkInterface-16   957668390    1.157 ns/op    0 B/op   0 allocs/op
+```
+
+```
 $ GOOS=linux GOARCH=amd64 go tool compile -m addifier.go
 
 Addifier(adder) escapes to heap
 ```
 
-```
-$ GOOS=linux GOARCH=amd64 go test -bench=.              
-BenchmarkDirect-8       2000000000    1.60 ns/op    0 B/op   0 allocs/op
-BenchmarkInterface-8    100000000     15.0 ns/op    4 B/op   1 allocs/op
-```
-
-
 ---
 
 # Интерфейсы: еще раз о ресиверах
 
-https://goplay.space/#jm1bKNLABnB
+https://goplay.tools/snippet/jm1bKNLABnB
 <br><br>
 https://stackoverflow.com/a/45653986
 <br><br>
@@ -525,35 +527,44 @@ https://stackoverflow.com/a/48874650
 - имена методов интерфейса не должны повторяться
 - интерфейс может быть пустым (не иметь методов), такому интерфейсу удовлетворяет любой тип
 
-
 ---
 
 # Интерфейсы: интерактив
 
 Реализовать интерфейс Adult
 <br><br>
-https://goplay.space/#A48l0-8FQX0
-
-
----
-
-# Домашнее задание
-
-Реализовать LRU-кэш на основе двусвязного списка
-<br><br>
-https://github.com/OtusGolang/home_work/tree/master/hw04_lru_cache
+https://goplay.tools/snippet/A48l0-8FQX0
 
 ---
 
 # Опрос
 
-https://otus.ru/polls/15933/
+.left-text[
+Заполните пожалуйста опрос
+<br><br>
+Ссылка в чате.
+]
 
+.right-image[
+![](../img/gopher_boat.png)
+]
+
+---
+
+# Следующее занятие
+
+## Интерфейсы. Часть 2
+
+<br>
+<br>
+<br>
+
+## 14 декабря, вторник
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

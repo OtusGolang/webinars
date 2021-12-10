@@ -99,7 +99,7 @@ li li {
 /* title */
 
 .remark-slide-content {
-  background-size: 100%
+background-size: 100%
 }
 
 .remark-slide-content>h1:first-child {
@@ -111,7 +111,7 @@ li li {
   font-size: 30px !important;
   padding-left: 1em;
   display: inline;
-  background-image: url(img/logodark.png);
+  background-image: url(../img/logodark.png);
   background-position: center right 2em;
   background-repeat: no-repeat;
   background-size: 100px 24px;

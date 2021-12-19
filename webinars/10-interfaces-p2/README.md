@@ -1,22 +1,11 @@
-.center.icon[![otus main](https://drive.google.com/uc?id=1NPIi9Hw5ZjA5SK24lTXckDjNAPSuFAHi)]
-
----
-
-
-class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
-
-# Интерфейсы в Go. <br>Часть 2
-
-### Алексей Бакин
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -29,11 +18,38 @@ background-size: 130%
 
 ---
 
+class: white
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
+
+# Интерфейсы в Go. <br>Часть 2
+
+### Алексей Бакин
+
+---
+
 # Как проходит занятие
 
 * ### Активно участвуем — задаем вопросы.
 * ### Чат вижу — могу ответить не сразу.
 * ### После занятия — оффтопик, ответы на любые вопросы.
+
+---
+
+# Настройка на занятие
+
+.left-text[
+Пожалуйста, пройдите небольшой тест.
+<br><br>
+Он поможет понять, что вы уже знаете,
+а&nbsp;что предстоит узнать во время занятия.
+<br><br>
+Ссылка в чате
+]
+
+.right-image[
+![](../img/gopher_science.png)
+]
 
 ---
 
@@ -140,10 +156,10 @@ func main() {
     var c IHTTPClient
     fmt.Println("value of client is", c)
     fmt.Printf("type of client is %T\n", c)
+	fmt.Println("(c == nil) is", c == nil)
 }
 ```
-https://goplay.tools/snippet/d5suRUteMz4
-
+https://goplay.tools/snippet/uBwvZ4bLy7T
 
 ---
 
@@ -151,29 +167,19 @@ https://goplay.tools/snippet/d5suRUteMz4
 <br>
 
 ```
-type Rect struct {
-    width  float64
-    height float64
-}
-
-func (r Rect) Area() float64 {
-    return r.width * r.height
-}
-
-func (r Rect) Perimeter() float64 {
-    return 2 * (r.width + r.height)
+type IHTTPClient interface {
+    Do(req *http.Request) (*http.Response, error)
 }
 
 func main() {
-    var s Shape
-    s = Rect{5.0, 4.0}
-    fmt.Printf("type of s is %T\n", s)          // type of s is main.Rect
-    fmt.Printf("value of s is %v\n", s)         // value of s is {5 4}
-    fmt.Println("area of rectange s", s.Area()) // area of rectange s 20
+    var h *http.Client
+    var c IHTTPClient = h
+    fmt.Println("value of client is", c)
+    fmt.Printf("type of client is %T\n", c)
+	fmt.Println("(c == nil) is", c == nil)
 }
 ```
-https://goplay.tools/snippet/wbmnTcriHJ-
-
+https://goplay.tools/snippet/ZzDLxREAXV2
 
 ---
 
@@ -208,7 +214,7 @@ https://goplay.tools/snippet/AUJ57LjntXb
 #  Интерфейсы: опасный nil
 
 <br>
-Значение интерфейсного типа равно `nil` тогда и только тогда, когда `nil` и тип, и знаечене.
+Значение интерфейсного типа равно `nil` тогда и только тогда, когда `nil` и тип, и значение.
 
 <br>
 
@@ -350,15 +356,15 @@ https://goplay.tools/snippet/SYe5kK0nz-5
 	var i interface{} = "hello"
 
 	s := i.(string)
-	fmt.Println(s) // hello
+	fmt.Println(s)
 
-	s, ok := i.(string) // hello true
+	s, ok := i.(string)
 	fmt.Println(s, ok)
 
-	r, ok := i.(fmt.Stringer) // <nil> false
+	r, ok := i.(fmt.Stringer)
 	fmt.Println(r, ok)
 
-	f, ok := i.(float64) // 0 false
+	f, ok := i.(float64)
 	fmt.Println(f, ok)
 ```
 
@@ -416,8 +422,6 @@ linters-settings:
 Мы можем объединить проверку нескольких типов в один `type switch`:
 
 ```
-// go/src/crypto/x509/x509.go
-
 func checkSignature(/* ... */, publicKey crypto.PublicKey) (err error) {
     // ...
 
@@ -432,6 +436,7 @@ func checkSignature(/* ... */, publicKey crypto.PublicKey) (err error) {
     return ErrUnsupportedAlgorithm
 }
 ```
+[src/crypto/x509/x509.go](https://github.com/golang/go/blob/283d8a3d53ac1c7e1d7e297497480bf0071b6300/src/crypto/x509/x509.go#L837)
 
 ---
 
@@ -465,8 +470,6 @@ default:
 Заглянем в пакет fmt:
 
 ```
-// go/src/fmt/print.go
-
 func (p *pp) printArg(arg interface{}, verb rune) {
     // ...
 
@@ -485,6 +488,7 @@ func (p *pp) printArg(arg interface{}, verb rune) {
         p.fmtInteger(uint64(f), signed, verb)
     // ...
 ```
+[src/fmt/print.go](https://github.com/golang/go/blob/283d8a3d53ac1c7e1d7e297497480bf0071b6300/src/fmt/print.go#L660)
 
 ---
 
@@ -593,15 +597,17 @@ https://goplay.tools/snippet/SHZXfLu-ulF
 
 ---
 
-# Следующее занятие
+# Повторение
 
-## Обработка ошибок. Понятие паники
+.left-text[
+Давайте проверим, что вы узнали за этот урок, а над чем стоит еще поработать.
+<br><br>
+Ссылка в чате
+]
 
-<br>
-<br>
-<br>
-
-## 13 июля, вторник
+.right-image[
+![](../img/gopher_science.png)
+]
 
 ---
 
@@ -614,14 +620,33 @@ https://goplay.tools/snippet/SHZXfLu-ulF
 ]
 
 .right-image[
-![](img/gopher7.png)
+![](../img/gopher_boat.png)
 ]
 
+---
+
+# Домашнее задание
+
+Реализовать LRU-кэш на основе двусвязного списка
+<br><br>
+https://github.com/OtusGolang/home_work/tree/master/hw04_lru_cache
+
+---
+
+# Следующее занятие
+
+## Обработка ошибок. Понятие паники
+
+<br>
+<br>
+<br>
+
+## 16 декабря, четверг
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

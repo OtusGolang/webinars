@@ -178,6 +178,11 @@ blockquote {
   width: 400px;
 }
 
+.center-image img {
+  display: block;
+  margin: auto;
+}
+
 /* code */
 
 .remark-inline {

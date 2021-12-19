@@ -70,7 +70,7 @@ background-image: url(../img/message.svg)
 
 # Параллелизм vs конкурентность
 
-.center-image-sq[
+.center-image[
 ![](img/conc_vs_par.png)
 ]
 
@@ -622,7 +622,7 @@ for {
 <br>
 <br>
 
-## 12 октября, вторник
+## 28 декабря, вторник
 
 ---
 

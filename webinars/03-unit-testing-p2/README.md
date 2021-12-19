@@ -1,11 +1,11 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -19,8 +19,8 @@ background-size: 130%
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Тестирование. Часть 2
 
@@ -285,7 +285,7 @@ func TestSomething(t *testing.T) {
 ]
 
 .right-image[
-![](img/gopher_meditation.png)
+![](../img/gopher_meditation.png)
 ]
 
 ---
@@ -308,20 +308,8 @@ func TestSomething(t *testing.T) {
 ]
 
 .right-image[
-![](img/gopher_science.png)
+![](../img/gopher_science.png)
 ]
-
----
-
-# Следующее занятие
-
-## Горутины и каналы
-
-<br>
-<br>
-<br>
-
-## 20 июля, вторник
 
 ---
 
@@ -334,13 +322,26 @@ func TestSomething(t *testing.T) {
 ]
 
 .right-image[
-![](img/gopher.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
+# Следующее занятие
+
+## Горутины и каналы
+
+<br>
+<br>
+<br>
+
+## 23 декабря, четверг
+
+---
+
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!
+

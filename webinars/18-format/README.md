@@ -1,11 +1,11 @@
-.center.icon[![otus main](https://drive.google.com/uc?id=1NPIi9Hw5ZjA5SK24lTXckDjNAPSuFAHi)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
   # Как меня слышно и видно?
@@ -18,10 +18,9 @@ background-size: 130%
 
 ---
 
-
 class: white
-background-image: url(img/title.svg)
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Форматирование данных
 
@@ -48,7 +47,7 @@ background-image: url(img/title.svg)
 ]
 
 .right-image[
-![](img/gopher_science.png)
+![](../img/gopher_science.png)
 ]
 
 ---
@@ -56,7 +55,7 @@ background-image: url(img/title.svg)
 # А зачем?
 
 .right-image[
-![](img/gopher.png)
+![](../img/gopher.png)
 ]
 
 ### Что такое бинарные данные?
@@ -70,7 +69,7 @@ background-image: url(img/title.svg)
 # А зачем?
 
 .right-image[
-![](img/gopher.png)
+![](../img/gopher.png)
 ]
 
 ### Что такое бинарные данные?
@@ -176,12 +175,6 @@ func main() {
 ```
 https://goplay.tools/snippet/469rXJqiq0k
 
-
----
-
-# Работа с base64
-
-А какие недостатки?
 
 ---
 
@@ -617,20 +610,8 @@ protoc --go_out=. *.proto
 ]
 
 .right-image[
-![](img/gopher_science.png)
+![](../img/gopher_science.png)
 ]
-
----
-
-# Следующее занятие
-
-## Взаимодействие с OS
-
-<br>
-<br>
-<br>
-
-## 26 августа, четверг
 
 ---
 
@@ -643,13 +624,25 @@ protoc --go_out=. *.proto
 ]
 
 .right-image[
-![](img/gopher.png)
+![](../img/gopher_boat.png)
 ]
 
 ---
 
+# Следующее занятие
+
+## Взаимодействие с OS
+
+<br>
+<br>
+<br>
+
+## 03 февраля, четверг
+
+---
+
 class: white
-background-image: url(img/title.svg)
-.top.icon[![otus main](https://drive.google.com/uc?id=18Jw9bQvL3KHfhGWNjqyQ3ihR3fV3tmk8)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

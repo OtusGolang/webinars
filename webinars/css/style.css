@@ -54,6 +54,11 @@ h2 {
   font-size: 36px !important;
 }
 
+.big-list li {
+  font-size: 24px !important;
+  line-height: 2em;
+}
+
 /*
 li {
   font-size: 24px !important;

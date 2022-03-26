@@ -43,7 +43,6 @@ background-image: url(../img/message.svg)
 * Сборка и запуск программ: go build, go run
 * Кросс-компиляция: GOOS, GOARCH
 * Модули и зависимости: go mod, go get
-* Мир до модулей: GOPATH
 * Форматирование кода: go fmt, goimports
 * Линтеры: go vet, golint, gometalinter, golangci-lint
 * Как сдавать домашние задания?
@@ -54,7 +53,7 @@ background-image: url(../img/message.svg)
 
 # Первые шаги
 
-https://tour.golang.org/
+https://go.dev/tour
 
 <br><br>
 
@@ -65,10 +64,10 @@ https://tour.golang.org/
 # Установка Go
 
 <b>Getting Started</b></br>
-https://golang.org/doc/install<br><br>
+https://go.dev/doc/install<br><br>
 
 <b>Downloads</b><br>
-https://golang.org/dl/<br><br>
+https://go.dev/dl/<br><br>
 
 Проще всего через `apt-get`
 ```
@@ -92,7 +91,7 @@ sudo ln -s /usr/local/go/bin/go /usr/bin/go
 
 # Несколько версий Golang
 
-https://golang.org/doc/manage-install
+https://go.dev/doc/manage-install
 
 ---
 
@@ -297,43 +296,6 @@ $ go mod tidy
 
 ---
 
-# Работа в «безмодульном» GOPATH-режиме
-
-Для работы в парадигме `GOPATH` нужно:
-* Создать *публичный* проект `github.com/username/projectname`
-* Скачать проект в `GOPATH` с помощью `go get github.com/username/projectname/...`
-* Изменять, компилировать, и комитить проект из `$GOPATH/src/github.com/username/projectname`
-
-Плюсы:
-* Простота. Плоская структура
-* Отсутствие версий (?) (master должен быть стабилен).
-
-Минусы:
-* Отсутствие версий (!)
-* Иногда в проекте не только Go-код.
-* Неудобно для корпоративных и других непубличных проектов.
-
-### **В Go 1.17 планировали убрать поддержку GOPATH-режима.**
-https://go.dev/blog/go116-module-changes
-
----
-
-# Как понять, я в режиме модуля или GOPATH?
-
-[Читаем вики по модулям](https://github.com/golang/go/wiki/Modules#when-do-i-get-old-behavior-vs-new-module-based-behavior)
-<br><br><br>
-
-- Внутри GOPATH — модули игнорируются (старое поведение)
-
-- Вне GOPATH — если рядом лежит go.mod, то модули «включаются»
-
-- Переменная окружения `GO111MODULE`:
-	- auto / unset — применяются правила выше
-	- on — форсируем использование модулей внезависимости от директории
-	- off — форсируем игнорирование модулей внезависимости от директории и go.mod
-
----
-
 # Утилиты
 
 .main-image[
@@ -352,7 +314,7 @@ go run ./path/to/your/snippet.go
 
 Удобно для проверки кода и синтаксиса.<br><br>
 
-Так же можно использовать Go PlayGround: [https://play.golang.org/p/Fz3j-hbcocv](https://play.golang.org/p/Fz3j-hbcocv)
+Так же можно использовать Go PlayGround: https://go.dev/play/p/Fz3j-hbcocv
 
 ---
 
@@ -550,6 +512,14 @@ $ echo $?
 
 ---
 
+# Работа с golangic-lint
+
+https://gist.github.com/kulti/25f9243939e699428f7e14c5a3c8c32c
+
+https://www.youtube.com/watch?v=QnG8z-JWfEY - Демо урок
+
+---
+
 # Как сдавать домашние задания?
 
 https://github.com/OtusGolang/home_work/wiki/[Студентам]-Процесс-сдачи-ДЗ
@@ -578,7 +548,7 @@ https://github.com/OtusGolang/home_work/wiki/[Студентам]-Процесс
 <br>
 <br>
 
-## 7 сентября, вторник
+## 3 марта, четверг
 
 ---
 

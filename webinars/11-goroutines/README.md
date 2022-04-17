@@ -165,6 +165,8 @@ func main() {
 
 https://goplay.tools/snippet/8is1y5tu-m3
 
+https://go.dev/play/p/8is1y5tu-m3
+
 ---
 
 # Что напечатает программа?
@@ -176,6 +178,8 @@ func main() {
 ```
 
 https://goplay.tools/snippet/SBO2dnLQPue
+
+https://go.dev/play/p/SBO2dnLQPue
 
 ---
 
@@ -191,6 +195,8 @@ time.Sleep(2 * time.Second)
 ```
 
 https://goplay.tools/snippet/rSKy5YetcJS
+
+https://go.dev/play/p/rSKy5YetcJS
 
 ---
 
@@ -337,6 +343,8 @@ ch := make(chan int, ?)
 
 https://goplay.tools/snippet/K4bxk92rF3q
 
+https://go.dev/play/p/K4bxk92rF3q
+
 ---
 
 # Синхронизация горутин каналами
@@ -365,6 +373,8 @@ func main() {
 
 https://goplay.tools/snippet/TeLXxeAP0D6
 
+https://go.dev/play/p/TeLXxeAP0D6
+
 ---
 
 # Синхронизация горутин каналами
@@ -384,12 +394,14 @@ func main() {
 
 https://goplay.tools/snippet/TeLXxeAP0D6
 
+https://go.dev/play/p/TeLXxeAP0D6
+
 ---
 
 # Чтение из канала, пока он не закрыт
 
 ```
-v, ok := <-ch // значение и флаг «могут ли еще появиться значения»
+v, ok := <-ch // значение и флаг «в v значение из канала»
 ```
 
 ---
@@ -473,6 +485,8 @@ func main() {
 
 https://goplay.tools/snippet/t6bVfgg6BTu
 
+https://go.dev/play/p/t6bVfgg6BTu
+
 ---
 
 # Каналы: мультиплексирование
@@ -504,6 +518,8 @@ case <-timer.C:
 
 https://goplay.tools/snippet/40A5bnJQiAk
 
+https://go.dev/play/p/40A5bnJQiAk
+
 ---
 
 
@@ -524,6 +540,8 @@ for {
 ```
 
 https://goplay.tools/snippet/E2wyvzdXYIS
+
+https://go.dev/play/p/E2wyvzdXYIS
 
 ---
 # Каналы: как сигналы
@@ -622,7 +640,7 @@ for {
 <br>
 <br>
 
-## 28 декабря, вторник
+## 14 апреля, четверг
 
 ---
 

@@ -714,7 +714,7 @@ OpenAPI, изначально известное как Swagger это DSL (Doma
 * [en] [Классный урок про использование контекста](https://github.com/campoy/justforfunc/tree/master/09-context)
 * [ru] [Доклад про использование GraphQL в Go](https://youtu.be/tv8muwgj-Y4)
 * [en] [Про дизайн клиента и middleware](https://youtu.be/SlhG7bCRA6Q)
-* [en] [Про вредность роутеров](https://blog.merovius.de/2017/06/18/how-not-to-use-an-http-router.html)
+* [en] [Про вредность роутеров](https://blog.merovius.de/posts/2017-06-18-how-not-to-use-an-http-router/)
 
 ---
 

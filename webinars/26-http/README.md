@@ -1,14 +1,14 @@
-.center.icon[![otus main](img/main.png)]
+.center.icon[![otus main](../img/main.png)]
 
 ---
 
 class: top white
-background-image: url(img/sound.svg)
+background-image: url(../img/check.svg)
 background-size: 130%
-.top.icon[![otus main](img/logo.png)]
+.top.icon[![otus main](../img/logo.png)]
 
 .sound-top[
-	# Как меня слышно и видно?
+  # Как меня слышно и видно?
 ]
 
 .sound-bottom[
@@ -19,12 +19,13 @@ background-size: 130%
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Протокол HTTP
 
 ### Алексей Бакин
+
 ---
 
 # Как проходит занятие
@@ -181,6 +182,8 @@ http://site.ru/search?query=...&limit=...
 
 https://goplay.space/#QHza-h5jNm2
 
+https://go.dev/play/p/QHza-h5jNm2
+
 ---
 
 # HTTP клиент
@@ -194,8 +197,7 @@ https://goplay.space/#QHza-h5jNm2
 	}
 ```
 
-https://golang.org/pkg/net/http/#Client
-
+https://pkg.go.dev/net/http#Client
 
 ---
 
@@ -229,22 +231,40 @@ type AddRequest struct {
 # HTTP клиент - работа с ответом
 
 ```go
-	resp, err := client.Do(req)
-	if err != nil {
-		return errors.Errorf(err)
-	}
-	defer resp.Body.Close()
+resp, err := client.Do(req)
+if err != nil {
+	return fmt.Errorf("do request: %w", err)
+}
+defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		return errors.Errorf("unexpected http status: %s", resp.Status)
-	}
+if resp.StatusCode != 200 {
+	return fmt.Errorf("%w: %s", errUnexpectedHTTPStatus, resp.Status)
+}
 
-	ct := resp.Header.Get("Content-Type")
-	if ct != "application/json" {
-		return errors.Errorf("unexpected content-type: %s", ct)
-	}
+ct := resp.Header.Get("Content-Type")
+if ct != "application/json" {
+	return fmt.Errorf("%w: %s", errUnexpectedContentType, ct)
+}
 
-	body, err := ioutil.ReadAll(resp.Body)
+body, err := ioutil.ReadAll(resp.Body)
+```
+
+---
+
+# HTTP клиент - context
+
+Создать новый реквест:
+```go
+req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://site.ru/some_api", nil)
+```
+
+Обогатить существующий:
+```go
+req = req.WithContext(ctx)
+
+resp, err := h.client.Do(req)
+
+// ...
 ```
 
 ---
@@ -252,41 +272,27 @@ type AddRequest struct {
 # HTTP клиент - context
 
 ```go
-	req, _ := http.NewRequest(http.MethodGet, "https://site.ru/some_api", nil)
+ctx := context.Background()
+ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+defer cancel()
 
-	req = req.WithContext(ctx)
+req = req.WithContext(ctx)
 
-	resp, err := h.client.Do(req)
-
-	// ...
-```
-
----
-
-# HTTP клиент - context
-
-```go
-	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
-	defer cancel()
-
-	req = req.WithContext(ctx)
-
-	resp, err := client.Do(req)
+resp, err := client.Do(req)
 ```
 ---
 
 # HTTP клиент - middleware
 
 ```go
-	tr := http.DefaultTransport
-	tr = NewTraceRoundTripper(tr, tracer)
-	tr = NewRetryRoundTripper(tr, []time.Duration{...})
-	tr = NewBackupRoundTripper(tr, hostnames)
+tr := http.DefaultTransport
+tr = NewTraceRoundTripper(tr, tracer)
+tr = NewRetryRoundTripper(tr, []time.Duration{...})
+tr = NewBackupRoundTripper(tr, hostnames)
 
-	client := http.Client{
-		Transport: tr,
-	}
+client := http.Client{
+	Transport: tr,
+}
 ```
 
 ---
@@ -468,11 +474,6 @@ func main() {
 }
 
 ```
----
-
-# Шутка про роутеры :)
-
-[dayssincelastgohttprouter.com](http://dayssincelastgohttprouter.com)
 
 ---
 
@@ -508,10 +509,10 @@ func main() {
 
 .big-list[
 * Авторизация
-* Проверка доступа
+* Rate Limit
 * Логирование
+* Трассировка
 * Сжатие ответа
-* Трассировка запросов в микросервисах
 ]
 
 ---
@@ -622,7 +623,7 @@ func authorize(h http.HandlerFunc, timeout time.Duration) http.HandlerFunc {
 
 # Тестирование - пакет net/http/httptest
 
-Тестирование http вызовов на другой сервиса
+Тестирование http вызовов на другой сервис
 
 ```go
 	serviceHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -714,7 +715,21 @@ OpenAPI, изначально известное как Swagger это DSL (Doma
 * [en] [Классный урок про использование контекста](https://github.com/campoy/justforfunc/tree/master/09-context)
 * [ru] [Доклад про использование GraphQL в Go](https://youtu.be/tv8muwgj-Y4)
 * [en] [Про дизайн клиента и middleware](https://youtu.be/SlhG7bCRA6Q)
-* [en] [Про вредность роутеров](https://blog.merovius.de/posts/2017-06-18-how-not-to-use-an-http-router/)
+* [en] [Про ненужность сторонних роутеров](https://blog.merovius.de/posts/2017-06-18-how-not-to-use-an-http-router/)
+
+---
+
+# Опрос
+
+.left-text[
+Заполните пожалуйста опрос
+<br><br>
+Ссылка в чате.
+]
+
+.right-image[
+![](../img/gopher_boat.png)
+]
 
 ---
 
@@ -726,26 +741,12 @@ OpenAPI, изначально известное как Swagger это DSL (Doma
 <br>
 <br>
 
-## 3 сентября, четверг
-
----
-
-# Опрос
-
-.left-code[
-Заполните пожалуйста опрос.
-<br><br>
-Ссылка в чате.
-]
-
-.right-image[
-![](img/gopher7.png)
-]
+## 21 июня, вторник
 
 ---
 
 class: white
-background-image: url(img/message.svg)
-.top.icon[![otus main](img/logo.png)]
+background-image: url(../img/message.svg)
+.top.icon[![otus main](../img/logo.png)]
 
 # Спасибо за внимание!

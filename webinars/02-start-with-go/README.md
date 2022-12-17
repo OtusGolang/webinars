@@ -237,7 +237,7 @@ go: finding golang.org/x/net latest
 $ cat go.mod
 module github.com/mialinx/foobar
 
-go 1.16
+go 1.19
 
 require (
 	github.com/beevik/ntp v0.2.0 // indirect

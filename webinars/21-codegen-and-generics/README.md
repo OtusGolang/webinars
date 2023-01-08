@@ -24,9 +24,9 @@ class: white
 background-image: url(img/message.svg)
 .top.icon[![otus main](img/logo.png)]
 
-# Кодогенерация в Go
+# Кодогенерация и дженерики в Go
 
-### Алексей Бакин
+### Владимир Балун
 
 ---
 
@@ -43,6 +43,7 @@ background-image: url(img/message.svg)
 * ### Поговорим о кодогенерации
 * ### Посмотрим, где она может нам помочь
 * ### Посмотрим на Protocol Buffers
+* ### Посмотрим на Generics
 
 ---
 
@@ -60,10 +61,10 @@ background-image: url(img/message.svg)
 
 # Зачем нужна кодогененрация
 
-* ### Генерировать код по метаописанию.
-* ### Генерировать заглушки для интерфейсов.
-* ### Генерировать обобщенный код.
-* ### Встраивать данные в код.
+* ### Генерировать код по метаописанию (swagger, protobuf, ...)
+* ### Генерировать обобщенный код (до Go 1.18)
+* ### Генерировать заглушки для интерфейсов
+* ### Встраивать данные в код
 
 <br><br>
 Пример в стандартной библиотеке:<br>
@@ -172,10 +173,10 @@ go-bindata -o myfile.go data/
 
 
 ```
-	b, err := Asset("pic1.jpg")
-	if err != nil {
-		log.Fatalf("unable to get template: %v", err)
-	}
+b, err := Asset("pic1.jpg")
+if err != nil {
+	log.Fatalf("unable to get template: %v", err)
+}
 ```
 
 Примеры:
@@ -356,7 +357,7 @@ slow compilers and bloated binaries, or slow execution times?
 
 ---
 
-# Generics: какие есть варианты?
+# Generics: какие есть варианты до Go 1.18?
 
 
 - copy & paste (см. пакеты strings and bytes)
@@ -373,11 +374,10 @@ type Interface interface {
 - type assertions
 - рефлексия
 - go generate
-- https://www.google.com/search?q=go+generics+gif
 
 ---
 
-# Generics!
+# Generics до Go 1.18
 
 ```
 go get github.com/cheekybits/genny
@@ -397,9 +397,190 @@ type ValueType generic.Type
 
 пишем обычный код:
 
+---
+
+# Generics после Go 1.18
+
 ```
-func SetValueTypeForKeyType(key KeyType, value ValueType) { /* ... */ }
+func existsInSlice[T comparable](val T, values []T) bool {
+	for _, v := range values {
+		if val == v {
+			return true
+		}
+	}
+
+	return false
+}
+
+func main() {
+	result := existsInSlice[int](10, []int{9, 10, 11})
+	fmt.Println(result)
+}
 ```
+
+https://go.dev/play/p/IcZKGVLboVk
+
+---
+
+# Констрейты (ограничения типов)
+
+У каждого параметра-типа обязательно указывается ограничение типа. 
+Констрейт - это интерфейс, который описывает, каким может быть тип. 
+Этот интерфейс может быть обычным go-интерфейсом:
+
+```
+type OwnConstraint interface {
+	String() string
+}
+```
+
+А может быть интерфейсом, перечисляющим полный список типов, для которых он может быть использован, 
+а **использован он может быть только внутри дженериков:**
+
+```
+type OwnConstraint interface {
+	int | int8 | int16 | int32 | int64
+}
+```
+
+```
+type OwnConstraint interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+```
+
+---
+
+# Мешать их нельзя
+
+```
+type OwnConstraintWithMethods interface {
+	String() string
+}
+
+type OwnConstraint interface {
+	int | int8 | int16 | int32 | int64 | OwnConstraintWithMethods
+}
+```
+
+```
+cannot use main.OwnConstraintWithMethods in union (main.OwnConstraintWithMethods contains methods)
+```
+
+---
+
+# Готовые констрейнты
+
+```
+// any is an alias for interface{} and is equivalent to interface{} in all ways.
+type any = interface{}
+
+// comparable is an interface that is implemented by all comparable types
+// (booleans, numbers, strings, pointers, channels, arrays of comparable types,
+// structs whose fields are all comparable types).
+// The comparable interface may only be used as a type parameter constraint,
+// not as the type of a variable.
+type comparable interface{ comparable }
+```
+
+https://pkg.go.dev/golang.org/x/exp/constraints
+
+```
+type Complex
+type Float
+type Integer
+type Ordered
+type Signed
+type Unsigned
+```
+
+---
+
+# Cтруктуры
+
+```
+type ListNode[T any] struct {
+	value T
+	next  *ListNode[T]
+}
+
+type List[T any] struct {
+	head *ListNode[T]
+}
+
+func (l *List[T]) Push(value T) {
+	l.head = &ListNode[T]{value, l.head}
+}
+
+func (l *List[T]) Pop() T {
+	if l.head == nil {
+		panic("list is empty")
+	}
+
+	value := l.head.value
+	l.head = l.head.next
+	return value
+}
+```
+
+https://go.dev/play/p/60EyJgE6nYl
+
+---
+
+#  Не все так хорошо с методами, к сожалению...
+
+```
+type Data[T1, T2 any] struct {
+	value1 T1
+	value2 T2
+}
+
+func (l *Data[T1, T2]) Print() {
+	fmt.Println(l.value1, l.value2)
+}
+
+func (l *Data[T1, T2]) PrintWith[T any](value T) {
+	fmt.Println(l.value1, l.value2, value)
+}
+
+func main() {
+	d := Data[int, float32]{}
+	d.Print()
+}
+```
+
+https://go.dev/play/p/4ooRw0u1w8S
+
+```
+syntax error: method must have no type parameters
+```
+
+---
+
+#  Но хоть можно так
+
+```
+type Data[T1, T2 any] struct {
+	value1 T1
+	value2 T2
+}
+
+func (l *Data[T1, T2]) Print() {
+	fmt.Println(l.value1, l.value2)
+}
+
+func PrintWith[T1, T2, T any](d *Data[T1, T2], value T) {
+	fmt.Println(d.value1, d.value2, value)
+}
+
+func main() {
+	d := Data[int, float32]{}
+	PrintWith[int, float32, string](&d, "test")
+	d.Print()
+}
+```
+
+https://go.dev/play/p/GKtb9K0rPVq
 
 ---
 
@@ -440,8 +621,7 @@ go help build
 - генерация структур из JSON: github.com/ChimeraCoder/gojson/gojson
 - easyjson для быстрой работы с JSON
 - моки интерфейсов: github.com/josharian/impl
-
-- generics при помощи кодогенерации
+- generics до и после Go 1.18
 
 больше примеров для вдохновения:
 
@@ -510,11 +690,12 @@ message Address {
 https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.4
 ```
 $ protoc --version
-libprotoc 3.12.4
+libprotoc 3.21.12
 ```
 
 <br>
 2) Ставим генератор Go-кода
+
 ```
 $ go install google.golang.org/cmd/protoc-gen-go
 $ protoc-gen-go --version
@@ -571,23 +752,25 @@ func (*Foo) ProtoMessage()    {}
 # Protocol buffers: запись и чтение
 
 ```
-	course := &myotus.Course{
-		Title:   "Golang",
-		Teacher: []*myotus.Teacher{{Name: "Dmitry Smal", Id: 1},
-								   {Name: "Alexander Davydov", Id: 2}},
-	}
+course := &myotus.Course{
+	Title:   "Golang",
+	Teacher: []*myotus.Teacher{
+		{Name: "Dmitry Smal", Id: 1}, 
+		{Name: "Alexander Davydov", Id: 2}
+	},
+}
 
-	out, err := proto.Marshal(course)
-	if err != nil {
-		log.Fatalln("Failed to encode", err)
-	}
+out, err := proto.Marshal(course)
+if err != nil {
+	log.Fatalln("Failed to encode", err)
+}
 ```
 
 ```
-	otusdb := &myotus.Otus{}
-	if err := proto.Unmarshal(in, otusdb); err != nil {
-		log.Fatalln("Failed to parse otus database:", err)
-	}
+otusdb := &myotus.Otus{}
+if err := proto.Unmarshal(in, otusdb); err != nil {
+	log.Fatalln("Failed to parse otus database:", err)
+}
 ```
 
 
@@ -614,6 +797,7 @@ enum Corpus {
     UNIVERSAL = 0;
     WEB = 1;
     IMAGES = 2;
+}
 ```
 
 Maps:

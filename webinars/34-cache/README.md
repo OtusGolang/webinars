@@ -350,6 +350,10 @@ background-image: url(img/message.svg)
 * Когда основная нагрузка приходится на несколько горячих ключей. 
 Разместив их в in-memory кэше можно избежать ассиметричных нагрузок на шарды внешнего кэша.
 
+<br>
+<br>
+! **Sticky-session** может повысить эффективность локального кэширования, так как запросы клиентов будут попадать на одни те же самые инстансы сервисов.
+
 ---
 # Внешнее кэширование
 
@@ -774,7 +778,7 @@ https://www.usenix.org/legacy/event/usenix01/full_papers/zhou/zhou.pdf
 ### etcd: https://etcd.io/
 ### hazelcast: https://hazelcast.com/
 
-Ещё больше сравнение характеристик 
+Ещё больше сравнений характеристик 
 https://db-engines.com/en/system/Couchbase%3BHazelcast%3BMemcached%3BRedis%3Betcd
 
 <br>

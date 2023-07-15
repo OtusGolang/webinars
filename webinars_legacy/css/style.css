@@ -25,14 +25,13 @@ ul {
 }
 
 body {
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
 }
 
 .remark-slide-content {
   padding: 3em 2em 1em 2em;
   vertical-align: middle;
   /* default middle class */
-  background-image: url("../img/bg.svg");
 }
 
 h1,
@@ -48,8 +47,7 @@ h3 {
 }
 
 h1 {
-  font-weight: bolder;
-  font-size: 34px !important;
+  font-size: 48px !important;
 }
 
 h2 {
@@ -103,52 +101,42 @@ li li {
   margin-block-start: 0.5em;
 }
 
-/* topic */
-.topic {
-  position: absolute;
-  top: 135px;
-  left: 56px;
-  font-weight: 900;
-  font-size: 48px;
-}
-
-.tutor {
-  position: absolute;
-  top: 370px;
-  left: 300px;
-  font-size: 24px;
-  font-weight: 900;
-}
-
-.tutor_desc {
-  position: absolute;
-  top: 410px;
-  left: 300px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-/* slide title */
+/* title */
 
 .remark-slide-content {
-  background-size: 100%
+background-size: 100%
 }
 
 .remark-slide-content>h1:first-child {
   position: absolute;
   width: 100%;
   top: 1em;
-  left: 1em;
+  left: 0;
   vertical-align: middle;
+  font-size: 30px !important;
   padding-left: 1em;
   display: inline;
+  background-image: url(../img/logodark.png);
+  background-position: center right 2em;
+  background-repeat: no-repeat;
+  background-size: 100px 24px;
 }
 
-.remark-slide-number {
-  bottom: 12px;
-  opacity: .5;
+.title .top.icon img {
+  position: initial;
+  float: right;
+  padding-right: 1em;
+  padding-top: 6px;
+}
+
+.remark-slide-content>h1:first-child::after {
+  height: 1px;
+  background-color: rgb(210, 220, 230);
+  content: " ";
   position: absolute;
-  left: 20px;
+  top: 60px;
+  left: 0;
+  width: 100%;
 }
 
 .remark-slide-content>h1:first-child p {
@@ -273,12 +261,6 @@ table img {
   width: 50%
 }
 
-.threefour-image img {
-  display: block;
-  margin: auto;
-  width: 75%
-}
-
 .full-image img {
   width: 100%
 }
@@ -287,22 +269,4 @@ table img {
 
 #semantic-versioning~table th {
   text-align: left;
-}
-
-/* announce */
-.announce_date {
-  position: absolute;
-  top: 211px;
-  left: 192px;
-  font-weight: 300;
-  color: orange;
-  font-size: 20px;
-}
-
-.announce_topic {
-  position: absolute;
-  top: 240px;
-  left: 192px;
-  font-weight: 900;
-  font-size: 24px;
 }

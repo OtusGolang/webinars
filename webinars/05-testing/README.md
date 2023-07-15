@@ -55,7 +55,7 @@ background-image: url(../img/rules.svg)
 
 ---
 
-# Знакомтесь, тест в Go
+# Знакомтьесь, тест в Go
 
 ```
 strings_test.go // <-- ..._test.go

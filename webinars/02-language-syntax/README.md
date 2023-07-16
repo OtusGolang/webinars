@@ -9,7 +9,7 @@ background-image: url(../img/topic.svg)
 
 .topic[Синтаксис языка]
 .tutor[Алексей Семушкин]
-.tutor_desc[Software engineer at Semrush]
+.tutor_desc[Software Engineer at Semrush]
 ---
 
 background-image: url(../img/rules.svg)
@@ -735,4 +735,4 @@ background-image: url(../img/next_webinar.svg)
 background-image: url(../img/thanks.svg)
 
 .tutor[Алексей Семушкин]
-.tutor_desc[Software engineer at Semrush]
+.tutor_desc[Software Engineer at Semrush]

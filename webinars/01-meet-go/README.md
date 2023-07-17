@@ -274,6 +274,18 @@ $ go mod tidy
 
 ---
 
+# Go Workspaces
+
+### Workspaces появились в Go 1.18 и позволяют одновременно работать с несколькими модулями. 
+
+- `go work init`
+- `go work use`
+- `go work replace`
+
+https://go.dev/blog/get-familiar-with-workspaces
+
+---
+
 # Утилиты
 
 .main-image[

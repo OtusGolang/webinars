@@ -7,9 +7,9 @@ background-image: url(../../img/rec.svg)
 ---
 background-image: url(../../img/topic.svg)
 
-.topic[Тема]
-.tutor[Лектор]
-.tutor_desc[Должность]
+.topic[Переменные и элементарные типы данных]
+.tutor[Алексей Романовский]
+.tutor_desc[software developer @ Resolver]
 
 ---
 
@@ -136,30 +136,30 @@ https://golang.org/ref/spec#Types
 
 
 Целые числа:
-```
-* 2: 0b1111
-* 8: 017, 0o17, 0O17
-* 10: 19
-* 16: 0xF, 0XF 
-```
+
+* 2: `0b1111`
+* 8: `017`, `0o17`, `0O17`
+* 10: `19`
+* 16: `0xF`, `0XF` 
+
 Дробные:
-```
-* 1.23, 01.239, .23
-* 1.23e+2, 1.23e-2, 1.23e2
-* 0x1p2
-```
+
+* `1.23`, `01.239`, `.23`
+* `1.23e+2`, `1.23e-2`, `1.23e2`
+* `0x1p2`
+
 
 ---
 # Литералы
 
-В числах можно использовать подчеркивания: 100_000_000
+В числах можно использовать подчеркивания: `100_000_000`
 
 Другое:
-```
-* bool
-* complex: 5+6.7i
-* руны: 'a', '\n', '\u9333'
-```
+
+* `bool`
+* complex: `5+6.7i`
+* руны: `'a', '\n', '\u9333'`
+
 
 ---
 
@@ -204,7 +204,7 @@ s := `hello
 
 Все так же стандартно
 
-```
+```go
 +    sum                    integers, floats, complex values, strings
 -    difference             integers, floats, complex values
 *    product                integers, floats, complex values
@@ -259,14 +259,16 @@ https://goplay.space/#s-LG0fjQxmV
 Если вы не указали значение - оно будет нулевым.
 У каждого типа есть свое нулевое значение.
 
-0, 0.0, "", false, nil, {...}
+
+
+`0, 0.0, "", false, nil, {...}`
 
 
 ---
 
 # Приведение типов
 
-https://go.dev/play/p/dd1SWESaeBu
+### https://go.dev/play/p/dd1SWESaeBu
 
 * неявные, явные
 * приведение Т(х)
@@ -275,6 +277,7 @@ https://go.dev/play/p/dd1SWESaeBu
 * в строки
 * алиасы
 
+См также:
 * [Integer Overflow in Golang (Medium.com)](https://medium.com/@griffinish/integer-overflow-in-golang-9e13e274c8a5)
 * [Conversions: complete list](https://yourbasic.org/golang/conversions/)
 
@@ -283,7 +286,7 @@ https://go.dev/play/p/dd1SWESaeBu
 # Константы
 
 * Константы - неизменяемые значения, доступные только во время компиляции.
-* Только rune, string, bool и числа.
+* Только `rune`, `string`, `bool` и числа.
 
 ```go
 const PI = 3             // принимает подходящий тип
@@ -346,11 +349,15 @@ background-image: url(../../img/poll.svg)
 ---
 
 background-image: url(../../img/next_webinar.svg)
-.announce_date[1 января]
-.announce_topic[Тема следующего вебинара]
+.announce_date[23 августа]
+.announce_topic[Управляющие конструкции языка и отладка программ]
+
 
 ---
 background-image: url(../../img/thanks.svg)
 
-.tutor[Лектор]
-.tutor_desc[Должность]
+
+.announce_date[Ссылка на опрос:]
+.announce_topic[https://otus.ru/polls/70293/]
+.tutor[Алексей Романовский]
+.tutor_desc[Преподаватель]

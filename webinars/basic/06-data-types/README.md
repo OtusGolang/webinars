@@ -16,11 +16,15 @@ background-image: url(../../img/topic.svg)
 background-image: url(../../img/rules.svg)
 
 ---
-Цели занятия
-* познакомиться с системой типов Go;
-* научиться работать с переменными и указателями;
+# Цели занятия
 
-Краткое содержание
+* познакомиться с системой типов Go;
+* научиться работать с переменными и указателями.
+
+-- 
+
+# Краткое содержание
+
 * различные системы счисления;
 * типизация в Go;
 * объявление переменной;
@@ -29,7 +33,8 @@ background-image: url(../../img/rules.svg)
 * указатели;
 * расположения переменных в памяти;
 * понятие "zero value";
-* приведение типов
+* приведение типов;
+* константы.
 
 
 ---
@@ -38,6 +43,11 @@ background-image: url(../../img/rules.svg)
 Считаем до 100!
 * в бинарной системе счисления
 * в троичной
+
+Часто используемые системы счисления:
+* двоичная (бинарная)
+* десятичная
+* шестнадцатеричная
 
 ---
 # типизация в Go;
@@ -62,6 +72,31 @@ func Answer() int {
 func main() {
   var i int = 10
   j := i  // короткое объявление, только внутри функций
+}
+```
+
+---
+
+# группировка объявлений;
+
+```go
+type (
+	MyId   int
+	UserId string
+)
+
+var (
+	a int    = 4
+	b        = 1.2
+	c UserId = "admin"
+)
+
+func foo() {
+	var (
+		ctx = context.Background()
+		rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
+	)
+	// ...
 }
 ```
 ---
@@ -100,6 +135,8 @@ https://golang.org/ref/spec#Types
 
 # Литералы
 
+### https://go.dev/play/p/BocJQjJY0sP
+
 Целые числа:
 * 2: 0b1111
 * 8: 017, 0o17, 0O17
@@ -120,6 +157,8 @@ https://golang.org/ref/spec#Types
 ---
 
 # Строковые литералы
+
+### https://go.dev/play/p/BocJQjJY0sP
 
 строки:
 ```
@@ -197,6 +236,8 @@ https://goplay.space/#s-LG0fjQxmV
 
 # расположения переменных в памяти;
 
+### https://go.dev/play/p/MZ3WUsAgVRY
+
 * переменная - именованная область в памяти
 * размер области зависит от типа
 * big endian, little endian
@@ -252,6 +293,8 @@ const (
 )
 
 ```
+
+### https://go.dev/play/p/w8mTXMI1AH2
 
 ---
 

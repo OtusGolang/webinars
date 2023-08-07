@@ -197,7 +197,18 @@ s := `hello
 * `:=`
 * `+=, -=, *=, /=, %=, <<=, >>=, &=, |=, ^=`
 
+```go
+	var n int
+	if true {
+		n, err := fmt.Println("Hello World") // Hello World
+		if err != nil {
+			fmt.Println("Error: ", n, err)
+		}
+		fmt.Println("Success:", n) // Success: 12
+	}
+	fmt.Println(n) // 0. Почему?
 
+```
 ---
 
 # Арифметические операции

@@ -1,3 +1,6 @@
 .idea/
 *.pdf
 
+.vscode
+
+.DS_Store

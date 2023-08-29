@@ -359,7 +359,7 @@ func main() {
 
 Выбор библиотеки
 * https://go.libhunt.com/categories/504-logging
-* [Slog in go 1.21](https://go.dev/blog/slog)
+* [Slog in go 1.21](https://go.dev/blog/slog) - похоже, это станет стандартом
 
 Рассмотрим пример проекта
 "go.uber.org/zap"

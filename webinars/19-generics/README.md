@@ -42,9 +42,64 @@ background-image: url(../img/rules.svg)
 
 ---
 
-# Как работают дженерики
+# Функция без дженериков
 
-- 
+```
+
+func IMax(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+func SMax(a, b string) string {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+```
+
+---
+
+# Функция с дженериком
+
+```
+func GMax[T interface{ string | int }](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+https://go.dev/play/p/xKo8N-LwcOJ
+
+---
+
+# Дженерики как метатипы
+
+```
+type Numbers interface {
+	int | int32 | int64 | float64
+}
+
+func NMax[T Numbers](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+---
+
+# Стандартные метатипы
+
+- any (alias: interface{})
+- ordered
 
 ---
 

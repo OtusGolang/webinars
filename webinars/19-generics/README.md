@@ -33,6 +33,14 @@ background-image: url(../img/rules.svg)
 
 ---
 
+# Дженерики в Golang
+
+- Появились в go1.18
+- Продолжают развиваться
+- Примеры актуальны для go1.21
+
+---
+
 # Особенности дженериков
 
 - Влияют на время компиляции
@@ -96,10 +104,48 @@ func NMax[T Numbers](a, b T) T {
 
 ---
 
+# Производные типы и дженерики
+
+```
+type Numbers interface {
+	int
+}
+
+func NMax[T Numbers](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+```go
+type Price int
+NMax(Price(2), Price(3))
+```
+
+https://go.dev/play/p/-lFCCr64Gsf
+
+---
+
+
+# Производные типы и дженерики
+
+```
+type Numbers interface {
+	~int
+}
+```
+
+https://go.dev/play/p/1tZ81nrFX_U
+
+---
+
 # Стандартные метатипы
 
 - any (alias: interface{})
-- ordered
+- comparable (для hash-map)
+- cmp.Ordered
 
 ---
 

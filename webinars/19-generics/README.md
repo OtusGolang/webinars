@@ -102,9 +102,30 @@ func NMax[T Numbers](a, b T) T {
 }
 ```
 
+
 ---
+# Конвертация c дженериками
+
+```go
+func ConvertMap[K comparable, FROM, TO Numbers](in map[K]FROM) map[K]TO {
+    nMap := make(map[K]TO, len(in))
+    for k, v := range in {
+        nMap[k] = TO(v)
+    }
+    return nMap
+}
+```
+
+Пример использования
+```go
+convert := ConvertMap[string, float64, int64]
+newMap := convert(oldMap)
+```
+
+https://go.dev/play/p/fHTlRuhkgPL
 
 
+---
 
 # Констрейты (ограничения типов)
 
@@ -268,21 +289,6 @@ NMax(Price(2), Price(3))
 ```
 
 https://go.dev/play/p/1tZ81nrFX_U
-
----
-# Конвертация c дженериками
-
-```go
-func ConvertMap[K comparable, FROM, TO Numbers](in map[K]FROM) map[K]TO {
-    nMap := make(map[K]TO, len(in))
-    for k, v := range in {
-        nMap[k] = TO(v)
-    }
-    return nMap
-}
-```
-
-https://go.dev/play/p/0SGYHbGxVIh
 
 
 ---

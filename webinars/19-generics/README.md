@@ -87,7 +87,7 @@ https://go.dev/play/p/xKo8N-LwcOJ
 
 ---
 
-# Дженерики как метатипы
+# Функция с дженериком
 
 ```
 type Numbers interface {
@@ -104,7 +104,124 @@ func NMax[T Numbers](a, b T) T {
 
 ---
 
-# Производные типы и дженерики
+
+
+# Констрейты (ограничения типов)
+
+У каждого параметра-типа обязательно указывается ограничение типа.
+Констрейт - это интерфейс, который описывает, каким может быть тип.
+Этот интерфейс может быть обычным go-интерфейсом:
+
+```
+type OwnConstraint interface {
+	String() string
+}
+```
+
+А может быть интерфейсом, перечисляющим полный список типов, для которых он может быть использован,
+а **использован он может быть только внутри дженериков:**
+
+```
+type OwnConstraint interface {
+	int | int8 | int16 | int32 | int64
+}
+```
+
+```
+type OwnConstraint interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+```
+
+---
+
+# Мешать их нельзя
+
+```
+type OwnConstraintWithMethods interface {
+	String() string
+}
+
+type OwnConstraint interface {
+	int | int8 | int16 | int32 | int64 | OwnConstraintWithMethods
+}
+```
+
+```
+cannot use main.OwnConstraintWithMethods in union (main.OwnConstraintWithMethods contains methods)
+```
+
+---
+
+# Build-in констрейнты
+
+```
+// any is an alias for interface{} and is equivalent to interface{} in all ways.
+type any = interface{}
+
+// comparable is an interface that is implemented by all comparable types
+// (booleans, numbers, strings, pointers, channels, arrays of comparable types,
+// structs whose fields are all comparable types).
+// The comparable interface may only be used as a type parameter constraint,
+// not as the type of a variable.
+type comparable interface{ comparable }
+```
+
+---
+
+# Библиотечные готовые констрейнты
+
+
+https://pkg.go.dev/golang.org/x/exp/constraints
+
+```
+type Complex
+type Float
+type Integer
+type Ordered
+type Signed
+type Unsigned
+```
+
+---
+# Библиотечные готовые констрейнты
+
+Как они описаны внутри
+```go
+type Unsigned interface {
+    ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+}
+
+type Signed interface {
+    ~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+
+type Integer interface {
+    Signed | Unsigned
+}
+
+type Ordered interface {
+    Integer | Float | ~string
+}
+
+type Float interface {
+   // Как думаете, как описан констрейнт Float?
+}
+```
+
+---
+
+# Библиотечные готовые констрейнты
+
+```go
+type Float interface {
+	~float32 | ~float64
+}
+```
+
+---
+
+# Производные типы
 
 ```
 type Numbers interface {
@@ -129,23 +246,147 @@ https://go.dev/play/p/-lFCCr64Gsf
 ---
 
 
-# Производные типы и дженерики
+# Производные типы
 
+Заменим тип `int` на `~int`
 ```
 type Numbers interface {
-	~int
+	~int // <===
 }
+
+func NMax[T Numbers](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+```go
+type Price int
+NMax(Price(2), Price(3))
 ```
 
 https://go.dev/play/p/1tZ81nrFX_U
 
 ---
+# Конвертация c дженериками
 
-# Стандартные метатипы
+```go
+func ConvertMap[K comparable, FROM, TO Numbers](in map[K]FROM) map[K]TO {
+    nMap := make(map[K]TO, len(in))
+    for k, v := range in {
+        nMap[k] = TO(v)
+    }
+    return nMap
+}
+```
 
-- any (alias: interface{})
-- comparable (для hash-map)
-- cmp.Ordered
+https://go.dev/play/p/0SGYHbGxVIh
+
+
+---
+
+# Практика
+
+* Напишите констрейнт Number, который в себя будет включать все возможные числа
+* Сделайте так, чтобы функция Double работала со всеми описанными в main случаями
+
+
+https://go.dev/play/p/eCu0G1WvXFd
+
+---
+
+
+# Cтруктуры
+
+```
+type ListNode[T any] struct {
+	value T
+	next  *ListNode[T]
+}
+
+type List[T any] struct {
+	head *ListNode[T]
+}
+
+func (l *List[T]) Push(value T) {
+	l.head = &ListNode[T]{value, l.head}
+}
+
+func (l *List[T]) Pop() T {
+	if l.head == nil {
+		panic("list is empty")
+	}
+
+	value := l.head.value
+	l.head = l.head.next
+	return value
+}
+```
+
+https://go.dev/play/p/60EyJgE6nYl
+
+---
+
+#  Методы
+
+
+Правила работы с методами немного другие
+
+```
+type Data[T1, T2 any] struct {
+	value1 T1
+	value2 T2
+}
+
+func (l *Data[T1, T2]) Print() {
+	fmt.Println(l.value1, l.value2)
+}
+
+func (l *Data[T1, T2]) PrintWith[T any](value T) {
+	fmt.Println(l.value1, l.value2, value)
+}
+
+func main() {
+	d := Data[int, float32]{}
+	d.Print()
+}
+```
+
+https://go.dev/play/p/4ooRw0u1w8S
+
+```
+syntax error: method must have no type parameters
+```
+
+---
+
+#  Дженерики в методах
+
+Типы входных аргументов метода мы тоже обьявляем в структуре
+
+```go
+type Numbers interface {
+	int64 | float64
+}
+
+
+type Summator[S, N Numbers] struct {
+    sum S
+}
+
+func (s *Summator[S, N]) Add(n N) {
+    s.sum += S(n)
+}
+
+func (s *Summator[S, N]) Result() S {
+    return s.sum
+}
+
+```
+
+https://go.dev/play/p/UbJwacICw0a
 
 ---
 

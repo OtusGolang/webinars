@@ -396,6 +396,20 @@ https://go.dev/play/p/UbJwacICw0a
 
 ---
 
+# Подводные камни
+
+```go
+func Scale[E Integer](s []E, c E) []E {
+    r := make([]E, len(s))
+    for i, v := range s {
+        r[i] = v * c
+    }
+    return r
+}
+```
+
+---
+
 background-image: url(../img/questions.svg)
 
 ---

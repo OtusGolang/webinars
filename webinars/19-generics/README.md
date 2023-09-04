@@ -291,15 +291,6 @@ NMax(Price(2), Price(3))
 https://go.dev/play/p/1tZ81nrFX_U
 
 
----
-
-# Практика
-
-* Напишите констрейнт Number, который в себя будет включать все возможные числа
-* Сделайте так, чтобы функция Double работала со всеми описанными в main случаями
-
-
-https://go.dev/play/p/eCu0G1WvXFd
 
 ---
 
@@ -396,7 +387,7 @@ https://go.dev/play/p/UbJwacICw0a
 
 ---
 
-# Подводные камни
+# Работа с типами слайсов
 
 ```go
 func Scale[E Integer](s []E, c E) []E {
@@ -407,6 +398,110 @@ func Scale[E Integer](s []E, c E) []E {
     return r
 }
 ```
+Обратите внимание, `Scale` возвращает тип `[]E`.
+
+---
+
+# Работа с типами слайсов
+
+Сработает ли код?
+```go
+type Point int
+
+type Points []Point
+
+func (p Points) Print() {
+    fmt.Println(p)
+}
+
+func main() {
+    points := Points{1, 2, 3, 4}
+    points.Print()
+    newPoints := Scale(points, 2) // ?
+    newPoints.Print()
+}
+
+```
+https://go.dev/play/p/Rd6b915t8wp
+
+---
+# Работа с типами слайсов
+
+```go
+func Scale[S ~[]E, E Integer](s []E, c E) S {
+    r := make([]E, len(s))
+    for i, v := range s {
+        r[i] = v * c
+    }
+    return r
+}
+```
+Теперь `Scale` возвращает тип `S`.
+
+
+Сработает ли код ниже?
+```go
+points := Points{1, 2, 3, 4}
+points.Print()
+newPoints := Scale[Points](points, 2) 
+newPoints.Print()
+```
+https://go.dev/play/p/1v6hrN7Q_sK
+
+---
+# Работа с типами слайсов
+
+```go
+func Scale[S ~[]E, E Integer](s S, c E) S {
+	r := make([]E, len(s))
+	for i, v := range s {
+		r[i] = v * c
+	}
+	return r
+}
+```
+
+Теперь `Scale` возвращает тип `S` и принимает тип `S`.
+
+Сработает ли код ниже?
+```go
+points := Points{1, 2, 3, 4}
+points.Print()
+newPoints := Scale(points, 2)
+newPoints.Print()
+```
+https://go.dev/play/p/cauzAuQ7bVn
+
+---
+# Полезные библиотеки
+
+`samber/lo` - is a Lodash-style Go library based on Go 1.18+ Generics.
+https://github.com/samber/lo
+
+```go
+names := lo.Uniq[string]([]string{"Samuel", "John", "Samuel"})
+// []string{"Samuel", "John"}
+```
+
+---
+# Полезные библиотеки
+
+Generic Data Structures
+
+https://github.com/zyedidia/generic
+
+Для тех, кому мало массивов, слайсов и хеш-мап.
+Содержит связанные списки, кучи, стеки, деревья и многое другое.
+
+---
+
+# Практика
+
+* Напишите констрейнт Number, который в себя будет включать все возможные числа
+* Сделайте так, чтобы функция Double работала со всеми описанными в main случаями
+
+
+https://go.dev/play/p/eCu0G1WvXFd
 
 ---
 

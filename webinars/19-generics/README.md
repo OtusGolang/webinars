@@ -473,6 +473,34 @@ newPoints.Print()
 https://go.dev/play/p/cauzAuQ7bVn
 
 ---
+
+# Работа с хеш-мапами
+
+Принцип работы с хеш-мапами и с другими сложными типами данных такой же как и со слайсами
+
+```go
+func Scale[M ~map[K]V, K comparable, V Integer](s M, c V) M {
+	r := make(M, len(s))
+	for i, v := range s {
+		r[i] = v * c
+	}
+	return r
+}
+```
+
+```go
+points := Points{
+    "one":  1,
+    "two":  2,
+    "four": 4,
+}
+points.Print()
+newPoints := Scale(points, 2)
+newPoints.Print()
+```
+https://go.dev/play/p/ujOjbJ0-Lts
+
+---
 # Полезные библиотеки
 
 `samber/lo` - is a Lodash-style Go library based on Go 1.18+ Generics.

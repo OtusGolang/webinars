@@ -521,6 +521,16 @@ https://github.com/zyedidia/generic
 Для тех, кому мало массивов, слайсов и хеш-мап.
 Содержит связанные списки, кучи, стеки, деревья и многое другое.
 
+```go
+	tr := trie.New[int]()
+	tr.Put("foo", 1)
+	tr.Put("fo", 2)
+	tr.Put("bar", 3)
+
+	fmt.Println(tr.Contains("f"))
+	fmt.Println(tr.KeysWithPrefix(""))
+	fmt.Println(tr.KeysWithPrefix("f"))
+```
 ---
 
 # Практика

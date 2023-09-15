@@ -216,6 +216,14 @@ type OwnConstraint interface {
 
 ---
 
+# Констрейты (ограничения типов)
+
+.full-image[
+![](img/type-sets.png)
+]
+
+---
+
 # Мешать их нельзя
 
 ```

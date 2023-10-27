@@ -303,14 +303,6 @@ ch := make(chan int, ?)
 
 ---
 
-# Проверьте себя
-
-https://goplay.tools/snippet/K4bxk92rF3q
-
-https://go.dev/play/p/K4bxk92rF3q
-
----
-
 # Синхронизация горутин каналами
 
 ```
@@ -356,9 +348,9 @@ func main() {
 }
 ```
 
-https://goplay.tools/snippet/TeLXxeAP0D6
+https://goplay.tools/snippet/f_KCZZKXwzJ
 
-https://go.dev/play/p/TeLXxeAP0D6
+https://go.dev/play/p/f_KCZZKXwzJ
 
 ---
 
@@ -554,7 +546,12 @@ for {
 			return
 		default:
 	}
+	// work
+}
+```
 
+```
+for {
 	select {
 		case <-quitCh:
 			return

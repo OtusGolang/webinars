@@ -1,0 +1,10 @@
+.image-30 img {
+    width: 30%;
+    display: block;
+    margin: auto;
+}
+.image-80 img {
+    width: 80%;
+    display: block;
+    margin: auto;
+}

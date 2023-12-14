@@ -290,7 +290,7 @@ func ReadAndCalcLen() error {
 
 * Необходимо обернуть, если в функции есть 2 или более мест, возвращающих ошибку.
 * Можно вернуть исходную ошибку, если есть только 1 return.
-* Перед добавлением второго return, рекомендуется bcghfdbnm первый return.
+* Перед добавлением второго return, рекомендуется отрефакторить первый return.
 
 ---
 
@@ -488,10 +488,9 @@ func a() {
 
 ```go
 func b() {
-    defer fmt.Print(0)
-    defer fmt.Print(1)
-    defer fmt.Print(2)
-    defer fmt.Print(3)
+    for i := 0; i < 4; i++ {
+        defer fmt.Print(i)
+    }
 }
 ```
 

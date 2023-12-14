@@ -382,34 +382,34 @@ if err != nil {
 
 # errors.Is & errors.As
 
-* https://golang.org/pkg/errors/#Is <br>
-* https://golang.org/pkg/errors/#As
+* https://pkg.go.dev/errors#Is <br>
+* https://pkg.go.dev/errors#As
 
 ---
 # errors.Is & errors.As
 ```go
 import "errors"
 
-type DbError struct {
-    Code    int
-    Message string
+type MyError struct {
+	Code    int
+	Message string
 }
 
-func (e *MyError) Error() string { ... }
+func (e *MyError) Error() string { return e.Message }
 
 func main() {
-    baseErr := &MyError{ 0x08006, "db connection error" }
-    err := fmt.Errorf("read user: %w", err)
-    // Check if the error is of type MyError
-    if errors.Is(err, &MyError{}) {
-        fmt.Println("Error is of type DbError")
-    }
+	baseErr := &MyError{0x08006, "db connection error"}
+	err := fmt.Errorf("read user: %w", baseErr)
 
-    // Try to extract the underlying MyError value
-    var myErr *MyError
-    if errors.As(err, &myErr) {
-        fmt.Printf("Extracted DbError: %\n", myErr.Code)
-    }
+	// Check if the error is of type MyError
+	if errors.Is(err, &MyError{}) {
+		fmt.Println("Error is of type DbError")
+	}
+	// Try to extract the underlying MyError value
+	var myErr *MyError
+	if errors.As(err, &myErr) {
+		fmt.Printf("Extracted DbError: %v\n", myErr.Code)
+	}
 }
 ```
 

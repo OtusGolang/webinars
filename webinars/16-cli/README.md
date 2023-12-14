@@ -33,12 +33,13 @@ background-image: url(../img/rules.svg)
 
 ---
 
-# соглащения и стандартны на CLI
+# Соглашения и стандартны на CLI
 
 * POSIX: https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
 
 ```
-utility_name[-a][-b][-c option_argument][-d|-e][-f[option_argument]][operand...]
+utility_name[-a][-b][-c option_argument]
+	[-d|-e][-f[option_argument]][operand...]
 ```
 
 * GNU: https://www.gnu.org/prep/standards/standards.html#Command_002dLine-Interfaces

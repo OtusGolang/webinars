@@ -30,13 +30,13 @@ background-image: url(../img/rules.svg)
 - По конвенции, ошибка - последнее возвращаемое функцией значение
 - Ошибки обрабатываются проверкой значения (и/или передаются выше через `return`)
 
-```
+```go
 type error interface {
     Error() string
 }
 ```
 
-```
+```go
 func Marshal(v interface{}) ([]byte, error) {
    e := &encodeState{}
    err := e.marshal(v, encOpts{escapeHTML: true})
@@ -53,7 +53,7 @@ func Marshal(v interface{}) ([]byte, error) {
 
 Ошибки из стандартной библиотеки:
 
-```
+```go
 package errors
 
 func New(text string) error {
@@ -73,13 +73,13 @@ func (e *errorString) Error() string {
 
 # errors.go
 
-```
+```go
 	err := errors.New("Im an error")
 	if err != nil {
 		fmt.Print(err)
 	}
 ```
-```
+```go
 	whoami := "error"
 	err := fmt.Errorf("Im an %s", whoami)
 	if err != nil {
@@ -94,7 +94,7 @@ func (e *errorString) Error() string {
 <br>
 В целом ок:
 
-```
+```go
 func (router HttpRouter) parse(reader *bufio.Reader) (Request, error) {
   requestText, err := readCRLFLine(reader)
   if err != nil {
@@ -119,7 +119,7 @@ func (router HttpRouter) parse(reader *bufio.Reader) (Request, error) {
 
 # Ошибка - это значение
 
-```
+```go
 func (s *Scanner) Scan() (token []byte, error)
 
 scanner := bufio.NewScanner(input)
@@ -134,7 +134,7 @@ for {
 
 Мы можем сохранять её во внутренней структуре:
 
-```
+```go
 scanner := bufio.NewScanner(input)
 for scanner.Scan() {
     token := scanner.Text()
@@ -150,7 +150,7 @@ if err := scanner.Err(); err != nil {
 # Обработка ошибок: sentinel values
 <br>
 
-```
+```go
 package io
 
 
@@ -166,7 +166,7 @@ var ErrShortBuffer = errors.New("short buffer")
 Ошибки в таком случае - часть публичного API, это наименее гибкая, 
 но наиболее часто встречающаяся стратегия:
 
-```
+```go
 if err == io.EOF {
 	...
 }
@@ -177,7 +177,7 @@ if err == io.EOF {
 
 # Проверка ошибок: типы
 
-```
+```go
 // PathError records an error and the operation and
 // file path that caused it.
 type PathError struct {
@@ -199,7 +199,7 @@ open /etc/passwx: no such file or directory
 
 # Проверка ошибок: типы
 
-```
+```go
 err := readConfig()
 switch err := err.(type) {
 	case nil:
@@ -215,7 +215,7 @@ switch err := err.(type) {
 
 # Проверка ошибок: интерфейсы
 
-```
+```go
 package net
 
 type Error interface {
@@ -227,7 +227,7 @@ type Error interface {
 
 Проверяем поведение, а не тип:
 
-```
+```go
 if nerr, ok := err.(net.Error); ok && nerr.Temporary() {
     time.Sleep(1e9)
     continue
@@ -244,17 +244,17 @@ https://golang.org/pkg/net/#pkg-index
 
 # Антипаттерны проверки ошибок
 
-```
+```go
 if err.Error() == "smth" { // Строковое представление - для людей.
 ```
 
-```
+```go
 func Write(w io.Writer, buf []byte) {
     w.Write(buf) // Забыли проверить ошибку
 }
 ```
 
-```
+```go
 func Write(w io.Writer, buf []byte) error {
     _, err := w.Write(buf)
     if err != nil {
@@ -269,16 +269,78 @@ func Write(w io.Writer, buf []byte) error {
 
 ---
 
+# Оборачивание ошибок
+
+Если ошибка не может быть обработана на текущем уровне, и мы хотим сообщить нё вызывающуму с дополнительной информацией
+
+```go
+func ReadAndCalcLen() error {
+	from, to := readFromTo()
+	a, err := Len(from, to)
+	if err != nil {
+		return fmt.Errorf("calc len for %i and %i: %w", from, to, err)
+	}
+}
+
+//Результат: calc len for 2 and 1: from should be less than to
+```
+---
+
+# Соглашения об оборачивании ошибок: когда
+
+* Необходимо обернуть, если в функции есть 2 или более мест, возвращающих ошибку.
+* Можно вернуть исходную ошибку, если есть только 1 return.
+* Перед добавлением второго return, рекомендуется bcghfdbnm первый return.
+
+---
+
+# Соглашения об оборачивании ошибок: как
+
+* Текст при оборачивании описывает место в текущей функции.
+    Например, для функции openConfig(...):
+    * Да: fmt.Errorf("open file: %w", err)
+    * Нет: fmt.Errorf("startup: %w", err)
+* не начинается с заглавной буквы
+* не содержит знаков препинания в конце
+* разделитель "слоёв" - ": "
+* избегайте префиксов "fail to"/"error at"/"can not" в сообщениях обертки.
+    * Можно для корневых ошибок и логирования: <br>
+    `log.Warn("fail to read: %v" , err)`
+
+---
+
+# Рекомендация
+
+* Сделайте сообщение как можно более уникальным<br>
+    (для всего приложения)
+* Параметры - в конец
+
+Так будет проще находить код по тексту ошибки.
+
+---
+# Как это выглядит в логах
+
+```cmd
+fail to read form's data: get user: 
+open db connection: network error 0x123
+```
+
+---
+
 # github.com/pkg/errors
 
-```
+Использовалась до того как go научился оборачивать ошибки.
+
+Сейчас - legacy проекты и для стектрейса в ошибке.
+
+```go
 _, err := ioutil.ReadAll(r)
 if err != nil {
         return errors.Wrap(err, "read failed")
 }
 ```
 
-```
+```go
 package main
 
 import "fmt"
@@ -291,53 +353,73 @@ func main() {
 
     fmt.Println(err) // read config failed: open failed: error
     fmt.Printf("%+v\n", err) // Напечатает stacktrace.
+
+    print(err1 == errors.Cause(err2))  // true
 }
 ```
 
 ---
 
-# github.com/pkg/errors
+# Обработка обёрнутых ошибок
 
-Чтобы проверить, соответствует ли ошибка значению/типу, ее надо развернуть:
 
-```
-// Cause unwraps an annotated error.
-func Cause(err error) error
+что, если обёрнуто?
+
+```go
+err := doSomethingWithNetwork()
+if nerr, ok := err.(net.Error); ok && nerr.Temporary() {
+    time.Sleep(1e9)
+    continue
+}
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
-```
-err1 := errors.New("im an error")
-err2 := errors.Wrap(err1, "some context")
-print(err1 == err2)                // false
-print(err1 == errors.Cause(err2))  // true
+`err.(net.Error)` - антипаттерн
+
+---
+
+# errors.Is & errors.As
+
+* https://golang.org/pkg/errors/#Is <br>
+* https://golang.org/pkg/errors/#As
+
+---
+# errors.Is & errors.As
+```go
+import "errors"
+
+type DbError struct {
+    Code    int
+    Message string
+}
+
+func (e *MyError) Error() string { ... }
+
+func main() {
+    baseErr := &MyError{ 0x08006, "db connection error" }
+    err := fmt.Errorf("read user: %w", err)
+    // Check if the error is of type MyError
+    if errors.Is(err, &MyError{}) {
+        fmt.Println("Error is of type DbError")
+    }
+
+    // Try to extract the underlying MyError value
+    var myErr *MyError
+    if errors.As(err, &myErr) {
+        fmt.Printf("Extracted DbError: %\n", myErr.Code)
+    }
+}
 ```
 
 ---
 
-# github.com/pkg/errors
-```
-switch err := errors.Cause(err).(type) {
-case *MyError:
-    // handle specifically
-default:
-    // unknown error
-}
-```
+# errors.Is & errors.As
 
-```
-// IsTemporary returns true if err is temporary.
-func IsTemporary(err error) bool {
-    te, ok := errors.Cause(err).(temporary)
-    return ok && te.Temporary()
-}
-```
+* Is - если надо проверить соответствие ошибки шаблону (тип, значение)
+* As - если надо ещё и привести ошибку к искомомому типу
 
----
-
-# std: errors.Is & errors.As
-
-https://golang.org/pkg/errors/#Is <br>
-https://golang.org/pkg/errors/#As
 
 ---
 
@@ -347,6 +429,7 @@ https://golang.org/pkg/errors/#As
 - Лишний раз не логируйте.
 - Проверяйте поведение, а не тип.
 - Ошибки - это значения.
+- Оборачивайте правильно
 
 ---
 
@@ -356,7 +439,7 @@ https://golang.org/pkg/errors/#As
 `defer` позволяет назначить выполнение вызова функции непосредственно
 перед выходом из вызывающей функции
 
-```
+```go
 func Contents(filename string) (string, error) {
     f, err := os.Open(filename)
     if err != nil {
@@ -383,7 +466,7 @@ func Contents(filename string) (string, error) {
 
 Аргументы отложенного вызова функции вычисляются тогда, когда вычисляется команда defer.
 
-```
+```go
 func a() {
     i := 0
     defer fmt.Println(i)
@@ -403,11 +486,12 @@ func a() {
 
 Отложенные вызовы функций выполняются в порядке LIFO: последний отложенный вызов будет вызван первым — после того, как объемлющая функция завершит выполнение.
 
-```
+```go
 func b() {
-    for i := 0; i < 4; i++ {
-        defer fmt.Print(i)
-    }
+    defer fmt.Print(0)
+    defer fmt.Print(1)
+    defer fmt.Print(2)
+    defer fmt.Print(3)
 }
 ```
 
@@ -420,7 +504,7 @@ func b() {
 
 Отложенные функции могут читать и устанавливать именованные возвращаемые значения объемлющей функции.
 
-```
+```go
 func c() (i int) {
     defer func() { i++ }()
     return 1
@@ -446,7 +530,7 @@ func c() (i int) {
 
 Паниковать стоит только в случае, если ошибку обработать нельзя, например:
 
-```
+```go
 var user = os.Getenv("USER")
 
 func init() {
@@ -465,7 +549,7 @@ func init() {
 и возвращает аргумент, переданный `panic`
 <br>
 
-```
+```go
 func server(workChan <-chan *Work) {
     for work := range workChan {
         go safelyDo(work)
@@ -489,7 +573,7 @@ func safelyDo(work *Work) {
 
 пример из encoding/json:
 
-```
+```go
 // jsonError is an error wrapper type for internal use only.
 // Panics with errors are wrapped in jsonError so that 
 // the top-level recover can distinguish intentional panics 

@@ -387,6 +387,13 @@ https://github.com/alexus1024/go23_config_log/tree/main/log
 
 ---
 
+# Примеры
+
+* https://github.com/OtusGolang/webinars_practical_part/tree/master/22-config-n-log
+* https://github.com/alexus1024-learn/go_config_log
+
+---
+
 background-image: url(../img/questions.svg)
 
 ---

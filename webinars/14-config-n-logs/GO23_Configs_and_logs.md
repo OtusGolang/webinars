@@ -54,6 +54,10 @@ background-image: url(../img/rules.svg)
 # Что хранить в конфигурации?
 Все данные, которые могут отличаться в разных развертываниях (у разных пользователей). Знайте свои развертывания!
 
+
+#### <br>Напишите в чат, если хотите узнать детальнее о каком то пункте<br>
+
+<br>
 * дефолтные значения
 * секреты
 * идентификаторы внешних ресурсов
@@ -77,6 +81,7 @@ background-image: url(../img/rules.svg)
 ---
 
 # Модель доступа
+От этого зависит выбор инструсентов (библиотек). <br>
 Обычно готовится вручную, и потом используется в программе. Обновления - после перезапуска.
 
 * как конфигурация будет создаваться?
@@ -118,7 +123,7 @@ https://12factor.net/ru/config
 * Организуйте отдельный пакет для конфига
 * Другие части приложения не должны 
 знать\зависеть от выбранного способа хранения логов.
-* работать с логами как с типизированными значениями языка
+* работать с параметрами конфига как с типизированными значениями языка
 
 
 ### Частая ошибка: 
@@ -131,7 +136,7 @@ https://12factor.net/ru/config
 # Конфигурация в файле
 ```go 
 import (
-   "io/ioutil"
+   "os"
    "gopkg.in/yaml.v2"
 )
 type Config struct {
@@ -140,7 +145,7 @@ type Config struct {
 }
 func main() {
    var c Config
-   yamlFile, err := ioutil.ReadFile("conf.yaml") 
+   yamlFile, err := os.ReadFile("conf.yaml") 
    err = yaml.Unmarshal(yamlFile, &c)
 }
 ```
@@ -388,13 +393,13 @@ background-image: url(../img/questions.svg)
 
 background-image: url(../img/poll.svg)
 
-https://otus.ru/polls/64789/
+https://otus.ru/polls/79496/
 
 ---
 
 background-image: url(../img/next_webinar.svg)
-.announce_date[30 августа]
-.announce_topic[Кодогенерация и дженерики в Go]
+.announce_date[5 февраля]
+.announce_topic[CLI]
 
 ---
 background-image: url(../img/thanks.svg)

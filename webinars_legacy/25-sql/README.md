@@ -30,6 +30,38 @@ background-image: url(img/message.svg)
 
 ---
 
+.center.icon[![otus main](img/main.png)]
+
+---
+
+class: top white
+background-image: url(img/sound.svg)
+background-size: 130%
+.top.icon[![otus main](img/logo.png)]
+
+.sound-top[
+# Как меня слышно и видно?
+]
+
+.sound-bottom[
+## > Напишите в чат
+### **+** если все хорошо
+### **-** если есть проблемы cо звуком или с видео
+### !проверить запись!
+]
+
+---
+
+class: white
+background-image: url(img/message.svg)
+.top.icon[![otus main](img/logo.png)]
+
+# Работа с SQL
+
+### Антон Телышев
+
+---
+
 # План занятия
 
 .big-list[
@@ -40,7 +72,7 @@ background-image: url(img/message.svg)
 * Стандартные интерфейсы sql.DB, sql.Rows, sql.Tx
 * Использование транзакций
 * SQL инъекции и борьба с ними
-]
+  ]
 
 ---
 
@@ -223,7 +255,7 @@ http://go-database-sql.org/accessing.html
 
 # DataSourceName
 
-DSN - строка подключения к базе, содержит все необходимые опции. 
+DSN - строка подключения к базе, содержит все необходимые опции.
 <br>
 Синтаксис DSN зависит от используемой базы данных и драйвера.
 <br><br>
@@ -271,7 +303,7 @@ http://go-database-sql.org/connection-pool.html
 
 # Пул соединений
 .main-image[
- ![img/no_pool.png](img/no_pool.png)
+![img/no_pool.png](img/no_pool.png)
 ]
 
 
@@ -280,7 +312,7 @@ http://go-database-sql.org/connection-pool.html
 # Пул соединений
 
 .main-image[
- ![img/with_pool.png](img/with_pool.png)
+![img/with_pool.png](img/with_pool.png)
 ]
 
 
@@ -434,7 +466,7 @@ rows, err := conn.QueryContext(ctx, query2, arg1, arg2)
 
 # Транзакции
 
-Транзакция - группа запросов, которые либо выполняются, либо не выполняются вместе. 
+Транзакция - группа запросов, которые либо выполняются, либо не выполняются вместе.
 Внутри транзакции все запросы видят "согласованное" состояние данных.
 <br><br>
 На уровне SQL для транзакций используются отдельные запросы: `BEGIN`, `COMMIT`, `ROLLBACK`.
@@ -485,7 +517,7 @@ _, err := db.QueryContext(ctx, "delete from events where id = $1", 42)
 
 # NULL
 
-В SQL базах любая колонка может быть объявлена к NULL / NOT NULL. 
+В SQL базах любая колонка может быть объявлена к NULL / NOT NULL.
 NULL - это не 0 и не пустая строка, это отсутствие значения.
 ```sql
 create table users (
@@ -546,7 +578,7 @@ db.QueryRowContext(ctx, "select * from user order by $1 limit 3", order)
 * Есть только базовые типы, но нет, например `sql.NullDate`
 * `rows.Scan(arg1, arg2, arg3)` - неудобен, нужно помнить порядок и типы колонок.
 * Нет возможности `rows.StructScan(&event)`
-]
+  ]
 
 ---
 
@@ -642,6 +674,70 @@ for rows.Next() {
 }
 ```
 ---
+
+# Драйверы для Postgres
+
+* Лучший драйвер на текущий момент: [https://github.com/jackc/pgx](https://github.com/jackc/pgx)
+* Другой часто используемый драйвер (менее производительный): [https://github.com/lib/pq](https://github.com/lib/pq)
+
+---
+
+# Миграции
+
+* [https://github.com/pressly/goose](https://github.com/pressly/goose) - можно использовать как cli-тулзу и как библиотеку
+* [https://flywaydb.org/](https://flywaydb.org/) - пожалуй, самая популярная штука для миграций
+
+*Protip*: flyway можно запускать из докер-контейнера перед запуском основного приложения, см. https://github.com/flyway/flyway-docker
+
+---
+
+# ORM
+
+* [https://gorm.io/](https://gorm.io/) - использует пустые интерфейсы :(
+* [https://github.com/go-reform/reform](https://github.com/go-reform/reform) - использует кодогенерацию, но разработка немного заброшена
+
+---
+
+# Другие ресурсы для изучения
+
+.big-list[
+* [ru] [https://habr.com/ru/company/oleg-bunin/blog/461935/](Статья и видео о тонкостях работы с Postgres в Go)
+* [en] [http://go-database-sql.org/index.html](Полезная документация по работе с SQL из Go)
+* [en] [https://golang.org/pkg/database/sql](Документация к database/sql)
+* [en] [https://jmoiron.github.io/sqlx](sqlx)
+  ]
+
+---
+
+# Домашнее задание
+
+Заготовка микросервиса «Календарь»
+<br>
+[задание](https://github.com/OtusGolang/home_work/blob/master/hw12_13_14_15_calendar/docs/12_README.md)
+
+
+---
+
+# Опрос
+
+.left-text[
+Заполните пожалуйста опрос
+<br><br>
+https://otus.ru/polls/19030/
+]
+
+.right-image[
+![](img/gopher7.png)
+]
+
+---
+
+class: white
+background-image: url(img/message.svg)
+.top.icon[![otus main](img/logo.png)]
+
+# Спасибо за внимание!
+
 
 # Драйверы для Postgres
 

@@ -85,17 +85,17 @@ func main() {
 # pflag: флаги без значений
 
 ```
-pflag.StringVar(&msg, "msg", "hello", "message to print")
-pflag.Lookup("msg").NoOptDefVal = "bye"
+pflag.StringVar(&flagvar, "port", "80", "message to print")
+pflag.Lookup("port").NoOptDefVal = "8080"
 ```
 <br><br>
 
 .left-text[
 |Флаг            |Значение
 |:---------------|:-------
-|--port=9999     |ip=9999
-|--port	         |ip=80
-|[nothing]	     |ip=8080
+|--port=9999     |flagvar=9999
+|--port	         |flagvar=8080
+|[nothing]	     |flagvar=80
 ]
 
 ---
@@ -253,11 +253,11 @@ background-image: url(../img/poll.svg)
 ---
 
 background-image: url(../img/next_webinar.svg)
-.announce_date[1 января]
+.announce_date[12 апреля]
 .announce_topic[Рефлексия]
 
 ---
 background-image: url(../img/thanks.svg)
 
-.tutor[Лектор]
-.tutor_desc[Должность]
+.tutor[Романовский Алексей]
+.tutor_desc[Разработчик в Resolver Inc.]

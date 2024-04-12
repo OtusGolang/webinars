@@ -8,8 +8,8 @@ background-image: url(../img/rec.svg)
 background-image: url(../img/topic.svg)
 
 .topic[Тестирование в Go]
-.tutor[Алексей Семушкин]
-.tutor_desc[Software Engineer at Semrush]
+.tutor[Алексей Романовский]
+.tutor_desc[Разработчик в Resolver Inc. (Kroll)]
 
 ---
 
@@ -143,7 +143,7 @@ https://goplay.tools/snippet/9h-9ha70qTb (playground)
 
 # testify: assert vs require
 
-## Простое правило — всегда используйте require.
+## Если не уверены - используйте require.
 
 ---
 
@@ -309,5 +309,5 @@ background-image: url(../img/next_webinar.svg)
 ---
 background-image: url(../img/thanks.svg)
 
-.tutor[Алексей Семушкин]
-.tutor_desc[Software Engineer at Semrush]
+.tutor[Алексей Романовский]
+.tutor_desc[Разработчик в Resolver Inc. (Kroll)]

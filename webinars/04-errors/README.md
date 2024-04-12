@@ -8,8 +8,8 @@ background-image: url(../img/rec.svg)
 background-image: url(../img/topic.svg)
 
 .topic[Лучшие практики работы с ошибками]
-.tutor[Алексей Семушкин]
-.tutor_desc[Software Engineer at Semrush]
+.tutor[Алексей Романовский]
+
 
 ---
 
@@ -412,6 +412,13 @@ func main() {
 	}
 }
 ```
+---
+
+# Интерфейс Is
+
+https://github.com/golang/go/blob/master/src/errors/wrap.go#L58
+
+Учитываем, когда создаём свои типы ошибок
 
 ---
 

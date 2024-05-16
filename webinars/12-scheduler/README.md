@@ -8,8 +8,7 @@ background-image: url(../img/rec.svg)
 background-image: url(../img/topic.svg)
 
 .topic[Go внутри. Планировщик]
-.tutor[Алексей Семушкин]
-.tutor_desc[Software Engineer at Semrush]
+.tutor[Алексей Романовский]
 
 ---
 
@@ -65,6 +64,18 @@ background-image: url(../img/rules.svg)
 ![](img/mn_1.png)
 ]
 
+---
+
+# Термины
+
+* [G (Goroutine)](https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L422): Легковесные потоки, управляемые Go, которые выполняют функции.
+    * N - множество всех горутин
+* [M (Machine)](https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L552): OS thread. Поток Операционной системы под управлением средой выполнения Go.
+* [P (Processor)](https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L649): Логические процессоры, которые выполняют G на M.
+    * GOMAXPROCS - это про P.
+    * В контейнерах: https://github.com/uber-go/automaxprocs
+
+https://go.dev/src/runtime/HACKING
 ---
 
 # Проектируем планировщик: m-n threading
@@ -165,7 +176,7 @@ http://supertech.csail.mit.edu/papers/steal.pdf
 # Планировщик: go tool trace
 
 * https://golang.org/cmd/trace/
-* https://making.pusher.com/go-tool-trace/
+* [Как мы оптимизировали наш DNS-сервер с помощью инструментов GO](https://habr.com/ru/companies/otus/articles/487934/)
 * https://blog.gopheracademy.com/advent-2017/go-execution-tracer/
 
 ---
@@ -512,5 +523,5 @@ background-image: url(../img/next_webinar.svg)
 ---
 background-image: url(../img/thanks.svg)
 
-.tutor[Алексей Семушкин]
-.tutor_desc[Software Engineer at Semrush]
+.tutor[Алексей Романовский]
+

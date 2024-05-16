@@ -294,6 +294,12 @@ https://blog.golang.org/cover
 
 ---
 
+# Golden files
+
+https://github.com/OtusGolang/webinars_practical_part/blob/master/03-unit-testing/golden_files/golden_test.go
+
+---
+
 background-image: url(../img/questions.svg)
 
 ---

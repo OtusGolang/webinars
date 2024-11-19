@@ -241,6 +241,13 @@ https://golang.org/pkg/net/#pkg-index
 
 ---
 
+# Больше о пользовательских типах ошибок
+
+* https://gobyexample.com/custom-errors
+* https://www.digitalocean.com/community/tutorials/creating-custom-errors-in-go
+
+---
+
 
 # Антипаттерны проверки ошибок
 
@@ -271,7 +278,7 @@ func Write(w io.Writer, buf []byte) error {
 
 # Оборачивание ошибок
 
-Если ошибка не может быть обработана на текущем уровне, и мы хотим сообщить нё вызывающуму с дополнительной информацией
+Если ошибка не может быть обработана на текущем уровне, и мы хотим сообщить нё вызывающему с дополнительной информацией
 
 ```go
 func ReadAndCalcLen() error {
@@ -290,7 +297,7 @@ func ReadAndCalcLen() error {
 
 * Необходимо обернуть, если в функции есть 2 или более мест, возвращающих ошибку.
 * Можно вернуть исходную ошибку, если есть только 1 return.
-* Перед добавлением второго return, рекомендуется отрефакторить первый return.
+* Перед добавлением второго return, рекомендуется рефакторинг первого return.
 
 ---
 
@@ -425,7 +432,7 @@ https://github.com/golang/go/blob/master/src/errors/wrap.go#L58
 # errors.Is & errors.As
 
 * Is - если надо проверить соответствие ошибки шаблону (тип, значение)
-* As - если надо ещё и привести ошибку к искомомому типу
+* As - если надо ещё и привести ошибку к искомому типу
 
 
 ---
@@ -618,5 +625,4 @@ background-image: url(../img/next_webinar.svg)
 ---
 background-image: url(../img/thanks.svg)
 
-.tutor[Алексей Семушкин]
-.tutor_desc[Software Engineer at Semrush]
+.tutor[Алексей Романовский]

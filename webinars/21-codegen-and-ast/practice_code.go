@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/ettle/strcase"
 	"go/ast"
 	"go/parser"
 	"go/printer"
 	"go/token"
 	"os"
+
+	"github.com/ettle/strcase"
 )
 
 var test = `package main
@@ -70,7 +71,7 @@ func main() {
 				List: []*ast.Comment{
 					{
 						Text:  fmt.Sprintf("// %s ... please documentation", structName),
-						Slash: structType.Struct,
+						Slash: d.Pos() - 1,
 					},
 				},
 			}

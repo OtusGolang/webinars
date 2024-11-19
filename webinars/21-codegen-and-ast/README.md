@@ -9,8 +9,8 @@ background-image: url(../img/rec.svg)
 background-image: url(../img/topic.svg)
 
 .topic[Кодогенерация и AST]
-.tutor[Олег Венгер]
-.tutor_desc[Руководитель группы Защиты профилей в Wildberries]
+.tutor[Алексей Романовский]
+
 
 ---
 
@@ -135,7 +135,13 @@ go generate -n
 
 ---
 
-# Go embed
+# Awesome go: generators
+
+https://github.com/avelino/awesome-go?tab=readme-ov-file#generators
+
+---
+
+# Go embed (since go 1.16)
 
 https://golang.org/pkg/embed/
 
@@ -143,6 +149,8 @@ https://golang.org/pkg/embed/
 //go:embed static/gopher.png
 var gopherPngBytes []byte
 ```
+
+Заменяет [bindata](https://github.com/go-bindata/go-bindata)
 
 ---
 
@@ -275,6 +283,8 @@ func main() {
 }
 ```
 
+* https://astexplorer.net/
+
 ---
 
 # Пример разбора
@@ -314,14 +324,9 @@ background-image: url(../img/questions.svg)
 
 background-image: url(../img/poll.svg)
 
----
-
-background-image: url(../img/next_webinar.svg)
-.announce_date[19 апреля]
-.announce_topic[Дженерики в Go]
 
 ---
 background-image: url(../img/thanks.svg)
 
-.tutor[Олег Венгер]
-.tutor_desc[Руководитель группы Защиты профилей в Wildberries]
+.tutor[Алексей Романовский]
+

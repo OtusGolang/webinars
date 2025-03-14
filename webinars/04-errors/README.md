@@ -607,6 +607,12 @@ func (e *encodeState) marshal(v interface{}, opts encOpts) (err error) {
 	return nil
 }
 ```
+---
+
+# Паника или ошибка: что лучше?
+
+* ошибки - это обработка ожидаемых ситуаций, а паника - для неожиданных
+* паника в приложении всегда должна означать что надо исправить код
 
 ---
 
@@ -619,7 +625,7 @@ background-image: url(../img/poll.svg)
 ---
 
 background-image: url(../img/next_webinar.svg)
-.announce_date[16 августа]
+
 .announce_topic[Тестирование в Go]
 
 ---
